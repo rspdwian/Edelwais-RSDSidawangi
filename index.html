@@ -593,7 +593,7 @@
 
         <div class="dashboard-container">
             
-            <!-- CARD FILTER PERIODE BULAN DAN TAHUN (Berlaku untuk Dashboard & Tabel Pasien) -->
+            <!-- CARD FILTER PERIODE BULAN DAN TAHUN -->
             <div class="filter-card">
                 <div class="filter-title">
                     📅 Pilih Periode Laporan & Tabel:
@@ -608,8 +608,8 @@
                         <option value="6">Juni</option>
                         <option value="7">Juli</option>
                         <option value="8">Agustus</option>
-                        <option value="9" selected>September</option>
-                        <option value="10">Oktober</option>
+                        <option value="9">September</option>
+                        <option value="10" selected>Oktober</option>
                         <option value="11">November</option>
                         <option value="12">Desember</option>
                     </select>
@@ -626,7 +626,7 @@
             <div id="pageDashboard" class="app-page active">
                 
                 <!-- SECTION 1: INDIKATOR EFISIENSI RUMAH SAKIT -->
-                <div class="section-title">📊 Indikator Efisiensi Rawat Inap (<span id="lblPeriode1">September 2026</span>)</div>
+                <div class="section-title">📊 Indikator Efisiensi Rawat Inap (<span id="lblPeriode1">Oktober 2026</span>)</div>
                 <div class="stats-grid-primary">
                     <div class="stat-card blue">
                         <h4>BOR (Bed Occupancy Rate)</h4>
@@ -646,7 +646,7 @@
                 </div>
 
                 <!-- SECTION 2: REKAPITULASI PASIEN BULANAN -->
-                <div class="section-title">👥 Rekapitulasi Data Pasien (<span id="lblPeriode2">September 2026</span>)</div>
+                <div class="section-title">👥 Rekapitulasi Data Pasien (<span id="lblPeriode2">Oktober 2026</span>)</div>
                 
                 <div class="rekap-grid">
                     <div class="stat-card">
@@ -870,7 +870,7 @@
                 <!-- SECTION 4: LIST SELURUH PASIEN DI RUANGAN -->
                 <div class="card">
                     <div class="card-header">
-                        <h3>📋 List Pasien Periode (<span id="lblPeriodeTabel">September 2026</span>)</h3>
+                        <h3>📋 List Pasien Periode (<span id="lblPeriodeTabel">Oktober 2026</span>)</h3>
                         <div class="header-actions">
                             <!-- TOMBOL EXPORT KE EXCEL -->
                             <button type="button" class="btn-excel" onclick="exportKeExcel()">
@@ -921,6 +921,23 @@
                                     <td>Morbili</td>
                                     <td>Nurwulan Ika Rahayu, A.Md.Kep</td>
                                 </tr>
+                                <!-- Data Contoh Pasien Masuk 30/09/2026 (Aktif Lintas Bulan ke Oktober) -->
+                                <tr ondblclick="pilihPasienUntukEdit(this)" data-dokter="dr. Suci Septyuni Permadi, Sp.A" data-statuspasien="Pasien baru IGD">
+                                    <td>2</td>
+                                    <td><strong>Coba 1</strong></td>
+                                    <td class="nowrap">08888</td>
+                                    <td class="nowrap">02/02/2022</td>
+                                    <td class="nowrap">4 Thn 8 Bln</td>
+                                    <td class="nowrap">30/09/2026</td>
+                                    <td>Umum</td>
+                                    <td><span class="badge badge-info">Baru IGD</span></td>
+                                    <td>dr. Suci Septyuni, Sp.A</td>
+                                    <td class="nowrap">-</td>
+                                    <td><span class="badge badge-info">Masih di rawat</span></td>
+                                    <td class="nowrap">28 Hari</td>
+                                    <td>Hipertensi</td>
+                                    <td>Sri Widaningsih, A.Md.Kep</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -936,7 +953,6 @@
         let barisSedangDiedit = null;
         const KAPASITAS_TT = 32;
 
-        // Jalankan filter otomatis saat halaman pertama kali dimuat
         window.onload = function() {
             updateDataBulan();
         };
@@ -1303,7 +1319,7 @@
             updateDataBulan();
         }
 
-        // UPDATE DATA DAN PENYARINGAN BERDASARKAN PERIODE BULAN & TAHUN
+        // LOGIKA PENYARINGAN PASIEN LINTAS BULAN (CARRY OVER)
         function updateDataBulan() {
             const bulanSelect = document.getElementById('filterBulan');
             const tahunSelect = document.getElementById('filterTahun');
@@ -1334,19 +1350,32 @@
             let totalPasienKeluar = 0;
             let nomorUrut = 1;
 
+            // Batas awal dan akhir bulan yang dipilih di filter
+            const awalBulanFilter = new Date(tahunVal, bulanVal - 1, 1);
+            const akhirBulanFilter = new Date(tahunVal, bulanVal, 0); // Tanggal terakhir di bulan tersebut
+
             rows.forEach(row => {
                 const tglMasukTxt = row.cells[5].textContent.trim();
                 const tglKeluarTxt = row.cells[9].textContent.trim();
                 
-                // Cek tanggal acuan (Tanggal Keluar, jika tidak ada pakai Tanggal Masuk)
-                let tglAcuan = tglKeluarTxt !== '-' ? tglKeluarTxt : tglMasukTxt;
-                let parts = tglAcuan.split('/');
+                // Ubah Tgl Masuk ke Objek Date
+                const pMasuk = tglMasukTxt.split('/');
+                const tglMasukDate = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
 
-                let blnPasien = parseInt(parts[1]);
-                let thnPasien = parseInt(parts[2]);
+                // Ubah Tgl Keluar ke Objek Date (jika ada)
+                let tglKeluarDate = null;
+                if (tglKeluarTxt !== '-') {
+                    const pKeluar = tglKeluarTxt.split('/');
+                    tglKeluarDate = new Date(pKeluar[2], pKeluar[1] - 1, pKeluar[0]);
+                }
 
-                // Filter: Jika sesuai dengan bulan & tahun yang dipilih
-                if (blnPasien === bulanVal && thnPasien === tahunVal) {
+                // KONDISI TAMPIL: Pasien aktif dirawat di bulan ini jika:
+                // 1. Masuk sebelum atau pas di akhir bulan filter, DAN
+                // 2. Belum keluar ATAU keluar setelah atau pas di awal bulan filter.
+                const masukSebelumAkhirBulan = tglMasukDate <= akhirBulanFilter;
+                const belumKeluarAtauKeluarSesudahAwal = (tglKeluarDate === null) || (tglKeluarDate >= awalBulanFilter);
+
+                if (masukSebelumAkhirBulan && belumKeluarAtauKeluarSesudahAwal) {
                     row.style.display = '';
                     row.cells[0].textContent = nomorUrut++;
                     total++;
@@ -1372,7 +1401,6 @@
                         else if (statusKeluarTxt === 'Pindah Ke ICU') pindahICU++;
                     }
                 } else {
-                    // Sembunyikan pasien bulan/tahun lain dari tabel
                     row.style.display = 'none';
                 }
             });
@@ -1392,7 +1420,7 @@
             document.getElementById('valPindahICU').textContent = pindahICU + ' Pasien';
 
             // Hitung Jumlah Hari dalam Bulan Terpilih
-            const jumlahHariBulan = new Date(tahunVal, bulanVal, 0).getDate();
+            const jumlahHariBulan = akhirBulanFilter.getDate();
 
             // Hitung Indikator BOR, ALOS, TOI
             const kapasitasPeriode = KAPASITAS_TT * jumlahHariBulan;
