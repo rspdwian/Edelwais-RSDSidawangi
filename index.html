@@ -931,7 +931,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tabelPasienBody">
-                                <!-- Data awal kosong atau bisa diisi bawaan -->
+                                <!-- Data awal kosong -->
                             </tbody>
                         </table>
                     </div>
@@ -951,7 +951,6 @@
             updateDataBulan();
         };
 
-        // Fungsi mengubah teks menjadi Huruf Kapital di Awal Kata (Title Case)
         function formatTitleCase(str) {
             if (!str) return '';
             return String(str).toLowerCase().split(' ').map(word => {
@@ -959,7 +958,23 @@
             }).join(' ');
         }
 
-        // FUNGSI IMPORT DATA DARI FILE EXCEL
+        // Konversi nomor serial excel / format tanggal menjadi dd/mm/yyyy
+        function formatTanggalExcel(val) {
+            if (!val) return '-';
+            // Jika berupa angka serial Excel
+            if (typeof val === 'number') {
+                const dateObj = XLSX.SSF.parse_date_code(val);
+                if (dateObj) {
+                    const d = String(dateObj.d).padStart(2, '0');
+                    const m = String(dateObj.m).padStart(2, '0');
+                    const y = dateObj.y;
+                    return `${d}/${m}/${y}`;
+                }
+            }
+            return String(val).trim();
+        }
+
+        // FUNGSI IMPORT DATA DARI FILE EXCEL BERDASARKAN URUTAN KOLOM A-N
         function importDariExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -970,42 +985,41 @@
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
 
-                    // Ambil sheet pertama dari file Excel
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
-
-                    // Ubah isi sheet menjadi format JSON (array baris)
                     const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
                     const tbody = document.getElementById('tabelPasienBody');
-                    tbody.innerHTML = ''; // Bersihkan data lama di tabel
+                    tbody.innerHTML = ''; 
 
-                    // Lewati baris pertama jika itu adalah Header (Judul Kolom)
-                    // Format kolom yang dibaca di Excel:
-                    // [1]: Nama, [2]: RM, [3]: Tgl Lahir, [4]: Usia, [5]: Tgl Masuk, [6]: Bayar, [7]: Status Pasien, [8]: Dokter, [9]: Tgl Keluar, [10]: Status Keluar, [11]: Lama, [12]: Diagnosa, [13]: PJ
                     let importedCount = 0;
+                    // Mulai dari baris ke-1 (lewat baris ke-0 header)
                     for (let i = 1; i < rows.length; i++) {
                         const r = rows[i];
-                        if (!r || r.length < 2 || !r[1]) continue; // Lewati baris kosong
+                        // Pastikan kolom Nama Pasien (Kolom B / indeks 1) ada isinya
+                        if (!r || r.length < 2 || !r[1]) continue; 
 
                         const nama = formatTitleCase(r[1] || '');
                         const rm = r[2] || '-';
-                        const tglLahir = r[3] || '-';
+                        const tglLahir = formatTanggalExcel(r[3]);
                         const usia = r[4] || '-';
-                        const tglMasuk = r[5] || '-';
+                        const tglMasuk = formatTanggalExcel(r[5]);
                         const statusBayar = r[6] || 'Umum';
                         const statusPasien = r[7] || 'Pasien baru IGD';
                         const dokter = r[8] || '-';
-                        const tglKeluar = r[9] || '-';
+                        const tglKeluar = formatTanggalExcel(r[9]);
                         const statusKeluar = r[10] || 'Masih di rawat';
-                        const lama = r[11] || '0 Hari';
+                        let lama = r[11] || '0';
+                        if (!String(lama).includes('Hari')) {
+                            lama = lama + ' Hari';
+                        }
                         const diagnosa = r[12] || '-';
                         const pj = r[13] || '-';
 
                         let badgeStatusKeluar = 'badge-info';
-                        if (statusKeluar.includes('Pulang Izin Dokter')) badgeStatusKeluar = 'badge-success';
-                        else if (statusKeluar.includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
-                        else if (statusKeluar.includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
+                        if (String(statusKeluar).includes('Pulang Izin Dokter')) badgeStatusKeluar = 'badge-success';
+                        else if (String(statusKeluar).includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
+                        else if (String(statusKeluar).includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
 
                         const newRow = document.createElement('tr');
                         newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
@@ -1038,7 +1052,6 @@
                     console.error(err);
                     alert('Gagal membaca file Excel. Pastikan format file sesuai.');
                 }
-                // Reset input file agar bisa pilih file yang sama lagi jika perlu
                 event.target.value = '';
             };
             reader.readAsArrayBuffer(file);
@@ -1071,7 +1084,6 @@
             URL.revokeObjectURL(url);
         }
 
-        // Format angka ketik manual menjadi dd/mm/yyyy
         function formatTglKetik(input) {
             let v = input.value.replace(/\D/g, '');
             if (v.length > 8) v = v.substring(0, 8);
@@ -1085,7 +1097,6 @@
             }
         }
 
-        // Konversi YYYY-MM-DD dari kalender ke dd/mm/yyyy
         function konversiKeDDMMYYYY(tglYMD) {
             if (!tglYMD) return '-';
             const parts = tglYMD.split('-');
@@ -1095,7 +1106,6 @@
             return tglYMD;
         }
 
-        // Konversi dd/mm/yyyy kembali ke YYYY-MM-DD untuk input type="date"
         function konversiKeYYYYMMDD(tglDMY) {
             if (!tglDMY || tglDMY === '-') return '';
             const parts = tglDMY.split('/');
@@ -1105,19 +1115,16 @@
             return '';
         }
 
-        // Singkat Teks Dokter untuk Tampilan Tabel
         function singkatDokter(namaLengkap) {
             if (!namaLengkap) return '-';
-            return namaLengkap.replace('Septyuni Permadi', 'Septyuni').replace('Kusumasari', 'K').replace('Moh Ishaq', 'M Ishaq').replace('Rengganis', 'R').replace('Risyad Pradana', 'Risyad');
+            return String(namaLengkap).replace('Septyuni Permadi', 'Septyuni').replace('Kusumasari', 'K').replace('Moh Ishaq', 'M Ishaq').replace('Rengganis', 'R').replace('Risyad Pradana', 'Risyad');
         }
 
-        // Singkat Status Pasien untuk Tampilan Tabel
         function singkatStatusPasien(status) {
             if (!status) return '-';
-            return status.replace('Pasien baru IGD', 'Baru IGD').replace('Pasien Lama IGD', 'Lama IGD').replace('Pasien Baru Poliklinik', 'Baru Poli').replace('Pasien Lama Poliklinik', 'Lama Poli');
+            return String(status).replace('Pasien baru IGD', 'Baru IGD').replace('Pasien Lama IGD', 'Lama IGD').replace('Pasien Baru Poliklinik', 'Baru Poli').replace('Pasien Lama Poliklinik', 'Lama Poli');
         }
 
-        // FUNGSI PENCARIAN PASIEN
         function cariPasien() {
             const input = document.getElementById('inputCariPasien').value.toLowerCase();
             const rows = document.querySelectorAll('#tabelPasienBody tr');
@@ -1134,7 +1141,6 @@
             });
         }
 
-        // RUMUS LAMA RAWAT OTOMATIS (+ 1 HARI)
         function hitungLamaRawatOtomatis() {
             const tglMasukVal = document.getElementById('pTglMasuk').value;
             const tglKeluarVal = document.getElementById('pTglKeluar').value;
@@ -1163,7 +1169,6 @@
             }
         }
 
-        // Switch Tab Login/Register
         function switchAuthTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.form-section').forEach(form => form.classList.remove('active'));
@@ -1177,7 +1182,6 @@
             }
         }
 
-        // Navigasi Antar Halaman Aplikasi
         function switchPage(pageId, btn) {
             document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1186,7 +1190,6 @@
             btn.classList.add('active');
         }
 
-        // Toggle Password
         function togglePassword(inputId, btn) {
             const input = document.getElementById(inputId);
             if (input.type === 'password') {
@@ -1198,7 +1201,6 @@
             }
         }
 
-        // Login Action
         function handleLogin(event) {
             event.preventDefault();
             const username = document.getElementById('loginUsername').value;
@@ -1208,7 +1210,6 @@
             updateDataBulan();
         }
 
-        // Register Action
         function handleRegister(event) {
             event.preventDefault();
             const username = document.getElementById('regUsername').value;
@@ -1216,14 +1217,12 @@
             switchAuthTab('login');
         }
 
-        // Logout Action
         function handleLogout() {
             document.getElementById('mainApp').style.display = 'none';
             document.getElementById('authApp').style.display = 'flex';
             document.getElementById('loginPassword').value = '';
         }
 
-        // Hitung Usia Otomatis dari Tanggal Lahir
         function hitungUsiaOtomatis() {
             const tglVal = document.getElementById('pTglLahir').value;
             if (tglVal.length !== 10) return;
@@ -1258,7 +1257,6 @@
             }
         }
 
-        // Fungsi Klik 2x Edit Pasien
         function pilihPasienUntukEdit(tr) {
             barisSedangDiedit = tr;
 
@@ -1286,7 +1284,6 @@
             window.scrollTo({ top: 350, behavior: 'smooth' });
         }
 
-        // Fungsi Hapus Pasien
         function hapusPasienDipilih() {
             if (barisSedangDiedit) {
                 const namaPasien = barisSedangDiedit.cells[1].textContent.trim();
@@ -1299,7 +1296,6 @@
             }
         }
 
-        // Batal Edit / Bersihkan Form Total
         function batalEdit() {
             barisSedangDiedit = null;
             document.getElementById('formPasien').reset();
@@ -1320,7 +1316,6 @@
             document.getElementById('btnBatal').style.display = 'none';
         }
 
-        // Tambah atau Perbarui Data Pasien
         function tambahPasien(event) {
             event.preventDefault();
 
@@ -1348,7 +1343,6 @@
             if (statusKeluar.includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
 
             if (barisSedangDiedit) {
-                // Perbarui
                 barisSedangDiedit.setAttribute('data-dokter', dokter);
                 barisSedangDiedit.setAttribute('data-statuspasien', statusPasien);
 
@@ -1368,7 +1362,6 @@
 
                 alert('Data pasien berhasil diperbarui!');
             } else {
-                // Tambah Baru
                 const tbody = document.getElementById('tabelPasienBody');
 
                 const newRow = document.createElement('tr');
@@ -1401,7 +1394,6 @@
             updateDataBulan();
         }
 
-        // LOGIKA PENYARINGAN PASIEN LINTAS BULAN (CARRY OVER)
         function updateDataBulan() {
             const bulanSelect = document.getElementById('filterBulan');
             const tahunSelect = document.getElementById('filterTahun');
@@ -1442,12 +1434,15 @@
                 if (!tglMasukTxt || tglMasukTxt === '-') return;
 
                 const pMasuk = tglMasukTxt.split('/');
+                if (pMasuk.length < 3) return;
                 const tglMasukDate = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
 
                 let tglKeluarDate = null;
                 if (tglKeluarTxt && tglKeluarTxt !== '-') {
                     const pKeluar = tglKeluarTxt.split('/');
-                    tglKeluarDate = new Date(pKeluar[2], pKeluar[1] - 1, pKeluar[0]);
+                    if (pKeluar.length === 3) {
+                        tglKeluarDate = new Date(pKeluar[2], pKeluar[1] - 1, pKeluar[0]);
+                    }
                 }
 
                 const masukSebelumAkhirBulan = tglMasukDate <= akhirBulanFilter;
@@ -1459,11 +1454,12 @@
                     total++;
 
                     const statusKeluarTxt = row.cells[10].textContent.trim();
-                    const lamaRawatVal = parseInt(row.cells[11].textContent) || 0;
+                    const rawLama = row.cells[11].textContent.trim().replace(/\D/g, '');
+                    const lamaRawatVal = parseInt(rawLama) || 0;
 
                     totalHariPerawatan += lamaRawatVal;
 
-                    if (statusKeluarTxt === 'Masih di rawat') {
+                    if (statusKeluarTxt === 'Masih di rawat' || statusKeluarTxt === '-') {
                         masihRawat++;
                     } else {
                         totalPasienKeluar++;
@@ -1483,7 +1479,6 @@
                 }
             });
 
-            // Update Kartu Rekapitulasi
             document.getElementById('valTotal').textContent = total + ' Pasien';
             document.getElementById('valMasihRawat').textContent = masihRawat + ' Pasien';
             document.getElementById('valIzinDokter').textContent = izinDokter + ' Pasien';
