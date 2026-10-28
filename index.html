@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Ruang Edelweis - RS Daerah Sidawangi</title>
+    <!-- Library SheetJS untuk Membaca File Excel (.xlsx / .xlsm / .xls) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -167,6 +169,25 @@
 
         .btn-excel:hover {
             background-color: #059669;
+        }
+
+        .btn-import {
+            padding: 7px 14px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-import:hover {
+            background-color: #2563eb;
         }
 
         .btn-cancel {
@@ -434,7 +455,7 @@
         /* Kotak Pencarian */
         .search-box {
             position: relative;
-            width: 240px;
+            width: 220px;
         }
 
         .search-box input {
@@ -872,6 +893,12 @@
                     <div class="card-header">
                         <h3>📋 List Pasien Periode (<span id="lblPeriodeTabel">Oktober 2026</span>)</h3>
                         <div class="header-actions">
+                            <!-- TOMBOL IMPORT EXCEL -->
+                            <label for="inputExcelFile" class="btn-import" style="cursor: pointer;">
+                                📥 Import Excel
+                            </label>
+                            <input type="file" id="inputExcelFile" accept=".xlsx, .xls, .xlsm" style="display: none;" onchange="importDariExcel(event)">
+
                             <!-- TOMBOL EXPORT KE EXCEL -->
                             <button type="button" class="btn-excel" onclick="exportKeExcel()">
                                 📊 Export Excel
@@ -904,40 +931,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tabelPasienBody">
-                                <!-- Data Contoh Pasien September -->
-                                <tr ondblclick="pilihPasienUntukEdit(this)" data-dokter="dr. Suci Septyuni Permadi, Sp.A" data-statuspasien="Pasien baru IGD">
-                                    <td>1</td>
-                                    <td><strong>Coba</strong></td>
-                                    <td class="nowrap">08888</td>
-                                    <td class="nowrap">02/02/2022</td>
-                                    <td class="nowrap">4 Thn 8 Bln</td>
-                                    <td class="nowrap">08/09/2026</td>
-                                    <td>Umum</td>
-                                    <td><span class="badge badge-info">Baru IGD</span></td>
-                                    <td>dr. Suci Septyuni, Sp.A</td>
-                                    <td class="nowrap">17/09/2026</td>
-                                    <td><span class="badge badge-success">Pulang Izin Dokter</span></td>
-                                    <td class="nowrap">10 Hari</td>
-                                    <td>Morbili</td>
-                                    <td>Nurwulan Ika Rahayu, A.Md.Kep</td>
-                                </tr>
-                                <!-- Data Contoh Pasien Masuk 30/09/2026 (Aktif Lintas Bulan ke Oktober) -->
-                                <tr ondblclick="pilihPasienUntukEdit(this)" data-dokter="dr. Suci Septyuni Permadi, Sp.A" data-statuspasien="Pasien baru IGD">
-                                    <td>2</td>
-                                    <td><strong>Coba 1</strong></td>
-                                    <td class="nowrap">08888</td>
-                                    <td class="nowrap">02/02/2022</td>
-                                    <td class="nowrap">4 Thn 8 Bln</td>
-                                    <td class="nowrap">30/09/2026</td>
-                                    <td>Umum</td>
-                                    <td><span class="badge badge-info">Baru IGD</span></td>
-                                    <td>dr. Suci Septyuni, Sp.A</td>
-                                    <td class="nowrap">-</td>
-                                    <td><span class="badge badge-info">Masih di rawat</span></td>
-                                    <td class="nowrap">28 Hari</td>
-                                    <td>Hipertensi</td>
-                                    <td>Sri Widaningsih, A.Md.Kep</td>
-                                </tr>
+                                <!-- Data awal kosong atau bisa diisi bawaan -->
                             </tbody>
                         </table>
                     </div>
@@ -959,9 +953,95 @@
 
         // Fungsi mengubah teks menjadi Huruf Kapital di Awal Kata (Title Case)
         function formatTitleCase(str) {
-            return str.toLowerCase().split(' ').map(word => {
+            if (!str) return '';
+            return String(str).toLowerCase().split(' ').map(word => {
                 return word.charAt(0).toUpperCase() + word.slice(1);
             }).join(' ');
+        }
+
+        // FUNGSI IMPORT DATA DARI FILE EXCEL
+        function importDariExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+
+                    // Ambil sheet pertama dari file Excel
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+
+                    // Ubah isi sheet menjadi format JSON (array baris)
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    const tbody = document.getElementById('tabelPasienBody');
+                    tbody.innerHTML = ''; // Bersihkan data lama di tabel
+
+                    // Lewati baris pertama jika itu adalah Header (Judul Kolom)
+                    // Format kolom yang dibaca di Excel:
+                    // [1]: Nama, [2]: RM, [3]: Tgl Lahir, [4]: Usia, [5]: Tgl Masuk, [6]: Bayar, [7]: Status Pasien, [8]: Dokter, [9]: Tgl Keluar, [10]: Status Keluar, [11]: Lama, [12]: Diagnosa, [13]: PJ
+                    let importedCount = 0;
+                    for (let i = 1; i < rows.length; i++) {
+                        const r = rows[i];
+                        if (!r || r.length < 2 || !r[1]) continue; // Lewati baris kosong
+
+                        const nama = formatTitleCase(r[1] || '');
+                        const rm = r[2] || '-';
+                        const tglLahir = r[3] || '-';
+                        const usia = r[4] || '-';
+                        const tglMasuk = r[5] || '-';
+                        const statusBayar = r[6] || 'Umum';
+                        const statusPasien = r[7] || 'Pasien baru IGD';
+                        const dokter = r[8] || '-';
+                        const tglKeluar = r[9] || '-';
+                        const statusKeluar = r[10] || 'Masih di rawat';
+                        const lama = r[11] || '0 Hari';
+                        const diagnosa = r[12] || '-';
+                        const pj = r[13] || '-';
+
+                        let badgeStatusKeluar = 'badge-info';
+                        if (statusKeluar.includes('Pulang Izin Dokter')) badgeStatusKeluar = 'badge-success';
+                        else if (statusKeluar.includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
+                        else if (statusKeluar.includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
+
+                        const newRow = document.createElement('tr');
+                        newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
+                        newRow.setAttribute('data-dokter', dokter);
+                        newRow.setAttribute('data-statuspasien', statusPasien);
+
+                        newRow.innerHTML = `
+                            <td></td>
+                            <td><strong>${nama}</strong></td>
+                            <td class="nowrap">${rm}</td>
+                            <td class="nowrap">${tglLahir}</td>
+                            <td class="nowrap">${usia}</td>
+                            <td class="nowrap">${tglMasuk}</td>
+                            <td>${statusBayar}</td>
+                            <td><span class="badge badge-info">${singkatStatusPasien(statusPasien)}</span></td>
+                            <td>${singkatDokter(dokter)}</td>
+                            <td class="nowrap">${tglKeluar}</td>
+                            <td><span class="badge ${badgeStatusKeluar}">${statusKeluar}</span></td>
+                            <td class="nowrap">${lama}</td>
+                            <td>${diagnosa}</td>
+                            <td>${pj}</td>
+                        `;
+                        tbody.appendChild(newRow);
+                        importedCount++;
+                    }
+
+                    alert(`Berhasil mengimpor ${importedCount} data pasien dari file Excel!`);
+                    updateDataBulan();
+                } catch (err) {
+                    console.error(err);
+                    alert('Gagal membaca file Excel. Pastikan format file sesuai.');
+                }
+                // Reset input file agar bisa pilih file yang sama lagi jika perlu
+                event.target.value = '';
+            };
+            reader.readAsArrayBuffer(file);
         }
 
         // FUNGSI EXPORT KE EXCEL (.XLS)
@@ -1027,11 +1107,13 @@
 
         // Singkat Teks Dokter untuk Tampilan Tabel
         function singkatDokter(namaLengkap) {
+            if (!namaLengkap) return '-';
             return namaLengkap.replace('Septyuni Permadi', 'Septyuni').replace('Kusumasari', 'K').replace('Moh Ishaq', 'M Ishaq').replace('Rengganis', 'R').replace('Risyad Pradana', 'Risyad');
         }
 
         // Singkat Status Pasien untuk Tampilan Tabel
         function singkatStatusPasien(status) {
+            if (!status) return '-';
             return status.replace('Pasien baru IGD', 'Baru IGD').replace('Pasien Lama IGD', 'Lama IGD').replace('Pasien Baru Poliklinik', 'Baru Poli').replace('Pasien Lama Poliklinik', 'Lama Poli');
         }
 
@@ -1350,28 +1432,24 @@
             let totalPasienKeluar = 0;
             let nomorUrut = 1;
 
-            // Batas awal dan akhir bulan yang dipilih di filter
             const awalBulanFilter = new Date(tahunVal, bulanVal - 1, 1);
-            const akhirBulanFilter = new Date(tahunVal, bulanVal, 0); // Tanggal terakhir di bulan tersebut
+            const akhirBulanFilter = new Date(tahunVal, bulanVal, 0);
 
             rows.forEach(row => {
                 const tglMasukTxt = row.cells[5].textContent.trim();
                 const tglKeluarTxt = row.cells[9].textContent.trim();
                 
-                // Ubah Tgl Masuk ke Objek Date
+                if (!tglMasukTxt || tglMasukTxt === '-') return;
+
                 const pMasuk = tglMasukTxt.split('/');
                 const tglMasukDate = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
 
-                // Ubah Tgl Keluar ke Objek Date (jika ada)
                 let tglKeluarDate = null;
-                if (tglKeluarTxt !== '-') {
+                if (tglKeluarTxt && tglKeluarTxt !== '-') {
                     const pKeluar = tglKeluarTxt.split('/');
                     tglKeluarDate = new Date(pKeluar[2], pKeluar[1] - 1, pKeluar[0]);
                 }
 
-                // KONDISI TAMPIL: Pasien aktif dirawat di bulan ini jika:
-                // 1. Masuk sebelum atau pas di akhir bulan filter, DAN
-                // 2. Belum keluar ATAU keluar setelah atau pas di awal bulan filter.
                 const masukSebelumAkhirBulan = tglMasukDate <= akhirBulanFilter;
                 const belumKeluarAtauKeluarSesudahAwal = (tglKeluarDate === null) || (tglKeluarDate >= awalBulanFilter);
 
@@ -1419,10 +1497,7 @@
             document.getElementById('valPindahPerina').textContent = pindahPerina + ' Pasien';
             document.getElementById('valPindahICU').textContent = pindahICU + ' Pasien';
 
-            // Hitung Jumlah Hari dalam Bulan Terpilih
             const jumlahHariBulan = akhirBulanFilter.getDate();
-
-            // Hitung Indikator BOR, ALOS, TOI
             const kapasitasPeriode = KAPASITAS_TT * jumlahHariBulan;
             const borHitung = ((totalHariPerawatan / kapasitasPeriode) * 100).toFixed(2);
             
