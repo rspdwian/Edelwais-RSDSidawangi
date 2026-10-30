@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Ruang Edelweis - RS Daerah Sidawangi</title>
+    <!-- Library SheetJS untuk Import/Export Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -167,6 +169,25 @@
 
         .btn-excel:hover {
             background-color: #059669;
+        }
+
+        .btn-import {
+            padding: 7px 14px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-import:hover {
+            background-color: #2563eb;
         }
 
         .btn-cancel {
@@ -872,6 +893,12 @@
                     <div class="card-header">
                         <h3>📋 List Pasien Periode (<span id="lblPeriodeTabel">Oktober 2026</span>)</h3>
                         <div class="header-actions">
+                            <!-- TOMBOL IMPORT EXCEL -->
+                            <label for="inputExcelFile" class="btn-import" style="cursor: pointer;">
+                                📥 Import Excel
+                            </label>
+                            <input type="file" id="inputExcelFile" accept=".xlsx, .xls, .xlsm" style="display: none;" onchange="importDariExcel(event)">
+
                             <!-- TOMBOL EXPORT KE EXCEL -->
                             <button type="button" class="btn-excel" onclick="exportKeExcel()">
                                 📊 Export Excel
@@ -904,40 +931,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tabelPasienBody">
-                                <!-- Data Contoh Pasien September -->
-                                <tr ondblclick="pilihPasienUntukEdit(this)" data-dokter="dr. Suci Septyuni Permadi, Sp.A" data-statuspasien="Pasien baru IGD">
-                                    <td>1</td>
-                                    <td><strong>Coba</strong></td>
-                                    <td class="nowrap">08888</td>
-                                    <td class="nowrap">02/02/2022</td>
-                                    <td class="nowrap">4 Thn 8 Bln</td>
-                                    <td class="nowrap">08/09/2026</td>
-                                    <td>Umum</td>
-                                    <td><span class="badge badge-info">Baru IGD</span></td>
-                                    <td>dr. Suci Septyuni, Sp.A</td>
-                                    <td class="nowrap">17/09/2026</td>
-                                    <td><span class="badge badge-success">Pulang Izin Dokter</span></td>
-                                    <td class="nowrap">10 Hari</td>
-                                    <td>Morbili</td>
-                                    <td>Nurwulan Ika Rahayu, A.Md.Kep</td>
-                                </tr>
-                                <!-- Data Contoh Pasien Masuk 30/09/2026 (Aktif Lintas Bulan ke Oktober) -->
-                                <tr ondblclick="pilihPasienUntukEdit(this)" data-dokter="dr. Suci Septyuni Permadi, Sp.A" data-statuspasien="Pasien baru IGD">
-                                    <td>2</td>
-                                    <td><strong>Coba 1</strong></td>
-                                    <td class="nowrap">08888</td>
-                                    <td class="nowrap">02/02/2022</td>
-                                    <td class="nowrap">4 Thn 8 Bln</td>
-                                    <td class="nowrap">30/09/2026</td>
-                                    <td>Umum</td>
-                                    <td><span class="badge badge-info">Baru IGD</span></td>
-                                    <td>dr. Suci Septyuni, Sp.A</td>
-                                    <td class="nowrap">-</td>
-                                    <td><span class="badge badge-info">Masih di rawat</span></td>
-                                    <td class="nowrap">28 Hari</td>
-                                    <td>Hipertensi</td>
-                                    <td>Sri Widaningsih, A.Md.Kep</td>
-                                </tr>
+                                <!-- Data Pasien Dimuat dari LocalStorage -->
                             </tbody>
                         </table>
                     </div>
@@ -954,14 +948,257 @@
         const KAPASITAS_TT = 32;
 
         window.onload = function() {
+            // Cek Sesi Login di LocalStorage
+            const isLogged = localStorage.getItem('isLoggedIn');
+            const user = localStorage.getItem('loggedInUser');
+
+            if (isLogged === 'true' && user) {
+                document.getElementById('loggedInUser').textContent = user;
+                document.getElementById('authApp').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+            } else {
+                document.getElementById('authApp').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+            }
+
+            // Muat Data Pasien dari LocalStorage
+            muatDataPasienDariStorage();
             updateDataBulan();
         };
 
-        // Fungsi mengubah teks menjadi Huruf Kapital di Awal Kata (Title Case)
+        // --- MANAJEMEN PENYIMPANAN LOCALSTORAGE ---
+        function simpanDataPasienKeStorage() {
+            const rows = document.querySelectorAll('#tabelPasienBody tr');
+            const dataPasien = [];
+
+            rows.forEach(row => {
+                dataPasien.push({
+                    nama: row.cells[1].textContent.trim(),
+                    rm: row.cells[2].textContent.trim(),
+                    tglLahir: row.cells[3].textContent.trim(),
+                    usia: row.cells[4].textContent.trim(),
+                    tglMasuk: row.cells[5].textContent.trim(),
+                    statusBayar: row.cells[6].textContent.trim(),
+                    statusPasien: row.getAttribute('data-statuspasien') || row.cells[7].textContent.trim(),
+                    dokter: row.getAttribute('data-dokter') || row.cells[8].textContent.trim(),
+                    tglKeluar: row.cells[9].textContent.trim(),
+                    statusKeluar: row.cells[10].textContent.trim(),
+                    lamaRawat: row.cells[11].textContent.trim(),
+                    diagnosa: row.cells[12].textContent.trim(),
+                    penanggungJawab: row.cells[13].textContent.trim()
+                });
+            });
+
+            localStorage.setItem('dataPasienEdelweis', JSON.stringify(dataPasien));
+        }
+
+        function muatDataPasienDariStorage() {
+            const dataStored = localStorage.getItem('dataPasienEdelweis');
+            const tbody = document.getElementById('tabelPasienBody');
+            tbody.innerHTML = '';
+
+            let listPasien = [];
+            if (dataStored) {
+                listPasien = JSON.parse(dataStored);
+            } else {
+                // Data Bawaan Awal jika storage masih kosong
+                listPasien = [
+                    {
+                        nama: 'Coba',
+                        rm: '08888',
+                        tglLahir: '02/02/2022',
+                        usia: '4 Thn 8 Bln',
+                        tglMasuk: '08/09/2026',
+                        statusBayar: 'Umum',
+                        statusPasien: 'Pasien baru IGD',
+                        dokter: 'dr. Suci Septyuni Permadi, Sp.A',
+                        tglKeluar: '17/09/2026',
+                        statusKeluar: 'Pulang Izin Dokter',
+                        lamaRawat: '10 Hari',
+                        diagnosa: 'Morbili',
+                        penanggungJawab: 'Nurwulan Ika Rahayu, A.Md.Kep'
+                    },
+                    {
+                        nama: 'Coba 1',
+                        rm: '08888',
+                        tglLahir: '02/02/2022',
+                        usia: '4 Thn 8 Bln',
+                        tglMasuk: '30/09/2026',
+                        statusBayar: 'Umum',
+                        statusPasien: 'Pasien baru IGD',
+                        dokter: 'dr. Suci Septyuni Permadi, Sp.A',
+                        tglKeluar: '-',
+                        statusKeluar: 'Masih di rawat',
+                        lamaRawat: '28 Hari',
+                        diagnosa: 'Hipertensi',
+                        penanggungJawab: 'Sri Widaningsih, A.Md.Kep'
+                    }
+                ];
+            }
+
+            listPasien.forEach(p => {
+                let badgeStatusKeluar = 'badge-info';
+                if (String(p.statusKeluar).includes('Pulang Izin Dokter')) badgeStatusKeluar = 'badge-success';
+                else if (String(p.statusKeluar).includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
+                else if (String(p.statusKeluar).includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
+
+                const newRow = document.createElement('tr');
+                newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
+                newRow.setAttribute('data-dokter', p.dokter);
+                newRow.setAttribute('data-statuspasien', p.statusPasien);
+
+                newRow.innerHTML = `
+                    <td></td>
+                    <td><strong>${p.nama}</strong></td>
+                    <td class="nowrap">${p.rm}</td>
+                    <td class="nowrap">${p.tglLahir}</td>
+                    <td class="nowrap">${p.usia}</td>
+                    <td class="nowrap">${p.tglMasuk}</td>
+                    <td>${p.statusBayar}</td>
+                    <td><span class="badge badge-info">${singkatStatusPasien(p.statusPasien)}</span></td>
+                    <td>${singkatDokter(p.dokter)}</td>
+                    <td class="nowrap">${p.tglKeluar}</td>
+                    <td><span class="badge ${badgeStatusKeluar}">${p.statusKeluar}</span></td>
+                    <td class="nowrap">${p.lamaRawat.includes('Hari') ? p.lamaRawat : p.lamaRawat + ' Hari'}</td>
+                    <td>${p.diagnosa}</td>
+                    <td>${p.penanggungJawab}</td>
+                `;
+                tbody.appendChild(newRow);
+            });
+        }
+
+        // --- AUTH & LOGIN LOGIC ---
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+
+            // Simpan status login ke LocalStorage
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('loggedInUser', username);
+
+            document.getElementById('loggedInUser').textContent = username;
+            document.getElementById('authApp').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            updateDataBulan();
+        }
+
+        function handleLogout() {
+            // Hapus status login
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('loggedInUser');
+
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('authApp').style.display = 'flex';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('regUsername').value;
+            alert('Pendaftaran Berhasil untuk username: ' + username + '. Silakan masuk!');
+            switchAuthTab('login');
+        }
+
         function formatTitleCase(str) {
-            return str.toLowerCase().split(' ').map(word => {
+            if (!str) return '';
+            return String(str).toLowerCase().split(' ').map(word => {
                 return word.charAt(0).toUpperCase() + word.slice(1);
             }).join(' ');
+        }
+
+        function formatTanggalExcel(val) {
+            if (!val) return '-';
+            if (typeof val === 'number') {
+                const dateObj = XLSX.SSF.parse_date_code(val);
+                if (dateObj) {
+                    const d = String(dateObj.d).padStart(2, '0');
+                    const m = String(dateObj.m).padStart(2, '0');
+                    const y = dateObj.y;
+                    return `${d}/${m}/${y}`;
+                }
+            }
+            return String(val).trim();
+        }
+
+        // FUNGSI IMPORT DATA EXCEL
+        function importDariExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    const tbody = document.getElementById('tabelPasienBody');
+                    tbody.innerHTML = ''; 
+
+                    let importedCount = 0;
+                    for (let i = 1; i < rows.length; i++) {
+                        const r = rows[i];
+                        if (!r || r.length < 2 || !r[1]) continue; 
+
+                        const nama = formatTitleCase(r[1] || '');
+                        const rm = r[2] || '-';
+                        const tglLahir = formatTanggalExcel(r[3]);
+                        const usia = r[4] || '-';
+                        const tglMasuk = formatTanggalExcel(r[5]);
+                        const statusBayar = r[6] || 'Umum';
+                        const statusPasien = r[7] || 'Pasien baru IGD';
+                        const dokter = r[8] || '-';
+                        const tglKeluar = formatTanggalExcel(r[9]);
+                        const statusKeluar = r[10] || 'Masih di rawat';
+                        let lama = r[11] || '0';
+                        if (!String(lama).includes('Hari')) {
+                            lama = lama + ' Hari';
+                        }
+                        const diagnosa = r[12] || '-';
+                        const pj = r[13] || '-';
+
+                        let badgeStatusKeluar = 'badge-info';
+                        if (String(statusKeluar).includes('Pulang Izin Dokter')) badgeStatusKeluar = 'badge-success';
+                        else if (String(statusKeluar).includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
+                        else if (String(statusKeluar).includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
+
+                        const newRow = document.createElement('tr');
+                        newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
+                        newRow.setAttribute('data-dokter', dokter);
+                        newRow.setAttribute('data-statuspasien', statusPasien);
+
+                        newRow.innerHTML = `
+                            <td></td>
+                            <td><strong>${nama}</strong></td>
+                            <td class="nowrap">${rm}</td>
+                            <td class="nowrap">${tglLahir}</td>
+                            <td class="nowrap">${usia}</td>
+                            <td class="nowrap">${tglMasuk}</td>
+                            <td>${statusBayar}</td>
+                            <td><span class="badge badge-info">${singkatStatusPasien(statusPasien)}</span></td>
+                            <td>${singkatDokter(dokter)}</td>
+                            <td class="nowrap">${tglKeluar}</td>
+                            <td><span class="badge ${badgeStatusKeluar}">${statusKeluar}</span></td>
+                            <td class="nowrap">${lama}</td>
+                            <td>${diagnosa}</td>
+                            <td>${pj}</td>
+                        `;
+                        tbody.appendChild(newRow);
+                        importedCount++;
+                    }
+
+                    simpanDataPasienKeStorage();
+                    alert(`Berhasil mengimpor ${importedCount} data pasien dari file Excel!`);
+                    updateDataBulan();
+                } catch (err) {
+                    console.error(err);
+                    alert('Gagal membaca file Excel.');
+                }
+                event.target.value = '';
+            };
+            reader.readAsArrayBuffer(file);
         }
 
         // FUNGSI EXPORT KE EXCEL (.XLS)
@@ -991,7 +1228,6 @@
             URL.revokeObjectURL(url);
         }
 
-        // Format angka ketik manual menjadi dd/mm/yyyy
         function formatTglKetik(input) {
             let v = input.value.replace(/\D/g, '');
             if (v.length > 8) v = v.substring(0, 8);
@@ -1005,7 +1241,6 @@
             }
         }
 
-        // Konversi YYYY-MM-DD dari kalender ke dd/mm/yyyy
         function konversiKeDDMMYYYY(tglYMD) {
             if (!tglYMD) return '-';
             const parts = tglYMD.split('-');
@@ -1015,7 +1250,6 @@
             return tglYMD;
         }
 
-        // Konversi dd/mm/yyyy kembali ke YYYY-MM-DD untuk input type="date"
         function konversiKeYYYYMMDD(tglDMY) {
             if (!tglDMY || tglDMY === '-') return '';
             const parts = tglDMY.split('/');
@@ -1025,17 +1259,16 @@
             return '';
         }
 
-        // Singkat Teks Dokter untuk Tampilan Tabel
         function singkatDokter(namaLengkap) {
-            return namaLengkap.replace('Septyuni Permadi', 'Septyuni').replace('Kusumasari', 'K').replace('Moh Ishaq', 'M Ishaq').replace('Rengganis', 'R').replace('Risyad Pradana', 'Risyad');
+            if (!namaLengkap) return '-';
+            return String(namaLengkap).replace('Septyuni Permadi', 'Septyuni').replace('Kusumasari', 'K').replace('Moh Ishaq', 'M Ishaq').replace('Rengganis', 'R').replace('Risyad Pradana', 'Risyad');
         }
 
-        // Singkat Status Pasien untuk Tampilan Tabel
         function singkatStatusPasien(status) {
-            return status.replace('Pasien baru IGD', 'Baru IGD').replace('Pasien Lama IGD', 'Lama IGD').replace('Pasien Baru Poliklinik', 'Baru Poli').replace('Pasien Lama Poliklinik', 'Lama Poli');
+            if (!status) return '-';
+            return String(status).replace('Pasien baru IGD', 'Baru IGD').replace('Pasien Lama IGD', 'Lama IGD').replace('Pasien Baru Poliklinik', 'Baru Poli').replace('Pasien Lama Poliklinik', 'Lama Poli');
         }
 
-        // FUNGSI PENCARIAN PASIEN
         function cariPasien() {
             const input = document.getElementById('inputCariPasien').value.toLowerCase();
             const rows = document.querySelectorAll('#tabelPasienBody tr');
@@ -1052,7 +1285,6 @@
             });
         }
 
-        // RUMUS LAMA RAWAT OTOMATIS (+ 1 HARI)
         function hitungLamaRawatOtomatis() {
             const tglMasukVal = document.getElementById('pTglMasuk').value;
             const tglKeluarVal = document.getElementById('pTglKeluar').value;
@@ -1081,7 +1313,6 @@
             }
         }
 
-        // Switch Tab Login/Register
         function switchAuthTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.form-section').forEach(form => form.classList.remove('active'));
@@ -1095,7 +1326,6 @@
             }
         }
 
-        // Navigasi Antar Halaman Aplikasi
         function switchPage(pageId, btn) {
             document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1104,7 +1334,6 @@
             btn.classList.add('active');
         }
 
-        // Toggle Password
         function togglePassword(inputId, btn) {
             const input = document.getElementById(inputId);
             if (input.type === 'password') {
@@ -1116,32 +1345,6 @@
             }
         }
 
-        // Login Action
-        function handleLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('loginUsername').value;
-            document.getElementById('loggedInUser').textContent = username;
-            document.getElementById('authApp').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            updateDataBulan();
-        }
-
-        // Register Action
-        function handleRegister(event) {
-            event.preventDefault();
-            const username = document.getElementById('regUsername').value;
-            alert('Pendaftaran Berhasil untuk username: ' + username + '. Silakan masuk!');
-            switchAuthTab('login');
-        }
-
-        // Logout Action
-        function handleLogout() {
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('authApp').style.display = 'flex';
-            document.getElementById('loginPassword').value = '';
-        }
-
-        // Hitung Usia Otomatis dari Tanggal Lahir
         function hitungUsiaOtomatis() {
             const tglVal = document.getElementById('pTglLahir').value;
             if (tglVal.length !== 10) return;
@@ -1176,7 +1379,6 @@
             }
         }
 
-        // Fungsi Klik 2x Edit Pasien
         function pilihPasienUntukEdit(tr) {
             barisSedangDiedit = tr;
 
@@ -1204,12 +1406,12 @@
             window.scrollTo({ top: 350, behavior: 'smooth' });
         }
 
-        // Fungsi Hapus Pasien
         function hapusPasienDipilih() {
             if (barisSedangDiedit) {
                 const namaPasien = barisSedangDiedit.cells[1].textContent.trim();
                 if (confirm(`Apakah Anda yakin ingin menghapus data pasien ${namaPasien}?`)) {
                     barisSedangDiedit.remove();
+                    simpanDataPasienKeStorage();
                     alert(`Data pasien ${namaPasien} berhasil dihapus!`);
                     batalEdit();
                     updateDataBulan();
@@ -1217,7 +1419,6 @@
             }
         }
 
-        // Batal Edit / Bersihkan Form Total
         function batalEdit() {
             barisSedangDiedit = null;
             document.getElementById('formPasien').reset();
@@ -1238,7 +1439,6 @@
             document.getElementById('btnBatal').style.display = 'none';
         }
 
-        // Tambah atau Perbarui Data Pasien
         function tambahPasien(event) {
             event.preventDefault();
 
@@ -1266,7 +1466,6 @@
             if (statusKeluar.includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
 
             if (barisSedangDiedit) {
-                // Perbarui
                 barisSedangDiedit.setAttribute('data-dokter', dokter);
                 barisSedangDiedit.setAttribute('data-statuspasien', statusPasien);
 
@@ -1286,7 +1485,6 @@
 
                 alert('Data pasien berhasil diperbarui!');
             } else {
-                // Tambah Baru
                 const tbody = document.getElementById('tabelPasienBody');
 
                 const newRow = document.createElement('tr');
@@ -1315,11 +1513,11 @@
                 alert('Data pasien berhasil ditambahkan!');
             }
 
+            simpanDataPasienKeStorage();
             batalEdit();
             updateDataBulan();
         }
 
-        // LOGIKA PENYARINGAN PASIEN LINTAS BULAN (CARRY OVER)
         function updateDataBulan() {
             const bulanSelect = document.getElementById('filterBulan');
             const tahunSelect = document.getElementById('filterTahun');
@@ -1350,28 +1548,27 @@
             let totalPasienKeluar = 0;
             let nomorUrut = 1;
 
-            // Batas awal dan akhir bulan yang dipilih di filter
             const awalBulanFilter = new Date(tahunVal, bulanVal - 1, 1);
-            const akhirBulanFilter = new Date(tahunVal, bulanVal, 0); // Tanggal terakhir di bulan tersebut
+            const akhirBulanFilter = new Date(tahunVal, bulanVal, 0);
 
             rows.forEach(row => {
                 const tglMasukTxt = row.cells[5].textContent.trim();
                 const tglKeluarTxt = row.cells[9].textContent.trim();
                 
-                // Ubah Tgl Masuk ke Objek Date
+                if (!tglMasukTxt || tglMasukTxt === '-') return;
+
                 const pMasuk = tglMasukTxt.split('/');
+                if (pMasuk.length < 3) return;
                 const tglMasukDate = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
 
-                // Ubah Tgl Keluar ke Objek Date (jika ada)
                 let tglKeluarDate = null;
-                if (tglKeluarTxt !== '-') {
+                if (tglKeluarTxt && tglKeluarTxt !== '-') {
                     const pKeluar = tglKeluarTxt.split('/');
-                    tglKeluarDate = new Date(pKeluar[2], pKeluar[1] - 1, pKeluar[0]);
+                    if (pKeluar.length === 3) {
+                        tglKeluarDate = new Date(pKeluar[2], pKeluar[1] - 1, pKeluar[0]);
+                    }
                 }
 
-                // KONDISI TAMPIL: Pasien aktif dirawat di bulan ini jika:
-                // 1. Masuk sebelum atau pas di akhir bulan filter, DAN
-                // 2. Belum keluar ATAU keluar setelah atau pas di awal bulan filter.
                 const masukSebelumAkhirBulan = tglMasukDate <= akhirBulanFilter;
                 const belumKeluarAtauKeluarSesudahAwal = (tglKeluarDate === null) || (tglKeluarDate >= awalBulanFilter);
 
@@ -1381,11 +1578,12 @@
                     total++;
 
                     const statusKeluarTxt = row.cells[10].textContent.trim();
-                    const lamaRawatVal = parseInt(row.cells[11].textContent) || 0;
+                    const rawLama = row.cells[11].textContent.trim().replace(/\D/g, '');
+                    const lamaRawatVal = parseInt(rawLama) || 0;
 
                     totalHariPerawatan += lamaRawatVal;
 
-                    if (statusKeluarTxt === 'Masih di rawat') {
+                    if (statusKeluarTxt === 'Masih di rawat' || statusKeluarTxt === '-') {
                         masihRawat++;
                     } else {
                         totalPasienKeluar++;
@@ -1405,7 +1603,6 @@
                 }
             });
 
-            // Update Kartu Rekapitulasi
             document.getElementById('valTotal').textContent = total + ' Pasien';
             document.getElementById('valMasihRawat').textContent = masihRawat + ' Pasien';
             document.getElementById('valIzinDokter').textContent = izinDokter + ' Pasien';
@@ -1419,10 +1616,7 @@
             document.getElementById('valPindahPerina').textContent = pindahPerina + ' Pasien';
             document.getElementById('valPindahICU').textContent = pindahICU + ' Pasien';
 
-            // Hitung Jumlah Hari dalam Bulan Terpilih
             const jumlahHariBulan = akhirBulanFilter.getDate();
-
-            // Hitung Indikator BOR, ALOS, TOI
             const kapasitasPeriode = KAPASITAS_TT * jumlahHariBulan;
             const borHitung = ((totalHariPerawatan / kapasitasPeriode) * 100).toFixed(2);
             
