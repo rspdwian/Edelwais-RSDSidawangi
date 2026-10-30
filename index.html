@@ -1,1758 +1,1756 @@
-    body {
-        background-color: #f1f5f9;
-        color: #334155;
-        min-height: 100vh;
-    }
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Ruang Edelweis - RS Daerah Sidawangi</title>
+    <!-- Library SheetJS untuk Export Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    /* --- HALAMAN AUTH (LOGIN & REGISTER) --- */
-    .auth-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        padding: 20px;
-    }
-
-    .auth-container {
-        background-color: #ffffff;
-        width: 100%;
-        max-width: 400px;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    .auth-header {
-        text-align: center;
-        margin-bottom: 25px;
-    }
-
-    .auth-header h2 {
-        color: #0d9488;
-        font-size: 22px;
-        margin-bottom: 5px;
-    }
-
-    .auth-header p {
-        color: #64748b;
-        font-size: 14px;
-    }
-
-    .tabs {
-        display: flex;
-        margin-bottom: 20px;
-        border-bottom: 2px solid #e2e8f0;
-    }
-
-    .tab-btn {
-        flex: 1;
-        padding: 10px;
-        background: none;
-        border: none;
-        font-size: 15px;
-        font-weight: 600;
-        color: #64748b;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .tab-btn.active {
-        color: #0d9488;
-        border-bottom: 3px solid #0d9488;
-    }
-
-    .form-group {
-        margin-bottom: 18px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #475569;
-    }
-
-    .password-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
-
-    .form-group input, .form-group select {
-        width: 100%;
-        padding: 9px 12px;
-        border: 1px solid #cbd5e1;
-        border-radius: 6px;
-        font-size: 13px;
-        outline: none;
-        background-color: #fff;
-    }
-
-    .form-group input[readonly] {
-        background-color: #f1f5f9;
-        color: #0d9488;
-        font-weight: 700;
-    }
-
-    .password-wrapper input {
-        padding-right: 40px;
-    }
-
-    .form-group input:focus, .form-group select:focus {
-        border-color: #0d9488;
-    }
-
-    .toggle-password {
-        position: absolute;
-        right: 12px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-        color: #64748b;
-    }
-
-    .btn-container {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-        flex-wrap: wrap;
-    }
-
-    .btn-submit {
-        padding: 12px 24px;
-        background-color: #0d9488;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s;
-    }
-
-    .btn-submit:hover {
-        background-color: #0f766e;
-    }
-
-    .btn-excel {
-        padding: 7px 14px;
-        background-color: #10b981;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .btn-excel:hover {
-        background-color: #059669;
-    }
-
-    .btn-clean {
-        padding: 7px 14px;
-        background-color: #ef4444;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .btn-clean:hover {
-        background-color: #dc2626;
-    }
-
-    .btn-print {
-        padding: 8px 16px;
-        background-color: #2563eb;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .btn-print:hover {
-        background-color: #1d4ed8;
-    }
-
-    .btn-cancel {
-        padding: 12px 24px;
-        background-color: #64748b;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s;
-        display: none;
-    }
-
-    .btn-cancel:hover {
-        background-color: #475569;
-    }
-
-    .btn-delete {
-        padding: 12px 24px;
-        background-color: #ef4444;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s;
-        display: none;
-    }
-
-    .btn-delete:hover {
-        background-color: #dc2626;
-    }
-
-    .form-section {
-        display: none;
-    }
-
-    .form-section.active {
-        display: block;
-    }
-
-    /* --- HALAMAN APLIKASI UTAMA --- */
-    #mainApp {
-        display: none;
-    }
-
-    .navbar {
-        background-color: #0d9488;
-        color: white;
-        padding: 15px 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 10px;
-    }
-
-    .nav-btn {
-        background-color: rgba(255, 255, 255, 0.2);
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .nav-btn.active, .nav-btn:hover {
-        background-color: white;
-        color: #0d9488;
-    }
-
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .btn-logout {
-        background-color: #ef4444;
-        color: white;
-        border: none;
-        padding: 8px 14px;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    .btn-logout:hover {
-        background-color: #dc2626;
-    }
-
-    .dashboard-container {
-        max-width: 100%;
-        margin: 20px auto;
-        padding: 0 10px;
-    }
-
-    .app-page {
-        display: none;
-    }
-
-    .app-page.active {
-        display: block;
-    }
-
-    /* FILTER PERIODE BULAN & TAHUN */
-    .filter-card {
-        background-color: white;
-        padding: 18px 24px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        margin-bottom: 25px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .filter-title {
-        font-weight: 700;
-        color: #0f172a;
-        font-size: 15px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .filter-controls {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
-    .filter-select {
-        padding: 8px 14px;
-        border: 1px solid #cbd5e1;
-        border-radius: 6px;
-        font-size: 14px;
-        color: #334155;
-        outline: none;
-        background-color: #f8fafc;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    .filter-select:focus {
-        border-color: #0d9488;
-    }
-
-    .section-title {
-        font-size: 16px;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    /* Stats Grid - Indikator Efisiensi */
-    .stats-grid-primary {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 20px;
-        margin-bottom: 35px;
-    }
-
-    /* Grid Analytics */
-    .analytics-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 20px;
-        margin-bottom: 35px;
-    }
-
-    /* Stats Grid - Rekapitulasi Baris Umum & Pindahan */
-    .rekap-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 20px;
-        margin-bottom: 35px;
-    }
-
-    .stat-card {
-        background-color: white;
-        padding: 22px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        border-left: 6px solid #0d9488;
-        transition: transform 0.2s;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-2px);
-    }
-
-    .stat-card.blue { border-left-color: #3b82f6; }
-    .stat-card.green { border-left-color: #10b981; }
-    .stat-card.amber { border-left-color: #f59e0b; }
-    .stat-card.purple { border-left-color: #8b5cf6; }
-    .stat-card.red { border-left-color: #ef4444; }
-    .stat-card.indigo { border-left-color: #6366f1; }
-    .stat-card.pink { border-left-color: #ec4899; }
-    .stat-card.teal { border-left-color: #14b8a6; }
-    .stat-card.orange { border-left-color: #f97316; }
-
-    .stat-card h4 {
-        color: #64748b;
-        font-size: 13px;
-        letter-spacing: 0.5px;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-    }
-
-    .stat-card p {
-        font-size: 28px;
-        font-weight: bold;
-        color: #0f172a;
-        margin-bottom: 4px;
-    }
-
-    .stat-card span {
-        font-size: 12px;
-        color: #94a3b8;
-    }
-
-    .analytics-list {
-        list-style: none;
-        margin-top: 10px;
-    }
-
-    .analytics-list li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px dashed #e2e8f0;
-        font-size: 13px;
-    }
-
-    .analytics-list li:last-child {
-        border-bottom: none;
-    }
-
-    .analytics-label {
-        font-weight: 600;
-        color: #334155;
-    }
-
-    .analytics-value {
-        font-weight: 700;
-        background-color: #f1f5f9;
-        padding: 2px 8px;
-        border-radius: 4px;
-        color: #0f766e;
-    }
-
-    /* Card Section untuk Form & Tabel Pasien */
-    .card {
-        background-color: white;
-        padding: 15px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        margin-bottom: 25px;
-    }
-
-    .card-header {
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #e2e8f0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .card-header h3 {
-        color: #0f172a;
-        font-size: 16px;
-    }
-
-    .header-actions {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
-    /* Kotak Pencarian */
-    .search-box {
-        position: relative;
-        width: 240px;
-    }
-
-    .search-box input {
-        width: 100%;
-        padding: 7px 12px 7px 32px;
-        border: 1px solid #cbd5e1;
-        border-radius: 6px;
-        font-size: 13px;
-        outline: none;
-        background-color: #f8fafc;
-    }
-
-    .search-box input:focus {
-        border-color: #0d9488;
-        background-color: #fff;
-    }
-
-    .search-icon {
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 14px;
-        color: #64748b;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 12px;
-        margin-bottom: 15px;
-    }
-
-    /* --- PENGATURAN TABEL --- */
-    .table-responsive {
-        width: 100%;
-        overflow-x: hidden;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: left;
-        font-size: 11px;
-        table-layout: auto;
-    }
-
-    table th, table td {
-        padding: 6px 4px;
-        border-bottom: 1px solid #e2e8f0;
-        vertical-align: middle;
-    }
-
-    table th {
-        background-color: #f8fafc;
-        color: #475569;
-        font-weight: 700;
-        font-size: 10.5px;
-    }
-
-    .nowrap {
-        white-space: nowrap;
-    }
-
-    #tabelPasienBody tr {
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-
-    #tabelPasienBody tr:hover {
-        background-color: #f0fdfa;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 2px 5px;
-        border-radius: 4px;
-        font-size: 9.5px;
-        font-weight: 600;
-        text-align: center;
-    }
-
-    .badge-info { background-color: #dbeafe; color: #1e40af; }
-    .badge-success { background-color: #d1fae5; color: #059669; }
-    .badge-warning { background-color: #fef3c7; color: #d97706; }
-    .badge-danger { background-color: #fee2e2; color: #dc2626; }
-
-    /* --- FORMAT KHUSUS CETAK / PRINT --- */
-    @media print {
         body {
-            background-color: white;
-            color: black;
+            background-color: #f1f5f9;
+            color: #334155;
+            min-height: 100vh;
         }
-        .navbar, .filter-card, .btn-container, .header-actions, .nav-links, .user-info, .btn-excel, .btn-clean, .search-box, .print-action-bar {
-            display: none !important;
+
+        /* --- HALAMAN AUTH (LOGIN & REGISTER) --- */
+        .auth-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
-        #mainApp {
-            display: block !important;
+
+        .auth-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
-        .app-page {
-            display: block !important;
-        }
-        .card, .stat-card {
-            box-shadow: none !important;
-            border: 1px solid #cbd5e1 !important;
-            break-inside: avoid;
-        }
-        .kop-surat-print {
-            display: block !important;
+
+        .auth-header {
             text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .auth-header h2 {
+            color: #0d9488;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .auth-header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
             margin-bottom: 20px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
         }
-        .tanda-tangan-print {
-            display: flex !important;
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #0d9488;
+            border-bottom: 3px solid #0d9488;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+            background-color: #fff;
+        }
+
+        .form-group input[readonly] {
+            background-color: #f1f5f9;
+            color: #0d9488;
+            font-weight: 700;
+        }
+
+        .password-wrapper input {
+            padding-right: 40px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #0d9488;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #64748b;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-submit {
+            padding: 12px 24px;
+            background-color: #0d9488;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #0f766e;
+        }
+
+        .btn-excel {
+            padding: 7px 14px;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-excel:hover {
+            background-color: #059669;
+        }
+
+        .btn-cancel {
+            padding: 12px 24px;
+            background-color: #64748b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: none;
+        }
+
+        .btn-cancel:hover {
+            background-color: #475569;
+        }
+
+        .btn-delete {
+            padding: 12px 24px;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: none;
+        }
+
+        .btn-delete:hover {
+            background-color: #dc2626;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        /* --- HALAMAN APLIKASI UTAMA --- */
+        #mainApp {
+            display: none;
+        }
+
+        .navbar {
+            background-color: #0d9488;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
             justify-content: space-between;
-            margin-top: 40px;
-            break-inside: avoid;
-        }
-    }
-
-    .kop-surat-print, .tanda-tangan-print {
-        display: none;
-    }
-</style>
-
-
-<!-- ================= HALAMAN LOGIN & REGISTER ================= -->
-<div id="authApp" class="auth-wrapper">
-    <div class="auth-container">
-        <div class="auth-header">
-            <h2>Ruang Edelweis</h2>
-            <p>RS Daerah Sidawangi</p>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchAuthTab('login')">Masuk</button>
-            <button class="tab-btn" onclick="switchAuthTab('register')">Daftar</button>
-        </div>
-
-        <!-- Form Login -->
-        <form id="loginForm" class="form-section active" onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label for="loginUsername">Username</label>
-                <input type="text" id="loginUsername" placeholder="Masukkan username" required>
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Kata Sandi</label>
-                <div class="password-wrapper">
-                    <input type="password" id="loginPassword" placeholder="Masukkan kata sandi" required>
-                    <button type="button" class="toggle-password" onclick="togglePassword('loginPassword', this)">👁️</button>
-                </div>
-            </div>
-            <button type="submit" class="btn-submit">Masuk ke Aplikasi</button>
-        </form>
-
-        <!-- Form Register -->
-        <form id="registerForm" class="form-section" onsubmit="handleRegister(event)">
-            <div class="form-group">
-                <label for="regUsername">Username Baru</label>
-                <input type="text" id="regUsername" placeholder="Buat username" required>
-            </div>
-            <div class="form-group">
-                <label for="regPassword">Kata Sandi Baru</label>
-                <div class="password-wrapper">
-                    <input type="password" id="regPassword" placeholder="Minimal 6 karakter" required>
-                    <button type="button" class="toggle-password" onclick="togglePassword('regPassword', this)">👁️</button>
-                </div>
-            </div>
-            <button type="submit" class="btn-submit">Daftar Sekarang</button>
-        </form>
-    </div>
-</div>
-
-
-<!-- ================= APLIKASI UTAMA ================= -->
-<div id="mainApp">
-    <!-- Navbar Header -->
-    <div class="navbar">
-        <div>
-            <h1>Ruang Edelweis</h1>
-            <p>RS Daerah Sidawangi</p>
-        </div>
-        <div class="nav-links">
-            <button class="nav-btn active" onclick="switchPage('pageDashboard', this)">🏠 Halaman Utama</button>
-            <button class="nav-btn" onclick="switchPage('pageDataPasien', this)">👥 Data Pasien</button>
-        </div>
-        <div class="user-info">
-            <span>Halo, <strong id="loggedInUser">Petugas</strong></span>
-            <button class="btn-logout" onclick="handleLogout()">Keluar</button>
-        </div>
-    </div>
-
-    <div class="dashboard-container">
-        
-        <!-- CARD FILTER PERIODE BULAN DAN TAHUN -->
-        <div class="filter-card">
-            <div class="filter-title">
-                📅 Pilih Periode Laporan & Tabel:
-            </div>
-            <div class="filter-controls">
-                <select id="filterBulan" class="filter-select" onchange="updateDataBulan()">
-                    <option value="1">Januari</option>
-                    <option value="2">Februari</option>
-                    <option value="3">Maret</option>
-                    <option value="4">April</option>
-                    <option value="5">Mei</option>
-                    <option value="6">Juni</option>
-                    <option value="7">Juli</option>
-                    <option value="8">Agustus</option>
-                    <option value="9">September</option>
-                    <option value="10" selected>Oktober</option>
-                    <option value="11">November</option>
-                    <option value="12">Desember</option>
-                </select>
-
-                <select id="filterTahun" class="filter-select" onchange="updateDataBulan()">
-                    <option value="2026" selected>2026</option>
-                    <option value="2025">2025</option>
-                    <option value="2024">2024</option>
-                </select>
-
-                <button type="button" class="btn-clean" onclick="bersihkanDataLalu()">
-                    🧹 Bersihkan Data > 10 Tahun
-                </button>
-            </div>
-        </div>
-
-        <!-- ================= HALAMAN 1: UTAMA (DASHBOARD LAPORAN) ================= -->
-        <div id="pageDashboard" class="app-page active">
-            
-            <!-- TOMBOL CETAK LAPORAN -->
-            <div class="print-action-bar" style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
-                <button type="button" class="btn-print" onclick="cetakLaporanRuangan()">
-                    🖨️ Cetak Laporan Resmi
-                </button>
-            </div>
-
-            <!-- KOP SURAT KHUSUS CETAK -->
-            <div class="kop-surat-print">
-                <h2 style="font-size: 16px; font-weight: bold; text-transform: uppercase;">PEMERINTAH DAERAH PROVINSI JAWA BARAT</h2>
-                <h1 style="font-size: 18px; font-weight: bold; text-transform: uppercase;">RUMAH SAKIT DAERAH SIDAWANGI</h1>
-                <p style="font-size: 11px;">Jl. Raya Sidawangi, Sumber, Cirebon 45611</p>
-                <h3 style="font-size: 14px; font-weight: bold; margin-top: 10px; text-decoration: underline;">LAPORAN REKAPITULASI & INDIKATOR RAWAT INAP RUANG EDELWEIS</h3>
-            </div>
-            
-            <!-- SECTION 1: INDIKATOR EFISIENSI RUMAH SAKIT -->
-            <div class="section-title">📊 Indikator Efisiensi Rawat Inap (<span id="lblPeriode1">Oktober 2026</span>)</div>
-            <div class="stats-grid-primary">
-                <div class="stat-card blue">
-                    <h4>BOR (Bed Occupancy Rate)</h4>
-                    <p id="valBOR">0 %</p>
-                    <span>Kapasitas: 32 Tempat Tidur (Ideal: 60-85%)</span>
-                </div>
-                <div class="stat-card purple">
-                    <h4>ALOS (Avg Length of Stay)</h4>
-                    <p id="valALOS">0 Hari</p>
-                    <span>Standar Ideal: 6 - 9 Hari</span>
-                </div>
-                <div class="stat-card amber">
-                    <h4>TOI (Turn Over Interval)</h4>
-                    <p id="valTOI">0 Hari</p>
-                    <span>Standar Ideal: 1 - 3 Hari</span>
-                </div>
-            </div>
-
-            <!-- SECTION ANALYTICS: STATUS BAYAR & TOP 5 DIAGNOSA -->
-            <div class="section-title">📈 Analisis Cara Bayar & Diagnosa (<span id="lblPeriodeAnalytics">Oktober 2026</span>)</div>
-            <div class="analytics-grid">
-                <div class="stat-card teal">
-                    <h4>Rekapitulasi Status Bayar</h4>
-                    <ul class="analytics-list">
-                        <li><span class="analytics-label">💳 BPJS</span> <span id="valBayarBPJS" class="analytics-value">0 Pasien</span></li>
-                        <li><span class="analytics-label">💵 Umum</span> <span id="valBayarUmum" class="analytics-value">0 Pasien</span></li>
-                        <li><span class="analytics-label">🏥 JPKM</span> <span id="valBayarJPKM" class="analytics-value">0 Pasien</span></li>
-                        <li><span class="analytics-label">🛡️ Asuransi Lain</span> <span id="valBayarLain" class="analytics-value">0 Pasien</span></li>
-                    </ul>
-                </div>
-                <div class="stat-card indigo">
-                    <h4>5 Diagnosa Terbanyak (Top 5)</h4>
-                    <ul id="listTopDiagnosa" class="analytics-list">
-                        <li><span class="analytics-label">-</span> <span class="analytics-value">0</span></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- SECTION 2: REKAPITULASI PASIEN BULANAN -->
-            <div class="section-title">👥 Rekapitulasi Data Pasien (<span id="lblPeriode2">Oktober 2026</span>)</div>
-            
-            <div class="rekap-grid">
-                <div class="stat-card">
-                    <h4>Total Jumlah Pasien Dirawat</h4>
-                    <p id="valTotal">0 Pasien</p>
-                    <span>Laporan periode ini</span>
-                </div>
-                <div class="stat-card blue">
-                    <h4>Pasien Masih Dirawat</h4>
-                    <p id="valMasihRawat">0 Pasien</p>
-                    <span>Aktif di ruangan</span>
-                </div>
-                <div class="stat-card green">
-                    <h4>Pasien Pulang Izin Dokter</h4>
-                    <p id="valIzinDokter">0 Pasien</p>
-                    <span>Sembuh / Membaik</span>
-                </div>
-                <div class="stat-card amber">
-                    <h4>Pasien Pulang Paksa (APS)</h4>
-                    <p id="valPulangPaksa">0 Pasien</p>
-                    <span>Atas Permintaan Sendiri</span>
-                </div>
-                <div class="stat-card red">
-                    <h4>Pasien Meninggal Dunia</h4>
-                    <p id="valMeninggal">0 Pasien</p>
-                    <span>Rekap bulanan</span>
-                </div>
-                <div class="stat-card indigo">
-                    <h4>Pindah ke Ruang Anggrek</h4>
-                    <p id="valPindahAnggrek">0 Pasien</p>
-                    <span>Mutasi ruangan</span>
-                </div>
-                <div class="stat-card pink">
-                    <h4>Pindah ke Ruang Bougenville</h4>
-                    <p id="valPindahBougenville">0 Pasien</p>
-                    <span>Mutasi ruangan</span>
-                </div>
-                <div class="stat-card teal">
-                    <h4>Pindah ke Ruang Cempaka</h4>
-                    <p id="valPindahCempaka">0 Pasien</p>
-                    <span>Mutasi ruangan</span>
-                </div>
-                <div class="stat-card purple">
-                    <h4>Pindah ke Ruang Dahlia</h4>
-                    <p id="valPindahDahlia">0 Pasien</p>
-                    <span>Mutasi ruangan</span>
-                </div>
-                <div class="stat-card orange">
-                    <h4>Pindah ke Ruang Kebidanan</h4>
-                    <p id="valPindahKebidanan">0 Pasien</p>
-                    <span>Mutasi ruangan</span>
-                </div>
-                <div class="stat-card blue">
-                    <h4>Pindah ke Ruang Perina</h4>
-                    <p id="valPindahPerina">0 Pasien</p>
-                    <span>Mutasi ruangan</span>
-                </div>
-                <div class="stat-card red">
-                    <h4>Pindah ke Ruang ICU</h4>
-                    <p id="valPindahICU">0 Pasien</p>
-                    <span>Mutasi ruangan</span>
-                </div>
-            </div>
-
-            <!-- AREA TANDA TANGAN KHUSUS CETAK -->
-            <div class="tanda-tangan-print">
-                <div style="text-align: center;">
-                    <p>Mengetahui,</p>
-                    <p>Kepala Ruang Edelweis</p>
-                    <br><br><br>
-                    <p><b>( ......................................... )</b></p>
-                    <p>NIP. ...................................</p>
-                </div>
-                <div style="text-align: center;">
-                    <p>Sidawangi, <span id="tanggalCetakHariIni"></span></p>
-                    <p>Petugas Pelaporan Ruangan</p>
-                    <br><br><br>
-                    <p><b>(<span id="namaPetugasCetak">Petugas</span>)</b></p>
-                    <p>NIP. ...................................</p>
-                </div>
-            </div>
-
-        </div>
-
-
-        <!-- ================= HALAMAN 2: DATA PASIEN (INPUT & LIST) ================= -->
-        <div id="pageDataPasien" class="app-page">
-            
-            <!-- SECTION 3: FORM INPUT PASIEN LENGKAP -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 id="formTitle">+ Input Data Pasien Baru (Ruang Edelweis)</h3>
-                </div>
-                <form id="formPasien" onsubmit="tambahPasien(event)">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Nama Pasien</label>
-                            <input type="text" id="pNama" placeholder="Contoh: Tn. AHMAD" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Nomer RM</label>
-                            <input type="text" id="pRM" placeholder="Contoh: RM-10293" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Tanggal Lahir (dd/mm/yyyy)</label>
-                            <input type="text" id="pTglLahir" placeholder="dd/mm/yyyy" maxlength="10" oninput="formatTglKetik(this); hitungUsiaOtomatis();" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Usia (Otomatis)</label>
-                            <input type="text" id="pUsia" placeholder="Otomatis terhitung" readonly required>
-                        </div>
-                        <div class="form-group">
-                            <label>Tanggal Masuk</label>
-                            <input type="date" id="pTglMasuk" onchange="hitungLamaRawatOtomatis()" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Status Bayar</label>
-                            <select id="pStatusBayar" required>
-                                <option value="" disabled selected>-- Pilih Status Bayar --</option>
-                                <option value="Umum">Umum</option>
-                                <option value="BPJS">BPJS</option>
-                                <option value="JPKM">JPKM</option>
-                                <option value="Asuransi Lain">Asuransi Lain</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Status Pasien</label>
-                            <select id="pStatusPasien" required>
-                                <option value="" disabled selected>-- Pilih Status Pasien --</option>
-                                <option value="Pasien baru IGD">Pasien baru IGD</option>
-                                <option value="Pasien Lama IGD">Pasien Lama IGD</option>
-                                <option value="Pasien Baru Poliklinik">Pasien Baru Poliklinik</option>
-                                <option value="Pasien Lama Poliklinik">Pasien Lama Poliklinik</option>
-                                <option value="Pindahan dari Anggrek">Pindahan dari Anggrek</option>
-                                <option value="Pindahan dari Bougenville">Pindahan dari Bougenville</option>
-                                <option value="Pindahan dari Cempaka">Pindahan dari Cempaka</option>
-                                <option value="Pindahan dari Dahlia">Pindahan dari Dahlia</option>
-                                <option value="Pindahan dari Kebidanan">Pindahan dari Kebidanan</option>
-                                <option value="Pindahan dari Perina">Pindahan dari Perina</option>
-                                <option value="Pindahan dari ICU">Pindahan dari ICU</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Dokter DPJP</label>
-                            <select id="pDokter" required>
-                                <option value="" disabled selected>-- Pilih Dokter DPJP --</option>
-                                <option value="dr. Suci Septyuni Permadi, Sp.A">dr. Suci Septyuni Permadi, Sp.A</option>
-                                <option value="dr. Trias Kusumasari, Sp.A">dr. Trias Kusumasari, Sp.A</option>
-                                <option value="dr. Rhiza Moh Ishaq, Sp.BA">dr. Rhiza Moh Ishaq, Sp.BA</option>
-                                <option value="dr. Rintang Rengganis, Sp.B">dr. Rintang Rengganis, Sp.B</option>
-                                <option value="dr. Hj. Tresnawaty, Sp.B">dr. Hj. Tresnawaty, Sp.B</option>
-                                <option value="dr. Ibrahim Risyad Pradana, Sp.B">dr. Ibrahim Risyad Pradana, Sp.B</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Tanggal Keluar</label>
-                            <input type="date" id="pTglKeluar" onchange="hitungLamaRawatOtomatis()">
-                        </div>
-                        <div class="form-group">
-                            <label>Status Keluar</label>
-                            <select id="pStatusKeluar" required>
-                                <option value="" disabled selected>-- Pilih Status Keluar --</option>
-                                <option value="Masih di rawat">Masih di rawat</option>
-                                <option value="Pulang Izin Dokter">Pulang Izin Dokter</option>
-                                <option value="Pulang Paksa">Pulang Paksa</option>
-                                <option value="Pindah Ke Anggrek">Pindah Ke Anggrek</option>
-                                <option value="Pindah Ke Bougenville">Pindah Ke Bougenville</option>
-                                <option value="Pindah Ke Cempaka">Pindah Ke Cempaka</option>
-                                <option value="Pindah Ke Dahlia">Pindah Ke Dahlia</option>
-                                <option value="Pindah Ke Kebidanan">Pindah Ke Kebidanan</option>
-                                <option value="Pindah Ke Perina">Pindah Ke Perina</option>
-                                <option value="Pindah Ke ICU">Pindah Ke ICU</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Lama Rawat (Hari)</label>
-                            <input type="number" id="pLamaRawat" placeholder="Otomatis terhitung" readonly required>
-                        </div>
-                        <div class="form-group">
-                            <label>Diagnosa</label>
-                            <select id="pDiagnosa" required>
-                                <option value="" disabled selected>-- Pilih Diagnosa --</option>
-                                <option value="Hiperpirexia">Hiperpirexia</option>
-                                <option value="Kejang Demam">Kejang Demam</option>
-                                <option value="Morbili">Morbili</option>
-                                <option value="Vomitus">Vomitus</option>
-                                <option value="Hipertensi">Hipertensi</option>
-                                <option value="ISPA">ISPA</option>
-                                <option value="TB Paru">TB Paru</option>
-                                <option value="Effusi Pleura">Effusi Pleura</option>
-                                <option value="Haemaptoe">Haemaptoe</option>
-                                <option value="Bronchopneumonia">Bronchopneumonia</option>
-                                <option value="dypsnea">dypsnea</option>
-                                <option value="GEA">GEA</option>
-                                <option value="DCA DRS">DCA DRS</option>
-                                <option value="Dengue Fever">Dengue Fever</option>
-                                <option value="Epitaksis">Epitaksis</option>
-                                <option value="Unidentified Snake">Unidentified Snake</option>
-                                <option value="Kolik Abdoment">Kolik Abdoment</option>
-                                <option value="Abdominal Pain">Abdominal Pain</option>
-                                <option value="Asma">Asma</option>
-                                <option value="Prolong Fever">Prolong Fever</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Penanggung Jawab (Opsional)</label>
-                            <select id="pPenanggungJawab">
-                                <option value="" selected>-- Pilih Penanggung Jawab --</option>
-                                <option value="Sinem, S.Kep.Ners">Sinem, S.Kep.Ners</option>
-                                <option value="Ida Yuyun Yuningsih, S.Kep.Ners">Ida Yuyun Yuningsih, S.Kep.Ners</option>
-                                <option value="Ratnawati, S.Kep">Ratnawati, S.Kep</option>
-                                <option value="Tuti Herlina, S.Kep">Tuti Herlina, S.Kep</option>
-                                <option value="Turini, S.Kep.Ners">Turini, S.Kep.Ners</option>
-                                <option value="Nurwulan Ika Rahayu, A.Md.Kep">Nurwulan Ika Rahayu, A.Md.Kep</option>
-                                <option value="Wulan Sondari, A.Md.Kep">Wulan Sondari, A.Md.Kep</option>
-                                <option value="Ceceh Adam, A.Md.Kep">Ceceh Adam, A.Md.Kep</option>
-                                <option value="Sri Widaningsih, A.Md.Kep">Sri Widaningsih, A.Md.Kep</option>
-                                <option value="Saeful Munawar, S.Kep.Ners">Saeful Munawar, S.Kep.Ners</option>
-                                <option value="Dwian Sidik Nugraha, A.Md.Kep">Dwian Sidik Nugraha, A.Md.Kep</option>
-                                <option value="Iis Aisyah, A.Md.Kep">Iis Aisyah, A.Md.Kep</option>
-                                <option value="Khabibatul Maula, A.Md.Kep">Khabibatul Maula, A.Md.Kep</option>
-                                <option value="Fuji Firmansyah, A.Md.Kep">Fuji Firmansyah, A.Md.Kep</option>
-                                <option value="Alkarim, A.Md.Kep">Alkarim, A.Md.Kep</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="btn-container">
-                        <button type="submit" id="btnSimpan" class="btn-submit">Simpan Data Pasien</button>
-                        <button type="button" id="btnHapus" class="btn-delete" onclick="hapusPasienDipilih()">Hapus Data Pasien</button>
-                        <button type="button" id="btnBatal" class="btn-cancel" onclick="batalEdit()">Batal</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- SECTION 4: LIST SELURUH PASIEN DI RUANGAN -->
-            <div class="card">
-                <div class="card-header">
-                    <h3>📋 List Pasien Periode (<span id="lblPeriodeTabel">Oktober 2026</span>)</h3>
-                    <div class="header-actions">
-                        <button type="button" class="btn-excel" onclick="exportKeExcel()">
-                            📊 Export Excel
-                        </button>
-                        <div class="search-box">
-                            <span class="search-icon">🔍</span>
-                            <input type="text" id="inputCariPasien" placeholder="Cari nama, RM..." onkeyup="cariPasien()">
-                        </div>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table id="tabelDataPasien">
-                        <thead>
-                            <tr>
-                                <th width="30">No</th>
-                                <th>Nama Pasien</th>
-                                <th>No RM</th>
-                                <th>Tgl Lahir</th>
-                                <th>Usia</th>
-                                <th>Tgl Masuk</th>
-                                <th>Bayar</th>
-                                <th>Status Pasien</th>
-                                <th>Dokter DPJP</th>
-                                <th>Tgl Keluar</th>
-                                <th>Status Keluar</th>
-                                <th>Lama</th>
-                                <th>Diagnosa</th>
-                                <th>Penanggung Jawab</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelPasienBody">
-                            <!-- Data Pasien Dimuat dari LocalStorage -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-</div>
-
-<!-- ================= SCRIPT JAVASCRIPT ================= -->
-<script>
-    let barisSedangDiedit = null;
-    const KAPASITAS_TT = 32;
-
-    window.onload = function() {
-        // Cek Sesi Login di LocalStorage
-        const isLogged = localStorage.getItem('isLoggedIn');
-        const user = localStorage.getItem('loggedInUser');
-
-        if (isLogged === 'true' && user) {
-            document.getElementById('loggedInUser').textContent = user;
-            document.getElementById('authApp').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-        } else {
-            document.getElementById('authApp').style.display = 'flex';
-            document.getElementById('mainApp').style.display = 'none';
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        // Jalankan pembersihan otomatis data > 10 tahun
-        hapusDataOtomatis10Tahun();
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
 
-        // Muat Data Pasien dari LocalStorage
-        muatDataPasienDariStorage();
-        updateDataBulan();
-    };
+        .nav-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-    // --- PEMBERSIHAN OTOMATIS DATA > 10 TAHUN ---
-    function hapusDataOtomatis10Tahun() {
-        const dataStored = localStorage.getItem('dataPasienEdelweis');
-        if (!dataStored) return;
+        .nav-btn.active, .nav-btn:hover {
+            background-color: white;
+            color: #0d9488;
+        }
 
-        let listPasien = JSON.parse(dataStored);
-        const tahunSekarang = new Date().getFullYear();
-        const batasTahunMin = tahunSekarang - 10;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-        let dataBaru = listPasien.filter(p => {
-            if (!p.tglMasuk || p.tglMasuk === '-') return true;
-            const parts = p.tglMasuk.split('/');
-            if (parts.length === 3) {
-                const tahunMasuk = parseInt(parts[2], 10);
-                return tahunMasuk >= batasTahunMin;
+        .btn-logout {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background-color: #dc2626;
+        }
+
+        .dashboard-container {
+            max-width: 100%;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+
+        .app-page {
+            display: none;
+        }
+
+        .app-page.active {
+            display: block;
+        }
+
+        /* FILTER PERIODE BULAN & TAHUN */
+        .filter-card {
+            background-color: white;
+            padding: 18px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .filter-title {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #334155;
+            outline: none;
+            background-color: #f8fafc;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            border-color: #0d9488;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Stats Grid - Indikator Efisiensi */
+        .stats-grid-primary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        /* Grid Khusus Analytics (Cara Bayar & Diagnosa) */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        /* Stats Grid - Rekapitulasi Baris Umum & Pindahan */
+        .rekap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-left: 6px solid #0d9488;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-card.blue { border-left-color: #3b82f6; }
+        .stat-card.green { border-left-color: #10b981; }
+        .stat-card.amber { border-left-color: #f59e0b; }
+        .stat-card.purple { border-left-color: #8b5cf6; }
+        .stat-card.red { border-left-color: #ef4444; }
+        .stat-card.indigo { border-left-color: #6366f1; }
+        .stat-card.pink { border-left-color: #ec4899; }
+        .stat-card.teal { border-left-color: #14b8a6; }
+        .stat-card.orange { border-left-color: #f97316; }
+
+        .stat-card h4 {
+            color: #64748b;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .stat-card p {
+            font-size: 28px;
+            font-weight: bold;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .stat-card span {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* Styling Mini List Analytics */
+        .analytics-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .analytics-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 13px;
+        }
+
+        .analytics-list li:last-child {
+            border-bottom: none;
+        }
+
+        .analytics-label {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .analytics-value {
+            font-weight: 700;
+            background-color: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #0f766e;
+        }
+
+        /* Card Section untuk Form & Tabel Pasien */
+        .card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .card-header h3 {
+            color: #0f172a;
+            font-size: 16px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Kotak Pencarian */
+        .search-box {
+            position: relative;
+            width: 240px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 7px 12px 7px 32px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+            background-color: #f8fafc;
+        }
+
+        .search-box input:focus {
+            border-color: #0d9488;
+            background-color: #fff;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        /* --- PENGATURAN TABEL --- */
+        .table-responsive {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 11px;
+            table-layout: auto;
+        }
+
+        table th, table td {
+            padding: 6px 4px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        table th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            font-size: 10.5px;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+
+        #tabelPasienBody tr {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #tabelPasienBody tr:hover {
+            background-color: #f0fdfa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 9.5px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .badge-info { background-color: #dbeafe; color: #1e40af; }
+        .badge-success { background-color: #d1fae5; color: #059669; }
+        .badge-warning { background-color: #fef3c7; color: #d97706; }
+        .badge-danger { background-color: #fee2e2; color: #dc2626; }
+
+        /* --- FORMAT KHUSUS CETAK / PRINT --- */
+        @media print {
+            body {
+                background-color: white;
+                color: black;
             }
-            return true;
-        });
-
-        if (dataBaru.length < listPasien.length) {
-            localStorage.setItem('dataPasienEdelweis', JSON.stringify(dataBaru));
+            .navbar, .filter-card, .btn-container, .header-actions, .nav-links, .user-info, .btn-excel, .search-box, .btn-print-action {
+                display: none !important;
+            }
+            #mainApp {
+                display: block !important;
+            }
+            .app-page {
+                display: block !important;
+            }
+            .card, .stat-card {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+                break-inside: avoid;
+            }
+            .kop-surat-print {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #000;
+                padding-bottom: 10px;
+            }
+            .tanda-tangan-print {
+                display: flex !important;
+                justify-content: space-between;
+                margin-top: 40px;
+                break-inside: avoid;
+            }
         }
-    }
 
-    function bersihkanDataLalu() {
-        if (confirm("Apakah Anda yakin ingin menghapus semua data rekam medis yang usianya sudah lebih dari 10 tahun ke belakang untuk meringankan penyimpanan?")) {
+        .kop-surat-print, .tanda-tangan-print {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= HALAMAN LOGIN & REGISTER ================= -->
+    <div id="authApp" class="auth-wrapper">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2>Ruang Edelweis</h2>
+                <p>RS Daerah Sidawangi</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchAuthTab('login')">Masuk</button>
+                <button class="tab-btn" onclick="switchAuthTab('register')">Daftar</button>
+            </div>
+
+            <!-- Form Login -->
+            <form id="loginForm" class="form-section active" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" placeholder="Masukkan username" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Kata Sandi</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" placeholder="Masukkan kata sandi" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('loginPassword', this)">👁️</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Masuk ke Aplikasi</button>
+            </form>
+
+            <!-- Form Register -->
+            <form id="registerForm" class="form-section" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="regUsername">Username Baru</label>
+                    <input type="text" id="regUsername" placeholder="Buat username" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Kata Sandi Baru</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="regPassword" placeholder="Minimal 6 karakter" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('regPassword', this)">👁️</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Daftar Sekarang</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ================= APLIKASI UTAMA ================= -->
+    <div id="mainApp">
+        <!-- Navbar Header -->
+        <div class="navbar">
+            <div>
+                <h1>Ruang Edelweis</h1>
+                <p>RS Daerah Sidawangi</p>
+            </div>
+            <div class="nav-links">
+                <button class="nav-btn active" onclick="switchPage('pageDashboard', this)">🏠 Halaman Utama</button>
+                <button class="nav-btn" onclick="switchPage('pageDataPasien', this)">👥 Data Pasien</button>
+            </div>
+            <div class="user-info">
+                <span>Halo, <strong id="loggedInUser">Petugas</strong></span>
+                <button class="btn-logout" onclick="handleLogout()">Keluar</button>
+            </div>
+        </div>
+
+        <div class="dashboard-container">
+            
+            <!-- CARD FILTER PERIODE BULAN DAN TAHUN -->
+            <div class="filter-card">
+                <div class="filter-title">
+                    📅 Pilih Periode Laporan & Tabel:
+                </div>
+                <div class="filter-controls">
+                    <select id="filterBulan" class="filter-select" onchange="updateDataBulan()">
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10" selected>Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+
+                    <select id="filterTahun" class="filter-select" onchange="updateDataBulan()">
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+
+                    <!-- TOMBOL BERSIHKAN DATA LAMA MANUAL -->
+                    <button type="button" onclick="bersihkanDataLalu()" style="padding: 8px 12px; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
+                        🧹 Bersihkan Data > 10 Tahun
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= HALAMAN 1: UTAMA (DASHBOARD LAPORAN) ================= -->
+            <div id="pageDashboard" class="app-page active">
+                
+                <!-- TOMBOL CETAK LAPORAN -->
+                <div class="btn-print-action" style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+                    <button type="button" onclick="cetakLaporanRuangan()" style="padding: 10px 18px; background-color: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        🖨️ Cetak Laporan Resmi
+                    </button>
+                </div>
+
+                <!-- KOP SURAT KHUSUS CETAK -->
+                <div class="kop-surat-print">
+                    <h2 style="font-size: 18px; font-weight: bold; text-transform: uppercase;">PEMERINTAH DAERAH PROVINSI JAWA BARAT</h2>
+                    <h1 style="font-size: 20px; font-weight: bold; text-transform: uppercase;">RUMAH SAKIT DAERAH SIDAWANGI</h1>
+                    <p style="font-size: 12px;">Jl. Raya Sidawangi, Sumber, Cirebon 45611</p>
+                    <h3 style="font-size: 16px; font-weight: bold; margin-top: 10px; text-decoration: underline;">LAPORAN REKAPITULASI & INDIKATOR RAWAT INAP RUANG EDELWEIS</h3>
+                </div>
+                
+                <!-- SECTION 1: INDIKATOR EFISIENSI RUMAH SAKIT -->
+                <div class="section-title">📊 Indikator Efisiensi Rawat Inap (<span id="lblPeriode1">Oktober 2026</span>)</div>
+                <div class="stats-grid-primary">
+                    <div class="stat-card blue">
+                        <h4>BOR (Bed Occupancy Rate)</h4>
+                        <p id="valBOR">0 %</p>
+                        <span>Kapasitas: 32 Tempat Tidur (Ideal: 60-85%)</span>
+                    </div>
+                    <div class="stat-card purple">
+                        <h4>ALOS (Avg Length of Stay)</h4>
+                        <p id="valALOS">0 Hari</p>
+                        <span>Standar Ideal: 6 - 9 Hari</span>
+                    </div>
+                    <div class="stat-card amber">
+                        <h4>TOI (Turn Over Interval)</h4>
+                        <p id="valTOI">0 Hari</p>
+                        <span>Standar Ideal: 1 - 3 Hari</span>
+                    </div>
+                </div>
+
+                <!-- SECTION ANALYTICS: STATUS BAYAR & TOP 5 DIAGNOSA -->
+                <div class="section-title">📈 Analisis Cara Bayar & Diagnosa (<span id="lblPeriodeAnalytics">Oktober 2026</span>)</div>
+                <div class="analytics-grid">
+                    <!-- Kartu Rekap Cara Bayar -->
+                    <div class="stat-card teal">
+                        <h4>Rekapitulasi Status Bayar</h4>
+                        <ul class="analytics-list">
+                            <li><span class="analytics-label">💳 BPJS</span> <span id="valBayarBPJS" class="analytics-value">0 Pasien</span></li>
+                            <li><span class="analytics-label">💵 Umum</span> <span id="valBayarUmum" class="analytics-value">0 Pasien</span></li>
+                            <li><span class="analytics-label">🏥 JPKM</span> <span id="valBayarJPKM" class="analytics-value">0 Pasien</span></li>
+                            <li><span class="analytics-label">🛡️ Asuransi Lain</span> <span id="valBayarLain" class="analytics-value">0 Pasien</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Kartu Top 5 Diagnosa -->
+                    <div class="stat-card indigo">
+                        <h4>5 Diagnosa Terbanyak (Top 5)</h4>
+                        <ul id="listTopDiagnosa" class="analytics-list">
+                            <li><span class="analytics-label">-</span> <span class="analytics-value">0</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: REKAPITULASI PASIEN BULANAN -->
+                <div class="section-title">👥 Rekapitulasi Data Pasien (<span id="lblPeriode2">Oktober 2026</span>)</div>
+                
+                <div class="rekap-grid">
+                    <div class="stat-card">
+                        <h4>Total Jumlah Pasien Dirawat</h4>
+                        <p id="valTotal">0 Pasien</p>
+                        <span>Laporan periode ini</span>
+                    </div>
+                    <div class="stat-card blue">
+                        <h4>Pasien Masih Dirawat</h4>
+                        <p id="valMasihRawat">0 Pasien</p>
+                        <span>Aktif di ruangan</span>
+                    </div>
+                    <div class="stat-card green">
+                        <h4>Pasien Pulang Izin Dokter</h4>
+                        <p id="valIzinDokter">0 Pasien</p>
+                        <span>Sembuh / Membaik</span>
+                    </div>
+                    <div class="stat-card amber">
+                        <h4>Pasien Pulang Paksa (APS)</h4>
+                        <p id="valPulangPaksa">0 Pasien</p>
+                        <span>Atas Permintaan Sendiri</span>
+                    </div>
+                    <div class="stat-card red">
+                        <h4>Pasien Meninggal Dunia</h4>
+                        <p id="valMeninggal">0 Pasien</p>
+                        <span>Rekap bulanan</span>
+                    </div>
+                    <div class="stat-card indigo">
+                        <h4>Pindah ke Ruang Anggrek</h4>
+                        <p id="valPindahAnggrek">0 Pasien</p>
+                        <span>Mutasi ruangan</span>
+                    </div>
+                    <div class="stat-card pink">
+                        <h4>Pindah ke Ruang Bougenville</h4>
+                        <p id="valPindahBougenville">0 Pasien</p>
+                        <span>Mutasi ruangan</span>
+                    </div>
+                    <div class="stat-card teal">
+                        <h4>Pindah ke Ruang Cempaka</h4>
+                        <p id="valPindahCempaka">0 Pasien</p>
+                        <span>Mutasi ruangan</span>
+                    </div>
+                    <div class="stat-card purple">
+                        <h4>Pindah ke Ruang Dahlia</h4>
+                        <p id="valPindahDahlia">0 Pasien</p>
+                        <span>Mutasi ruangan</span>
+                    </div>
+                    <div class="stat-card orange">
+                        <h4>Pindah ke Ruang Kebidanan</h4>
+                        <p id="valPindahKebidanan">0 Pasien</p>
+                        <span>Mutasi ruangan</span>
+                    </div>
+                    <div class="stat-card blue">
+                        <h4>Pindah ke Ruang Perina</h4>
+                        <p id="valPindahPerina">0 Pasien</p>
+                        <span>Mutasi ruangan</span>
+                    </div>
+                    <div class="stat-card red">
+                        <h4>Pindah ke Ruang ICU</h4>
+                        <p id="valPindahICU">0 Pasien</p>
+                        <span>Mutasi ruangan</span>
+                    </div>
+                </div>
+
+                <!-- AREA TANDA TANGAN KHUSUS CETAK -->
+                <div class="tanda-tangan-print">
+                    <div style="text-align: center;">
+                        <p>Mengetahui,</p>
+                        <p>Kepala Ruang Edelweis</p>
+                        <br><br><br>
+                        <p><b>( ......................................... )</b></p>
+                        <p>NIP. ...................................</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <p>Sidawangi, <span id="tanggalCetakHariIni"></span></p>
+                        <p>Petugas Pelaporan Ruangan</p>
+                        <br><br><br>
+                        <p><b>(<span id="namaPetugasCetak">Petugas</span>)</b></p>
+                        <p>NIP. ...................................</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ================= HALAMAN 2: DATA PASIEN (INPUT & LIST) ================= -->
+            <div id="pageDataPasien" class="app-page">
+                
+                <!-- SECTION 3: FORM INPUT PASIEN LENGKAP -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 id="formTitle">+ Input Data Pasien Baru (Ruang Edelweis)</h3>
+                    </div>
+                    <form id="formPasien" onsubmit="tambahPasien(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nama Pasien</label>
+                                <input type="text" id="pNama" placeholder="Contoh: Tn. AHMAD" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nomer RM</label>
+                                <input type="text" id="pRM" placeholder="Contoh: RM-10293" required>
+                            </div>
+                            <!-- Tanggal Lahir: Ketik Manual dd/mm/yyyy -->
+                            <div class="form-group">
+                                <label>Tanggal Lahir (dd/mm/yyyy)</label>
+                                <input type="text" id="pTglLahir" placeholder="dd/mm/yyyy" maxlength="10" oninput="formatTglKetik(this); hitungUsiaOtomatis();" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Usia (Otomatis)</label>
+                                <input type="text" id="pUsia" placeholder="Otomatis terhitung" readonly required>
+                            </div>
+                            <!-- Tanggal Masuk: Pilih Kalender -->
+                            <div class="form-group">
+                                <label>Tanggal Masuk</label>
+                                <input type="date" id="pTglMasuk" onchange="hitungLamaRawatOtomatis()" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Status Bayar</label>
+                                <select id="pStatusBayar" required>
+                                    <option value="" disabled selected>-- Pilih Status Bayar --</option>
+                                    <option value="Umum">Umum</option>
+                                    <option value="BPJS">BPJS</option>
+                                    <option value="JPKM">JPKM</option>
+                                    <option value="Asuransi Lain">Asuransi Lain</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Status Pasien</label>
+                                <select id="pStatusPasien" required>
+                                    <option value="" disabled selected>-- Pilih Status Pasien --</option>
+                                    <option value="Pasien baru IGD">Pasien baru IGD</option>
+                                    <option value="Pasien Lama IGD">Pasien Lama IGD</option>
+                                    <option value="Pasien Baru Poliklinik">Pasien Baru Poliklinik</option>
+                                    <option value="Pasien Lama Poliklinik">Pasien Lama Poliklinik</option>
+                                    <option value="Pindahan dari Anggrek">Pindahan dari Anggrek</option>
+                                    <option value="Pindahan dari Bougenville">Pindahan dari Bougenville</option>
+                                    <option value="Pindahan dari Cempaka">Pindahan dari Cempaka</option>
+                                    <option value="Pindahan dari Dahlia">Pindahan dari Dahlia</option>
+                                    <option value="Pindahan dari Kebidanan">Pindahan dari Kebidanan</option>
+                                    <option value="Pindahan dari Perina">Pindahan dari Perina</option>
+                                    <option value="Pindahan dari ICU">Pindahan dari ICU</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Dokter DPJP</label>
+                                <select id="pDokter" required>
+                                    <option value="" disabled selected>-- Pilih Dokter DPJP --</option>
+                                    <option value="dr. Suci Septyuni Permadi, Sp.A">dr. Suci Septyuni Permadi, Sp.A</option>
+                                    <option value="dr. Trias Kusumasari, Sp.A">dr. Trias Kusumasari, Sp.A</option>
+                                    <option value="dr. Rhiza Moh Ishaq, Sp.BA">dr. Rhiza Moh Ishaq, Sp.BA</option>
+                                    <option value="dr. Rintang Rengganis, Sp.B">dr. Rintang Rengganis, Sp.B</option>
+                                    <option value="dr. Hj. Tresnawaty, Sp.B">dr. Hj. Tresnawaty, Sp.B</option>
+                                    <option value="dr. Ibrahim Risyad Pradana, Sp.B">dr. Ibrahim Risyad Pradana, Sp.B</option>
+                                </select>
+                            </div>
+                            <!-- Tanggal Keluar: Pilih Kalender -->
+                            <div class="form-group">
+                                <label>Tanggal Keluar</label>
+                                <input type="date" id="pTglKeluar" onchange="hitungLamaRawatOtomatis()">
+                            </div>
+                            <div class="form-group">
+                                <label>Status Keluar</label>
+                                <select id="pStatusKeluar" required>
+                                    <option value="" disabled selected>-- Pilih Status Keluar --</option>
+                                    <option value="Masih di rawat">Masih di rawat</option>
+                                    <option value="Pulang Izin Dokter">Pulang Izin Dokter</option>
+                                    <option value="Pulang Paksa">Pulang Paksa</option>
+                                    <option value="Pindah Ke Anggrek">Pindah Ke Anggrek</option>
+                                    <option value="Pindah Ke Bougenville">Pindah Ke Bougenville</option>
+                                    <option value="Pindah Ke Cempaka">Pindah Ke Cempaka</option>
+                                    <option value="Pindah Ke Dahlia">Pindah Ke Dahlia</option>
+                                    <option value="Pindah Ke Kebidanan">Pindah Ke Kebidanan</option>
+                                    <option value="Pindah Ke Perina">Pindah Ke Perina</option>
+                                    <option value="Pindah Ke ICU">Pindah Ke ICU</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Lama Rawat (Hari)</label>
+                                <input type="number" id="pLamaRawat" placeholder="Otomatis terhitung" readonly required>
+                            </div>
+                            <div class="form-group">
+                                <label>Diagnosa</label>
+                                <select id="pDiagnosa" required>
+                                    <option value="" disabled selected>-- Pilih Diagnosa --</option>
+                                    <option value="Hiperpirexia">Hiperpirexia</option>
+                                    <option value="Kejang Demam">Kejang Demam</option>
+                                    <option value="Morbili">Morbili</option>
+                                    <option value="Vomitus">Vomitus</option>
+                                    <option value="Hipertensi">Hipertensi</option>
+                                    <option value="ISPA">ISPA</option>
+                                    <option value="TB Paru">TB Paru</option>
+                                    <option value="Effusi Pleura">Effusi Pleura</option>
+                                    <option value="Haemaptoe">Haemaptoe</option>
+                                    <option value="Bronchopneumonia">Bronchopneumonia</option>
+                                    <option value="dypsnea">dypsnea</option>
+                                    <option value="GEA">GEA</option>
+                                    <option value="DCA DRS">DCA DRS</option>
+                                    <option value="Dengue Fever">Dengue Fever</option>
+                                    <option value="Epitaksis">Epitaksis</option>
+                                    <option value="Unidentified Snake">Unidentified Snake</option>
+                                    <option value="Kolik Abdoment">Kolik Abdoment</option>
+                                    <option value="Abdominal Pain">Abdominal Pain</option>
+                                    <option value="Asma">Asma</option>
+                                    <option value="Prolong Fever">Prolong Fever</option>
+                                </select>
+                            </div>
+                            <!-- PENANGGUNG JAWAB -->
+                            <div class="form-group">
+                                <label>Penanggung Jawab (Opsional)</label>
+                                <select id="pPenanggungJawab">
+                                    <option value="" selected>-- Pilih Penanggung Jawab --</option>
+                                    <option value="Sinem, S.Kep.Ners">Sinem, S.Kep.Ners</option>
+                                    <option value="Ida Yuyun Yuningsih, S.Kep.Ners">Ida Yuyun Yuningsih, S.Kep.Ners</option>
+                                    <option value="Ratnawati, S.Kep">Ratnawati, S.Kep</option>
+                                    <option value="Tuti Herlina, S.Kep">Tuti Herlina, S.Kep</option>
+                                    <option value="Turini, S.Kep.Ners">Turini, S.Kep.Ners</option>
+                                    <option value="Nurwulan Ika Rahayu, A.Md.Kep">Nurwulan Ika Rahayu, A.Md.Kep</option>
+                                    <option value="Wulan Sondari, A.Md.Kep">Wulan Sondari, A.Md.Kep</option>
+                                    <option value="Ceceh Adam, A.Md.Kep">Ceceh Adam, A.Md.Kep</option>
+                                    <option value="Sri Widaningsih, A.Md.Kep">Sri Widaningsih, A.Md.Kep</option>
+                                    <option value="Saeful Munawar, S.Kep.Ners">Saeful Munawar, S.Kep.Ners</option>
+                                    <option value="Dwian Sidik Nugraha, A.Md.Kep">Dwian Sidik Nugraha, A.Md.Kep</option>
+                                    <option value="Iis Aisyah, A.Md.Kep">Iis Aisyah, A.Md.Kep</option>
+                                    <option value="Khabibatul Maula, A.Md.Kep">Khabibatul Maula, A.Md.Kep</option>
+                                    <option value="Fuji Firmansyah, A.Md.Kep">Fuji Firmansyah, A.Md.Kep</option>
+                                    <option value="Alkarim, A.Md.Kep">Alkarim, A.Md.Kep</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="btn-container">
+                            <button type="submit" id="btnSimpan" class="btn-submit">Simpan Data Pasien</button>
+                            <button type="button" id="btnHapus" class="btn-delete" onclick="hapusPasienDipilih()">Hapus Data Pasien</button>
+                            <button type="button" id="btnBatal" class="btn-cancel" onclick="batalEdit()">Batal</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- SECTION 4: LIST SELURUH PASIEN DI RUANGAN -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📋 List Pasien Periode (<span id="lblPeriodeTabel">Oktober 2026</span>)</h3>
+                        <div class="header-actions">
+                            <!-- TOMBOL EXPORT KE EXCEL -->
+                            <button type="button" class="btn-excel" onclick="exportKeExcel()">
+                                📊 Export Excel
+                            </button>
+                            <!-- KOTAK PENCARIAN -->
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" id="inputCariPasien" placeholder="Cari nama, RM..." onkeyup="cariPasien()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="tabelDataPasien">
+                            <thead>
+                                <tr>
+                                    <th width="30">No</th>
+                                    <th>Nama Pasien</th>
+                                    <th>No RM</th>
+                                    <th>Tgl Lahir</th>
+                                    <th>Usia</th>
+                                    <th>Tgl Masuk</th>
+                                    <th>Bayar</th>
+                                    <th>Status Pasien</th>
+                                    <th>Dokter DPJP</th>
+                                    <th>Tgl Keluar</th>
+                                    <th>Status Keluar</th>
+                                    <th>Lama</th>
+                                    <th>Diagnosa</th>
+                                    <th>Penanggung Jawab</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelPasienBody">
+                                <!-- Data Pasien Dimuat dari LocalStorage -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= SCRIPT JAVASCRIPT ================= -->
+    <script>
+        let barisSedangDiedit = null;
+        const KAPASITAS_TT = 32;
+
+        window.onload = function() {
+            // Cek Sesi Login di LocalStorage
+            const isLogged = localStorage.getItem('isLoggedIn');
+            const user = localStorage.getItem('loggedInUser');
+
+            if (isLogged === 'true' && user) {
+                document.getElementById('loggedInUser').textContent = user;
+                document.getElementById('authApp').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+            } else {
+                document.getElementById('authApp').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+            }
+
+            // Pembersihan Otomatis Data Pasien > 10 Tahun Ke Belakang
             hapusDataOtomatis10Tahun();
+
+            // Muat Data Pasien dari LocalStorage
             muatDataPasienDariStorage();
             updateDataBulan();
-            alert("Pembersihan data lama berhasil dilakukan!");
-        }
-    }
+        };
 
-    // --- MANAJEMEN PENYIMPANAN LOCALSTORAGE ---
-    function simpanDataPasienKeStorage() {
-        const rows = document.querySelectorAll('#tabelPasienBody tr');
-        const dataPasien = [];
+        // --- MANAJEMEN PENYIMPANAN LOCALSTORAGE ---
+        function simpanDataPasienKeStorage() {
+            const rows = document.querySelectorAll('#tabelPasienBody tr');
+            const dataPasien = [];
 
-        rows.forEach(row => {
-            dataPasien.push({
-                nama: row.cells[1].textContent.trim(),
-                rm: row.cells[2].textContent.trim(),
-                tglLahir: row.cells[3].textContent.trim(),
-                usia: row.cells[4].textContent.trim(),
-                tglMasuk: row.cells[5].textContent.trim(),
-                statusBayar: row.cells[6].textContent.trim(),
-                statusPasien: row.getAttribute('data-statuspasien') || row.cells[7].textContent.trim(),
-                dokter: row.getAttribute('data-dokter') || row.cells[8].textContent.trim(),
-                tglKeluar: row.cells[9].textContent.trim(),
-                statusKeluar: row.cells[10].textContent.trim(),
-                lamaRawat: row.cells[11].textContent.trim(),
-                diagnosa: row.cells[12].textContent.trim(),
-                penanggungJawab: row.cells[13].textContent.trim()
+            rows.forEach(row => {
+                dataPasien.push({
+                    nama: row.cells[1].textContent.trim(),
+                    rm: row.cells[2].textContent.trim(),
+                    tglLahir: row.cells[3].textContent.trim(),
+                    usia: row.cells[4].textContent.trim(),
+                    tglMasuk: row.cells[5].textContent.trim(),
+                    statusBayar: row.cells[6].textContent.trim(),
+                    statusPasien: row.getAttribute('data-statuspasien') || row.cells[7].textContent.trim(),
+                    dokter: row.getAttribute('data-dokter') || row.cells[8].textContent.trim(),
+                    tglKeluar: row.cells[9].textContent.trim(),
+                    statusKeluar: row.cells[10].textContent.trim(),
+                    lamaRawat: row.cells[11].textContent.trim(),
+                    diagnosa: row.cells[12].textContent.trim(),
+                    penanggungJawab: row.cells[13].textContent.trim()
+                });
             });
-        });
 
-        localStorage.setItem('dataPasienEdelweis', JSON.stringify(dataPasien));
-    }
+            localStorage.setItem('dataPasienEdelweis', JSON.stringify(dataPasien));
+        }
 
-    function muatDataPasienDariStorage() {
-        const dataStored = localStorage.getItem('dataPasienEdelweis');
-        const tbody = document.getElementById('tabelPasienBody');
-        tbody.innerHTML = '';
+        function muatDataPasienDariStorage() {
+            const dataStored = localStorage.getItem('dataPasienEdelweis');
+            const tbody = document.getElementById('tabelPasienBody');
+            tbody.innerHTML = '';
 
-        let listPasien = [];
-        if (dataStored) {
-            listPasien = JSON.parse(dataStored);
-        } else {
-            listPasien = [
-                {
-                    nama: 'Coba',
-                    rm: '08888',
-                    tglLahir: '02/02/2022',
-                    usia: '4 Thn 8 Bln',
-                    tglMasuk: '08/09/2026',
-                    statusBayar: 'Umum',
-                    statusPasien: 'Pasien baru IGD',
-                    dokter: 'dr. Suci Septyuni Permadi, Sp.A',
-                    tglKeluar: '17/09/2026',
-                    statusKeluar: 'Pulang Izin Dokter',
-                    lamaRawat: '10 Hari',
-                    diagnosa: 'Morbili',
-                    penanggungJawab: 'Nurwulan Ika Rahayu, A.Md.Kep'
-                },
-                {
-                    nama: 'Coba 1',
-                    rm: '08888',
-                    tglLahir: '02/02/2022',
-                    usia: '4 Thn 8 Bln',
-                    tglMasuk: '30/09/2026',
-                    statusBayar: 'Umum',
-                    statusPasien: 'Pasien baru IGD',
-                    dokter: 'dr. Suci Septyuni Permadi, Sp.A',
-                    tglKeluar: '-',
-                    statusKeluar: 'Masih di rawat',
-                    lamaRawat: '28 Hari',
-                    diagnosa: 'Hipertensi',
-                    penanggungJawab: 'Sri Widaningsih, A.Md.Kep'
+            let listPasien = [];
+            if (dataStored) {
+                listPasien = JSON.parse(dataStored);
+            } else {
+                // Data Bawaan Awal jika storage masih kosong
+                listPasien = [
+                    {
+                        nama: 'Coba',
+                        rm: '08888',
+                        tglLahir: '02/02/2022',
+                        usia: '4 Thn 8 Bln',
+                        tglMasuk: '08/09/2026',
+                        statusBayar: 'Umum',
+                        statusPasien: 'Pasien baru IGD',
+                        dokter: 'dr. Suci Septyuni Permadi, Sp.A',
+                        tglKeluar: '17/09/2026',
+                        statusKeluar: 'Pulang Izin Dokter',
+                        lamaRawat: '10 Hari',
+                        diagnosa: 'Morbili',
+                        penanggungJawab: 'Nurwulan Ika Rahayu, A.Md.Kep'
+                    },
+                    {
+                        nama: 'Coba 1',
+                        rm: '08888',
+                        tglLahir: '02/02/2022',
+                        usia: '4 Thn 8 Bln',
+                        tglMasuk: '30/09/2026',
+                        statusBayar: 'Umum',
+                        statusPasien: 'Pasien baru IGD',
+                        dokter: 'dr. Suci Septyuni Permadi, Sp.A',
+                        tglKeluar: '-',
+                        statusKeluar: 'Masih di rawat',
+                        lamaRawat: '28 Hari',
+                        diagnosa: 'Hipertensi',
+                        penanggungJawab: 'Sri Widaningsih, A.Md.Kep'
+                    }
+                ];
+            }
+
+            listPasien.forEach(p => {
+                let badgeStatusKeluar = 'badge-info';
+                if (String(p.statusKeluar).includes('Pulang Izin Dokter')) badgeStatusKeluar = 'badge-success';
+                else if (String(p.statusKeluar).includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
+                else if (String(p.statusKeluar).includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
+
+                const newRow = document.createElement('tr');
+                newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
+                newRow.setAttribute('data-dokter', p.dokter);
+                newRow.setAttribute('data-statuspasien', p.statusPasien);
+
+                newRow.innerHTML = `
+                    <td></td>
+                    <td><strong>${p.nama}</strong></td>
+                    <td class="nowrap">${p.rm}</td>
+                    <td class="nowrap">${p.tglLahir}</td>
+                    <td class="nowrap">${p.usia}</td>
+                    <td class="nowrap">${p.tglMasuk}</td>
+                    <td>${p.statusBayar}</td>
+                    <td><span class="badge badge-info">${singkatStatusPasien(p.statusPasien)}</span></td>
+                    <td>${singkatDokter(p.dokter)}</td>
+                    <td class="nowrap">${p.tglKeluar}</td>
+                    <td><span class="badge ${badgeStatusKeluar}">${p.statusKeluar}</span></td>
+                    <td class="nowrap">${p.lamaRawat.includes('Hari') ? p.lamaRawat : p.lamaRawat + ' Hari'}</td>
+                    <td>${p.diagnosa}</td>
+                    <td>${p.penanggungJawab}</td>
+                `;
+                tbody.appendChild(newRow);
+            });
+        }
+
+        // --- MANAJEMEN PEMBERSIHAN DATA > 10 TAHUN ---
+        function hapusDataOtomatis10Tahun() {
+            const dataStored = localStorage.getItem('dataPasienEdelweis');
+            if (!dataStored) return;
+
+            let listPasien = JSON.parse(dataStored);
+            const tahunSekarang = new Date().getFullYear();
+            const batasTahunMin = tahunSekarang - 10; 
+
+            let dataBaru = listPasien.filter(p => {
+                if (!p.tglMasuk || p.tglMasuk === '-') return true; 
+                const parts = p.tglMasuk.split('/');
+                if (parts.length === 3) {
+                    const tahunMasuk = parseInt(parts[2], 10);
+                    return tahunMasuk >= batasTahunMin;
                 }
-            ];
+                return true;
+            });
+
+            if (dataBaru.length < listPasien.length) {
+                localStorage.setItem('dataPasienEdelweis', JSON.stringify(dataBaru));
+            }
         }
 
-        listPasien.forEach(p => {
+        function bersihkanDataLalu() {
+            if (confirm("Apakah Anda yakin ingin menghapus semua data pasien yang usianya sudah lebih dari 10 tahun ke belakang dari penyimpanan browser?")) {
+                hapusDataOtomatis10Tahun();
+                muatDataPasienDariStorage();
+                updateDataBulan();
+                alert("Pembersihan data lama berhasil dilakukan!");
+            }
+        }
+
+        // --- CETAK LAPORAN RESMI ---
+        function cetakLaporanRuangan() {
+            const userAktif = localStorage.getItem('loggedInUser') || 'Petugas';
+            document.getElementById('namaPetugasCetak').textContent = userAktif;
+
+            const tglSkrg = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('tanggalCetakHariIni').textContent = tglSkrg.toLocaleDateString('id-ID', options);
+
+            window.print();
+        }
+
+        // --- AUTH & LOGIN LOGIC ---
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('loggedInUser', username);
+
+            document.getElementById('loggedInUser').textContent = username;
+            document.getElementById('authApp').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            updateDataBulan();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('loggedInUser');
+
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('authApp').style.display = 'flex';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('regUsername').value;
+            alert('Pendaftaran Berhasil untuk username: ' + username + '. Silakan masuk!');
+            switchAuthTab('login');
+        }
+
+        function formatTitleCase(str) {
+            if (!str) return '';
+            return String(str).toLowerCase().split(' ').map(word => {
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }).join(' ');
+        }
+
+        // FUNGSI EXPORT KE EXCEL (.XLS)
+        function exportKeExcel() {
+            const table = document.getElementById('tabelDataPasien');
+            let html = table.outerHTML;
+
+            html = html.replace(/<span class="badge[^>]*>(.*?)<\/span>/g, '$1');
+
+            const blob = new Blob(['\ufeff' + html], {
+                type: 'application/vnd.ms-excel'
+            });
+
+            const bulanSelect = document.getElementById('filterBulan');
+            const namaBulan = bulanSelect.options[bulanSelect.selectedIndex].text;
+            const tahunVal = document.getElementById('filterTahun').value;
+
+            const filename = `Data_Pasien_Ruang_Edelweis_${namaBulan}_${tahunVal}.xls`;
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function formatTglKetik(input) {
+            let v = input.value.replace(/\D/g, '');
+            if (v.length > 8) v = v.substring(0, 8);
+            
+            if (v.length >= 5) {
+                input.value = `${v.substring(0, 2)}/${v.substring(2, 4)}/${v.substring(4)}`;
+            } else if (v.length >= 3) {
+                input.value = `${v.substring(0, 2)}/${v.substring(2)}`;
+            } else {
+                input.value = v;
+            }
+        }
+
+        function konversiKeDDMMYYYY(tglYMD) {
+            if (!tglYMD) return '-';
+            const parts = tglYMD.split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return tglYMD;
+        }
+
+        function konversiKeYYYYMMDD(tglDMY) {
+            if (!tglDMY || tglDMY === '-') return '';
+            const parts = tglDMY.split('/');
+            if (parts.length === 3) {
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+            return '';
+        }
+
+        function singkatDokter(namaLengkap) {
+            if (!namaLengkap) return '-';
+            return String(namaLengkap).replace('Septyuni Permadi', 'Septyuni').replace('Kusumasari', 'K').replace('Moh Ishaq', 'M Ishaq').replace('Rengganis', 'R').replace('Risyad Pradana', 'Risyad');
+        }
+
+        function singkatStatusPasien(status) {
+            if (!status) return '-';
+            return String(status).replace('Pasien baru IGD', 'Baru IGD').replace('Pasien Lama IGD', 'Lama IGD').replace('Pasien Baru Poliklinik', 'Baru Poli').replace('Pasien Lama Poliklinik', 'Lama Poli');
+        }
+
+        function cariPasien() {
+            const input = document.getElementById('inputCariPasien').value.toLowerCase();
+            const rows = document.querySelectorAll('#tabelPasienBody tr');
+
+            rows.forEach(row => {
+                if (row.style.display !== 'none' || input === '') {
+                    const teksBaris = row.textContent.toLowerCase();
+                    if (teksBaris.includes(input)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        function hitungLamaRawatOtomatis() {
+            const tglMasukVal = document.getElementById('pTglMasuk').value;
+            const tglKeluarVal = document.getElementById('pTglKeluar').value;
+
+            if (tglMasukVal) {
+                const partsMasuk = tglMasukVal.split('-');
+                const masuk = new Date(partsMasuk[0], partsMasuk[1] - 1, partsMasuk[2]);
+
+                let batasAkhir;
+                if (tglKeluarVal) {
+                    const partsKeluar = tglKeluarVal.split('-');
+                    batasAkhir = new Date(partsKeluar[0], partsKeluar[1] - 1, partsKeluar[2]);
+                } else {
+                    const skrg = new Date();
+                    batasAkhir = new Date(skrg.getFullYear(), skrg.getMonth(), skrg.getDate());
+                }
+
+                const selisihWaktu = batasAkhir.getTime() - masuk.getTime();
+                let selisihHari = Math.floor(selisihWaktu / (1000 * 3600 * 24)) + 1;
+
+                if (selisihHari < 1) selisihHari = 1;
+
+                document.getElementById('pLamaRawat').value = selisihHari;
+            } else {
+                document.getElementById('pLamaRawat').value = 0;
+            }
+        }
+
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(form => form.classList.remove('active'));
+
+            if (tab === 'login') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
+        function switchPage(pageId, btn) {
+            document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(pageId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+            }
+        }
+
+        function hitungUsiaOtomatis() {
+            const tglVal = document.getElementById('pTglLahir').value;
+            if (tglVal.length !== 10) return;
+
+            const parts = tglVal.split('/');
+            if (parts.length !== 3) return;
+
+            const tgl = parseInt(parts[0], 10);
+            const bln = parseInt(parts[1], 10) - 1;
+            const thn = parseInt(parts[2], 10);
+
+            const tglLahir = new Date(thn, bln, tgl);
+            const hariIni = new Date();
+
+            let tahun = hariIni.getFullYear() - tglLahir.getFullYear();
+            let bulan = hariIni.getMonth() - tglLahir.getMonth();
+
+            if (bulan < 0 || (bulan === 0 && hariIni.getDate() < tglLahir.getDate())) {
+                tahun--;
+                bulan += 12;
+            }
+
+            if (hariIni.getDate() < tglLahir.getDate()) {
+                bulan--;
+                if (bulan < 0) {
+                    bulan += 12;
+                }
+            }
+
+            if (!isNaN(tahun) && !isNaN(bulan) && tahun >= 0) {
+                document.getElementById('pUsia').value = `${tahun} Thn ${bulan} Bln`;
+            }
+        }
+
+        function pilihPasienUntukEdit(tr) {
+            barisSedangDiedit = tr;
+
+            document.getElementById('pNama').value = tr.cells[1].textContent.trim();
+            document.getElementById('pRM').value = tr.cells[2].textContent.trim();
+            document.getElementById('pTglLahir').value = tr.cells[3].textContent.trim();
+            document.getElementById('pUsia').value = tr.cells[4].textContent.trim();
+            document.getElementById('pTglMasuk').value = konversiKeYYYYMMDD(tr.cells[5].textContent.trim());
+            document.getElementById('pStatusBayar').value = tr.cells[6].textContent.trim();
+            document.getElementById('pStatusPasien').value = tr.getAttribute('data-statuspasien') || tr.cells[7].textContent.trim();
+            document.getElementById('pDokter').value = tr.getAttribute('data-dokter') || tr.cells[8].textContent.trim();
+            document.getElementById('pTglKeluar').value = konversiKeYYYYMMDD(tr.cells[9].textContent.trim());
+            document.getElementById('pStatusKeluar').value = tr.cells[10].textContent.trim();
+            document.getElementById('pLamaRawat').value = parseInt(tr.cells[11].textContent) || 0;
+            document.getElementById('pDiagnosa').value = tr.cells[12].textContent.trim();
+            
+            const pjVal = tr.cells[13].textContent.trim();
+            document.getElementById('pPenanggungJawab').value = pjVal === '-' ? '' : pjVal;
+
+            document.getElementById('formTitle').textContent = '✏️ Edit / Hapus Data Pasien';
+            document.getElementById('btnSimpan').textContent = 'Perbarui Data Pasien';
+            document.getElementById('btnHapus').style.display = 'block';
+            document.getElementById('btnBatal').style.display = 'block';
+
+            window.scrollTo({ top: 350, behavior: 'smooth' });
+        }
+
+        function hapusPasienDipilih() {
+            if (barisSedangDiedit) {
+                const namaPasien = barisSedangDiedit.cells[1].textContent.trim();
+                if (confirm(`Apakah Anda yakin ingin menghapus data pasien ${namaPasien}?`)) {
+                    barisSedangDiedit.remove();
+                    simpanDataPasienKeStorage();
+                    alert(`Data pasien ${namaPasien} berhasil dihapus!`);
+                    batalEdit();
+                    updateDataBulan();
+                }
+            }
+        }
+
+        function batalEdit() {
+            barisSedangDiedit = null;
+            document.getElementById('formPasien').reset();
+            
+            document.getElementById('pStatusBayar').selectedIndex = 0;
+            document.getElementById('pStatusPasien').selectedIndex = 0;
+            document.getElementById('pDokter').selectedIndex = 0;
+            document.getElementById('pStatusKeluar').selectedIndex = 0;
+            document.getElementById('pDiagnosa').selectedIndex = 0;
+            document.getElementById('pPenanggungJawab').selectedIndex = 0;
+
+            document.getElementById('pUsia').value = '';
+            document.getElementById('pLamaRawat').value = '';
+            
+            document.getElementById('formTitle').textContent = '+ Input Data Pasien Baru (Ruang Edelweis)';
+            document.getElementById('btnSimpan').textContent = 'Simpan Data Pasien';
+            document.getElementById('btnHapus').style.display = 'none';
+            document.getElementById('btnBatal').style.display = 'none';
+        }
+
+        function tambahPasien(event) {
+            event.preventDefault();
+
+            const namaInput = document.getElementById('pNama').value.trim();
+            const nama = formatTitleCase(namaInput);
+
+            const rm = document.getElementById('pRM').value;
+            const tglLahir = document.getElementById('pTglLahir').value;
+            const usia = document.getElementById('pUsia').value;
+            const tglMasuk = konversiKeDDMMYYYY(document.getElementById('pTglMasuk').value);
+            const statusBayar = document.getElementById('pStatusBayar').value;
+            const statusPasien = document.getElementById('pStatusPasien').value;
+            const dokter = document.getElementById('pDokter').value;
+            const tglKeluar = konversiKeDDMMYYYY(document.getElementById('pTglKeluar').value);
+            const statusKeluar = document.getElementById('pStatusKeluar').value;
+            const lamaRawat = document.getElementById('pLamaRawat').value || '0';
+            const diagnosa = document.getElementById('pDiagnosa').value;
+            
+            const dropdownPJ = document.getElementById('pPenanggungJawab');
+            const penanggungJawab = dropdownPJ.value ? dropdownPJ.value : '-';
+
             let badgeStatusKeluar = 'badge-info';
-            if (String(p.statusKeluar).includes('Pulang Izin Dokter')) badgeStatusKeluar = 'badge-success';
-            else if (String(p.statusKeluar).includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
-            else if (String(p.statusKeluar).includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
+            if (statusKeluar === 'Pulang Izin Dokter') badgeStatusKeluar = 'badge-success';
+            if (statusKeluar === 'Pulang Paksa') badgeStatusKeluar = 'badge-warning';
+            if (statusKeluar.includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
 
-            const newRow = document.createElement('tr');
-            newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
-            newRow.setAttribute('data-dokter', p.dokter);
-            newRow.setAttribute('data-statuspasien', p.statusPasien);
+            if (barisSedangDiedit) {
+                barisSedangDiedit.setAttribute('data-dokter', dokter);
+                barisSedangDiedit.setAttribute('data-statuspasien', statusPasien);
 
-            newRow.innerHTML = `
-                <td></td>
-                <td><strong>${p.nama}</strong></td>
-                <td class="nowrap">${p.rm}</td>
-                <td class="nowrap">${p.tglLahir}</td>
-                <td class="nowrap">${p.usia}</td>
-                <td class="nowrap">${p.tglMasuk}</td>
-                <td>${p.statusBayar}</td>
-                <td><span class="badge badge-info">${singkatStatusPasien(p.statusPasien)}</span></td>
-                <td>${singkatDokter(p.dokter)}</td>
-                <td class="nowrap">${p.tglKeluar}</td>
-                <td><span class="badge ${badgeStatusKeluar}">${p.statusKeluar}</span></td>
-                <td class="nowrap">${p.lamaRawat.includes('Hari') ? p.lamaRawat : p.lamaRawat + ' Hari'}</td>
-                <td>${p.diagnosa}</td>
-                <td>${p.penanggungJawab}</td>
-            `;
-            tbody.appendChild(newRow);
-        });
-    }
+                barisSedangDiedit.cells[1].innerHTML = `<strong>${nama}</strong>`;
+                barisSedangDiedit.cells[2].textContent = rm;
+                barisSedangDiedit.cells[3].textContent = tglLahir;
+                barisSedangDiedit.cells[4].textContent = usia;
+                barisSedangDiedit.cells[5].textContent = tglMasuk;
+                barisSedangDiedit.cells[6].textContent = statusBayar;
+                barisSedangDiedit.cells[7].innerHTML = `<span class="badge badge-info">${singkatStatusPasien(statusPasien)}</span>`;
+                barisSedangDiedit.cells[8].textContent = singkatDokter(dokter);
+                barisSedangDiedit.cells[9].textContent = tglKeluar !== '-' ? tglKeluar : '-';
+                barisSedangDiedit.cells[10].innerHTML = `<span class="badge ${badgeStatusKeluar}">${statusKeluar}</span>`;
+                barisSedangDiedit.cells[11].textContent = lamaRawat + ' Hari';
+                barisSedangDiedit.cells[12].textContent = diagnosa;
+                barisSedangDiedit.cells[13].textContent = penanggungJawab;
 
-    // --- AUTH & LOGIN LOGIC ---
-    function handleLogin(event) {
-        event.preventDefault();
-        const username = document.getElementById('loginUsername').value;
+                alert('Data pasien berhasil diperbarui!');
+            } else {
+                const tbody = document.getElementById('tabelPasienBody');
 
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('loggedInUser', username);
+                const newRow = document.createElement('tr');
+                newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
+                newRow.setAttribute('data-dokter', dokter);
+                newRow.setAttribute('data-statuspasien', statusPasien);
 
-        document.getElementById('loggedInUser').textContent = username;
-        document.getElementById('authApp').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'block';
-        updateDataBulan();
-    }
+                newRow.innerHTML = `
+                    <td></td>
+                    <td><strong>${nama}</strong></td>
+                    <td class="nowrap">${rm}</td>
+                    <td class="nowrap">${tglLahir}</td>
+                    <td class="nowrap">${usia}</td>
+                    <td class="nowrap">${tglMasuk}</td>
+                    <td>${statusBayar}</td>
+                    <td><span class="badge badge-info">${singkatStatusPasien(statusPasien)}</span></td>
+                    <td>${singkatDokter(dokter)}</td>
+                    <td class="nowrap">${tglKeluar !== '-' ? tglKeluar : '-'}</td>
+                    <td><span class="badge ${badgeStatusKeluar}">${statusKeluar}</span></td>
+                    <td class="nowrap">${lamaRawat} Hari</td>
+                    <td>${diagnosa}</td>
+                    <td>${penanggungJawab}</td>
+                `;
 
-    function handleLogout() {
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('loggedInUser');
+                tbody.appendChild(newRow);
+                alert('Data pasien berhasil ditambahkan!');
+            }
 
-        document.getElementById('mainApp').style.display = 'none';
-        document.getElementById('authApp').style.display = 'flex';
-        document.getElementById('loginPassword').value = '';
-    }
-
-    function handleRegister(event) {
-        event.preventDefault();
-        const username = document.getElementById('regUsername').value;
-        alert('Pendaftaran Berhasil untuk username: ' + username + '. Silakan masuk!');
-        switchAuthTab('login');
-    }
-
-    function formatTitleCase(str) {
-        if (!str) return '';
-        return String(str).toLowerCase().split(' ').map(word => {
-            return word.charAt(0).toUpperCase() + word.slice(1);
-        }).join(' ');
-    }
-
-    // FUNGSI EXPORT KE EXCEL (.XLS)
-    function exportKeExcel() {
-        const table = document.getElementById('tabelDataPasien');
-        let html = table.outerHTML;
-
-        html = html.replace(/<span class="badge[^>]*>(.*?)<\/span>/g, '$1');
-
-        const blob = new Blob(['\ufeff' + html], {
-            type: 'application/vnd.ms-excel'
-        });
-
-        const bulanSelect = document.getElementById('filterBulan');
-        const namaBulan = bulanSelect.options[bulanSelect.selectedIndex].text;
-        const tahunVal = document.getElementById('filterTahun').value;
-
-        const filename = `Data_Pasien_Ruang_Edelweis_${namaBulan}_${tahunVal}.xls`;
-
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    // FUNGSI CETAK LAPORAN
-    function cetakLaporanRuangan() {
-        const userAktif = localStorage.getItem('loggedInUser') || 'Petugas';
-        document.getElementById('namaPetugasCetak').textContent = userAktif;
-
-        const tglSkrg = new Date();
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        document.getElementById('tanggalCetakHariIni').textContent = tglSkrg.toLocaleDateString('id-ID', options);
-
-        window.print();
-    }
-
-    function formatTglKetik(input) {
-        let v = input.value.replace(/\D/g, '');
-        if (v.length > 8) v = v.substring(0, 8);
-        
-        if (v.length >= 5) {
-            input.value = `${v.substring(0, 2)}/${v.substring(2, 4)}/${v.substring(4)}`;
-        } else if (v.length >= 3) {
-            input.value = `${v.substring(0, 2)}/${v.substring(2)}`;
-        } else {
-            input.value = v;
+            simpanDataPasienKeStorage();
+            batalEdit();
+            updateDataBulan();
         }
-    }
 
-    function konversiKeDDMMYYYY(tglYMD) {
-        if (!tglYMD) return '-';
-        const parts = tglYMD.split('-');
-        if (parts.length === 3) {
-            return `${parts[2]}/${parts[1]}/${parts[0]}`;
-        }
-        return tglYMD;
-    }
+        function updateDataBulan() {
+            const bulanSelect = document.getElementById('filterBulan');
+            const tahunSelect = document.getElementById('filterTahun');
+            const bulanVal = parseInt(bulanSelect.value);
+            const tahunVal = parseInt(tahunSelect.value);
+            const namaBulan = bulanSelect.options[bulanSelect.selectedIndex].text;
 
-    function konversiKeYYYYMMDD(tglDMY) {
-        if (!tglDMY || tglDMY === '-') return '';
-        const parts = tglDMY.split('/');
-        if (parts.length === 3) {
-            return `${parts[2]}-${parts[1]}-${parts[0]}`;
-        }
-        return '';
-    }
+            document.getElementById('lblPeriode1').textContent = namaBulan + ' ' + tahunVal;
+            document.getElementById('lblPeriode2').textContent = namaBulan + ' ' + tahunVal;
+            document.getElementById('lblPeriodeTabel').textContent = namaBulan + ' ' + tahunVal;
+            if (document.getElementById('lblPeriodeAnalytics')) {
+                document.getElementById('lblPeriodeAnalytics').textContent = namaBulan + ' ' + tahunVal;
+            }
 
-    function singkatDokter(namaLengkap) {
-        if (!namaLengkap) return '-';
-        return String(namaLengkap).replace('Septyuni Permadi', 'Septyuni').replace('Kusumasari', 'K').replace('Moh Ishaq', 'M Ishaq').replace('Rengganis', 'R').replace('Risyad Pradana', 'Risyad');
-    }
+            const rows = document.querySelectorAll('#tabelPasienBody tr');
+            
+            let total = 0;
+            let masihRawat = 0;
+            let izinDokter = 0;
+            let pulangPaksa = 0;
+            let meninggal = 0;
+            let pindahAnggrek = 0;
+            let pindahBougenville = 0;
+            let pindahCempaka = 0;
+            let pindahDahlia = 0;
+            let pindahKebidanan = 0;
+            let pindahPerina = 0;
+            let pindahICU = 0;
 
-    function singkatStatusPasien(status) {
-        if (!status) return '-';
-        return String(status).replace('Pasien baru IGD', 'Baru IGD').replace('Pasien Lama IGD', 'Lama IGD').replace('Pasien Baru Poliklinik', 'Baru Poli').replace('Pasien Lama Poliklinik', 'Lama Poli');
-    }
+            // Hitung Status Bayar & Diagnosa
+            let bayarBPJS = 0;
+            let bayarUmum = 0;
+            let bayarJPKM = 0;
+            let bayarLain = 0;
+            const petaDiagnosa = {};
 
-    function cariPasien() {
-        const input = document.getElementById('inputCariPasien').value.toLowerCase();
-        const rows = document.querySelectorAll('#tabelPasienBody tr');
+            let totalHariPerawatan = 0;
+            let totalPasienKeluar = 0;
+            let nomorUrut = 1;
 
-        rows.forEach(row => {
-            if (row.style.display !== 'none' || input === '') {
-                const teksBaris = row.textContent.toLowerCase();
-                if (teksBaris.includes(input)) {
+            const awalBulanFilter = new Date(tahunVal, bulanVal - 1, 1);
+            const akhirBulanFilter = new Date(tahunVal, bulanVal, 0);
+
+            rows.forEach(row => {
+                const tglMasukTxt = row.cells[5].textContent.trim();
+                const tglKeluarTxt = row.cells[9].textContent.trim();
+                
+                if (!tglMasukTxt || tglMasukTxt === '-') return;
+
+                const pMasuk = tglMasukTxt.split('/');
+                if (pMasuk.length < 3) return;
+                const tglMasukDate = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
+
+                let tglKeluarDate = null;
+                if (tglKeluarTxt && tglKeluarTxt !== '-') {
+                    const pKeluar = tglKeluarTxt.split('/');
+                    if (pKeluar.length === 3) {
+                        tglKeluarDate = new Date(pKeluar[2], pKeluar[1] - 1, pKeluar[0]);
+                    }
+                }
+
+                const masukSebelumAkhirBulan = tglMasukDate <= akhirBulanFilter;
+                const belumKeluarAtauKeluarSesudahAwal = (tglKeluarDate === null) || (tglKeluarDate >= awalBulanFilter);
+
+                if (masukSebelumAkhirBulan && belumKeluarAtauKeluarSesudahAwal) {
                     row.style.display = '';
+                    row.cells[0].textContent = nomorUrut++;
+                    total++;
+
+                    // Hitung Status Bayar
+                    const stBayar = row.cells[6].textContent.trim();
+                    if (stBayar === 'BPJS') bayarBPJS++;
+                    else if (stBayar === 'Umum') bayarUmum++;
+                    else if (stBayar === 'JPKM') bayarJPKM++;
+                    else if (stBayar.includes('Asuransi')) bayarLain++;
+
+                    // Hitung Diagnosa
+                    const diag = row.cells[12].textContent.trim();
+                    if (diag && diag !== '-') {
+                        petaDiagnosa[diag] = (petaDiagnosa[diag] || 0) + 1;
+                    }
+
+                    const statusKeluarTxt = row.cells[10].textContent.trim();
+                    const rawLama = row.cells[11].textContent.trim().replace(/\D/g, '');
+                    const lamaRawatVal = parseInt(rawLama) || 0;
+
+                    totalHariPerawatan += lamaRawatVal;
+
+                    if (statusKeluarTxt === 'Masih di rawat' || statusKeluarTxt === '-') {
+                        masihRawat++;
+                    } else {
+                        totalPasienKeluar++;
+                        if (statusKeluarTxt === 'Pulang Izin Dokter') izinDokter++;
+                        else if (statusKeluarTxt === 'Pulang Paksa') pulangPaksa++;
+                        else if (statusKeluarTxt === 'Meninggal Dunia') meninggal++;
+                        else if (statusKeluarTxt === 'Pindah Ke Anggrek') pindahAnggrek++;
+                        else if (statusKeluarTxt === 'Pindah Ke Bougenville') pindahBougenville++;
+                        else if (statusKeluarTxt === 'Pindah Ke Cempaka') pindahCempaka++;
+                        else if (statusKeluarTxt === 'Pindah Ke Dahlia') pindahDahlia++;
+                        else if (statusKeluarTxt === 'Pindah Ke Kebidanan') pindahKebidanan++;
+                        else if (statusKeluarTxt === 'Pindah Ke Perina') pindahPerina++;
+                        else if (statusKeluarTxt === 'Pindah Ke ICU') pindahICU++;
+                    }
                 } else {
                     row.style.display = 'none';
                 }
-            }
-        });
-    }
+            });
 
-    function hitungLamaRawatOtomatis() {
-        const tglMasukVal = document.getElementById('pTglMasuk').value;
-        const tglKeluarVal = document.getElementById('pTglKeluar').value;
-
-        if (tglMasukVal) {
-            const partsMasuk = tglMasukVal.split('-');
-            const masuk = new Date(partsMasuk[0], partsMasuk[1] - 1, partsMasuk[2]);
-
-            let batasAkhir;
-            if (tglKeluarVal) {
-                const partsKeluar = tglKeluarVal.split('-');
-                batasAkhir = new Date(partsKeluar[0], partsKeluar[1] - 1, partsKeluar[2]);
-            } else {
-                const skrg = new Date();
-                batasAkhir = new Date(skrg.getFullYear(), skrg.getMonth(), skrg.getDate());
+            // Update Status Bayar
+            if (document.getElementById('valBayarBPJS')) {
+                document.getElementById('valBayarBPJS').textContent = bayarBPJS + ' Pasien';
+                document.getElementById('valBayarUmum').textContent = bayarUmum + ' Pasien';
+                document.getElementById('valBayarJPKM').textContent = bayarJPKM + ' Pasien';
+                document.getElementById('valBayarLain').textContent = bayarLain + ' Pasien';
             }
 
-            const selisihWaktu = batasAkhir.getTime() - masuk.getTime();
-            let selisihHari = Math.floor(selisihWaktu / (1000 * 3600 * 24)) + 1;
+            // Update Top 5 Diagnosa
+            const listTopDiagnosa = document.getElementById('listTopDiagnosa');
+            if (listTopDiagnosa) {
+                listTopDiagnosa.innerHTML = '';
+                const sortedDiagnosa = Object.keys(petaDiagnosa).map(key => {
+                    return { nama: key, jumlah: petaDiagnosa[key] };
+                }).sort((a, b) => b.jumlah - a.jumlah).slice(0, 5);
 
-            if (selisihHari < 1) selisihHari = 1;
-
-            document.getElementById('pLamaRawat').value = selisihHari;
-        } else {
-            document.getElementById('pLamaRawat').value = 0;
-        }
-    }
-
-    function switchAuthTab(tab) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.form-section').forEach(form => form.classList.remove('active'));
-
-        if (tab === 'login') {
-            document.querySelectorAll('.tab-btn')[0].classList.add('active');
-            document.getElementById('loginForm').classList.add('active');
-        } else {
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
-            document.getElementById('registerForm').classList.add('active');
-        }
-    }
-
-    function switchPage(pageId, btn) {
-        document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-
-        document.getElementById(pageId).classList.add('active');
-        btn.classList.add('active');
-    }
-
-    function togglePassword(inputId, btn) {
-        const input = document.getElementById(inputId);
-        if (input.type === 'password') {
-            input.type = 'text';
-            btn.textContent = '🙈';
-        } else {
-            input.type = 'password';
-            btn.textContent = '👁️';
-        }
-    }
-
-    function hitungUsiaOtomatis() {
-        const tglVal = document.getElementById('pTglLahir').value;
-        if (tglVal.length !== 10) return;
-
-        const parts = tglVal.split('/');
-        if (parts.length !== 3) return;
-
-        const tgl = parseInt(parts[0], 10);
-        const bln = parseInt(parts[1], 10) - 1;
-        const thn = parseInt(parts[2], 10);
-
-        const tglLahir = new Date(thn, bln, tgl);
-        const hariIni = new Date();
-
-        let tahun = hariIni.getFullYear() - tglLahir.getFullYear();
-        let bulan = hariIni.getMonth() - tglLahir.getMonth();
-
-        if (bulan < 0 || (bulan === 0 && hariIni.getDate() < tglLahir.getDate())) {
-            tahun--;
-            bulan += 12;
-        }
-
-        if (hariIni.getDate() < tglLahir.getDate()) {
-            bulan--;
-            if (bulan < 0) {
-                bulan += 12;
-            }
-        }
-
-        if (!isNaN(tahun) && !isNaN(bulan) && tahun >= 0) {
-            document.getElementById('pUsia').value = `${tahun} Thn ${bulan} Bln`;
-        }
-    }
-
-    function pilihPasienUntukEdit(tr) {
-        barisSedangDiedit = tr;
-
-        document.getElementById('pNama').value = tr.cells[1].textContent.trim();
-        document.getElementById('pRM').value = tr.cells[2].textContent.trim();
-        document.getElementById('pTglLahir').value = tr.cells[3].textContent.trim();
-        document.getElementById('pUsia').value = tr.cells[4].textContent.trim();
-        document.getElementById('pTglMasuk').value = konversiKeYYYYMMDD(tr.cells[5].textContent.trim());
-        document.getElementById('pStatusBayar').value = tr.cells[6].textContent.trim();
-        document.getElementById('pStatusPasien').value = tr.getAttribute('data-statuspasien') || tr.cells[7].textContent.trim();
-        document.getElementById('pDokter').value = tr.getAttribute('data-dokter') || tr.cells[8].textContent.trim();
-        document.getElementById('pTglKeluar').value = konversiKeYYYYMMDD(tr.cells[9].textContent.trim());
-        document.getElementById('pStatusKeluar').value = tr.cells[10].textContent.trim();
-        document.getElementById('pLamaRawat').value = parseInt(tr.cells[11].textContent) || 0;
-        document.getElementById('pDiagnosa').value = tr.cells[12].textContent.trim();
-        
-        const pjVal = tr.cells[13].textContent.trim();
-        document.getElementById('pPenanggungJawab').value = pjVal === '-' ? '' : pjVal;
-
-        document.getElementById('formTitle').textContent = '✏️ Edit / Hapus Data Pasien';
-        document.getElementById('btnSimpan').textContent = 'Perbarui Data Pasien';
-        document.getElementById('btnHapus').style.display = 'block';
-        document.getElementById('btnBatal').style.display = 'block';
-
-        window.scrollTo({ top: 350, behavior: 'smooth' });
-    }
-
-    function hapusPasienDipilih() {
-        if (barisSedangDiedit) {
-            const namaPasien = barisSedangDiedit.cells[1].textContent.trim();
-            if (confirm(`Apakah Anda yakin ingin menghapus data pasien ${namaPasien}?`)) {
-                barisSedangDiedit.remove();
-                simpanDataPasienKeStorage();
-                alert(`Data pasien ${namaPasien} berhasil dihapus!`);
-                batalEdit();
-                updateDataBulan();
-            }
-        }
-    }
-
-    function batalEdit() {
-        barisSedangDiedit = null;
-        document.getElementById('formPasien').reset();
-        
-        document.getElementById('pStatusBayar').selectedIndex = 0;
-        document.getElementById('pStatusPasien').selectedIndex = 0;
-        document.getElementById('pDokter').selectedIndex = 0;
-        document.getElementById('pStatusKeluar').selectedIndex = 0;
-        document.getElementById('pDiagnosa').selectedIndex = 0;
-        document.getElementById('pPenanggungJawab').selectedIndex = 0;
-
-        document.getElementById('pUsia').value = '';
-        document.getElementById('pLamaRawat').value = '';
-        
-        document.getElementById('formTitle').textContent = '+ Input Data Pasien Baru (Ruang Edelweis)';
-        document.getElementById('btnSimpan').textContent = 'Simpan Data Pasien';
-        document.getElementById('btnHapus').style.display = 'none';
-        document.getElementById('btnBatal').style.display = 'none';
-    }
-
-    function tambahPasien(event) {
-        event.preventDefault();
-
-        const namaInput = document.getElementById('pNama').value.trim();
-        const nama = formatTitleCase(namaInput);
-
-        const rm = document.getElementById('pRM').value;
-        const tglLahir = document.getElementById('pTglLahir').value;
-        const usia = document.getElementById('pUsia').value;
-        const tglMasuk = konversiKeDDMMYYYY(document.getElementById('pTglMasuk').value);
-        const statusBayar = document.getElementById('pStatusBayar').value;
-        const statusPasien = document.getElementById('pStatusPasien').value;
-        const dokter = document.getElementById('pDokter').value;
-        const tglKeluar = konversiKeDDMMYYYY(document.getElementById('pTglKeluar').value);
-        const statusKeluar = document.getElementById('pStatusKeluar').value;
-        const lamaRawat = document.getElementById('pLamaRawat').value || '0';
-        const diagnosa = document.getElementById('pDiagnosa').value;
-        
-        const dropdownPJ = document.getElementById('pPenanggungJawab');
-        const penanggungJawab = dropdownPJ.value ? dropdownPJ.value : '-';
-
-        let badgeStatusKeluar = 'badge-info';
-        if (statusKeluar === 'Pulang Izin Dokter') badgeStatusKeluar = 'badge-success';
-        if (statusKeluar === 'Pulang Paksa') badgeStatusKeluar = 'badge-warning';
-        if (statusKeluar.includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
-
-        if (barisSedangDiedit) {
-            barisSedangDiedit.setAttribute('data-dokter', dokter);
-            barisSedangDiedit.setAttribute('data-statuspasien', statusPasien);
-
-            barisSedangDiedit.cells[1].innerHTML = `<strong>${nama}</strong>`;
-            barisSedangDiedit.cells[2].textContent = rm;
-            barisSedangDiedit.cells[3].textContent = tglLahir;
-            barisSedangDiedit.cells[4].textContent = usia;
-            barisSedangDiedit.cells[5].textContent = tglMasuk;
-            barisSedangDiedit.cells[6].textContent = statusBayar;
-            barisSedangDiedit.cells[7].innerHTML = `<span class="badge badge-info">${singkatStatusPasien(statusPasien)}</span>`;
-            barisSedangDiedit.cells[8].textContent = singkatDokter(dokter);
-            barisSedangDiedit.cells[9].textContent = tglKeluar !== '-' ? tglKeluar : '-';
-            barisSedangDiedit.cells[10].innerHTML = `<span class="badge ${badgeStatusKeluar}">${statusKeluar}</span>`;
-            barisSedangDiedit.cells[11].textContent = lamaRawat + ' Hari';
-            barisSedangDiedit.cells[12].textContent = diagnosa;
-            barisSedangDiedit.cells[13].textContent = penanggungJawab;
-
-            alert('Data pasien berhasil diperbarui!');
-        } else {
-            const tbody = document.getElementById('tabelPasienBody');
-
-            const newRow = document.createElement('tr');
-            newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
-            newRow.setAttribute('data-dokter', dokter);
-            newRow.setAttribute('data-statuspasien', statusPasien);
-
-            newRow.innerHTML = `
-                <td></td>
-                <td><strong>${nama}</strong></td>
-                <td class="nowrap">${rm}</td>
-                <td class="nowrap">${tglLahir}</td>
-                <td class="nowrap">${usia}</td>
-                <td class="nowrap">${tglMasuk}</td>
-                <td>${statusBayar}</td>
-                <td><span class="badge badge-info">${singkatStatusPasien(statusPasien)}</span></td>
-                <td>${singkatDokter(dokter)}</td>
-                <td class="nowrap">${tglKeluar !== '-' ? tglKeluar : '-'}</td>
-                <td><span class="badge ${badgeStatusKeluar}">${statusKeluar}</span></td>
-                <td class="nowrap">${lamaRawat} Hari</td>
-                <td>${diagnosa}</td>
-                <td>${penanggungJawab}</td>
-            `;
-
-            tbody.appendChild(newRow);
-            alert('Data pasien berhasil ditambahkan!');
-        }
-
-        simpanDataPasienKeStorage();
-        batalEdit();
-        updateDataBulan();
-    }
-
-    function updateDataBulan() {
-        const bulanSelect = document.getElementById('filterBulan');
-        const tahunSelect = document.getElementById('filterTahun');
-        const bulanVal = parseInt(bulanSelect.value);
-        const tahunVal = parseInt(tahunSelect.value);
-        const namaBulan = bulanSelect.options[bulanSelect.selectedIndex].text;
-
-        document.getElementById('lblPeriode1').textContent = namaBulan + ' ' + tahunVal;
-        document.getElementById('lblPeriode2').textContent = namaBulan + ' ' + tahunVal;
-        document.getElementById('lblPeriodeTabel').textContent = namaBulan + ' ' + tahunVal;
-        if (document.getElementById('lblPeriodeAnalytics')) {
-            document.getElementById('lblPeriodeAnalytics').textContent = namaBulan + ' ' + tahunVal;
-        }
-
-        const rows = document.querySelectorAll('#tabelPasienBody tr');
-        
-        let total = 0;
-        let masihRawat = 0;
-        let izinDokter = 0;
-        let pulangPaksa = 0;
-        let meninggal = 0;
-        let pindahAnggrek = 0;
-        let pindahBougenville = 0;
-        let pindahCempaka = 0;
-        let pindahDahlia = 0;
-        let pindahKebidanan = 0;
-        let pindahPerina = 0;
-        let pindahICU = 0;
-
-        let bayarBPJS = 0;
-        let bayarUmum = 0;
-        let bayarJPKM = 0;
-        let bayarLain = 0;
-        const petaDiagnosa = {};
-
-        let totalHariPerawatan = 0;
-        let totalPasienKeluar = 0;
-        let nomorUrut = 1;
-
-        const awalBulanFilter = new Date(tahunVal, bulanVal - 1, 1);
-        const akhirBulanFilter = new Date(tahunVal, bulanVal, 0);
-
-        rows.forEach(row => {
-            const tglMasukTxt = row.cells[5].textContent.trim();
-            const tglKeluarTxt = row.cells[9].textContent.trim();
-            
-            if (!tglMasukTxt || tglMasukTxt === '-') return;
-
-            const pMasuk = tglMasukTxt.split('/');
-            if (pMasuk.length < 3) return;
-            const tglMasukDate = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
-
-            let tglKeluarDate = null;
-            if (tglKeluarTxt && tglKeluarTxt !== '-') {
-                const pKeluar = tglKeluarTxt.split('/');
-                if (pKeluar.length === 3) {
-                    tglKeluarDate = new Date(pKeluar[2], pKeluar[1] - 1, pKeluar[0]);
-                }
-            }
-
-            const masukSebelumAkhirBulan = tglMasukDate <= akhirBulanFilter;
-            const belumKeluarAtauKeluarSesudahAwal = (tglKeluarDate === null) || (tglKeluarDate >= awalBulanFilter);
-
-            if (masukSebelumAkhirBulan && belumKeluarAtauKeluarSesudahAwal) {
-                row.style.display = '';
-                row.cells[0].textContent = nomorUrut++;
-                total++;
-
-                const stBayar = row.cells[6].textContent.trim();
-                if (stBayar === 'BPJS') bayarBPJS++;
-                else if (stBayar === 'Umum') bayarUmum++;
-                else if (stBayar === 'JPKM') bayarJPKM++;
-                else if (stBayar.includes('Asuransi')) bayarLain++;
-
-                const diag = row.cells[12].textContent.trim();
-                if (diag && diag !== '-') {
-                    petaDiagnosa[diag] = (petaDiagnosa[diag] || 0) + 1;
-                }
-
-                const statusKeluarTxt = row.cells[10].textContent.trim();
-                const rawLama = row.cells[11].textContent.trim().replace(/\D/g, '');
-                const lamaRawatVal = parseInt(rawLama) || 0;
-
-                totalHariPerawatan += lamaRawatVal;
-
-                if (statusKeluarTxt === 'Masih di rawat' || statusKeluarTxt === '-') {
-                    masihRawat++;
+                if (sortedDiagnosa.length === 0) {
+                    listTopDiagnosa.innerHTML = '<li><span class="analytics-label">Tidak ada data</span> <span class="analytics-value">0</span></li>';
                 } else {
-                    totalPasienKeluar++;
-                    if (statusKeluarTxt === 'Pulang Izin Dokter') izinDokter++;
-                    else if (statusKeluarTxt === 'Pulang Paksa') pulangPaksa++;
-                    else if (statusKeluarTxt === 'Meninggal Dunia') meninggal++;
-                    else if (statusKeluarTxt === 'Pindah Ke Anggrek') pindahAnggrek++;
-                    else if (statusKeluarTxt === 'Pindah Ke Bougenville') pindahBougenville++;
-                    else if (statusKeluarTxt === 'Pindah Ke Cempaka') pindahCempaka++;
-                    else if (statusKeluarTxt === 'Pindah Ke Dahlia') pindahDahlia++;
-                    else if (statusKeluarTxt === 'Pindah Ke Kebidanan') pindahKebidanan++;
-                    else if (statusKeluarTxt === 'Pindah Ke Perina') pindahPerina++;
-                    else if (statusKeluarTxt === 'Pindah Ke ICU') pindahICU++;
+                    sortedDiagnosa.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<span class="analytics-label">🔹 ${item.nama}</span> <span class="analytics-value">${item.jumlah} Pasien</span>`;
+                        listTopDiagnosa.appendChild(li);
+                    });
                 }
-            } else {
-                row.style.display = 'none';
             }
-        });
 
-        if (document.getElementById('valBayarBPJS')) {
-            document.getElementById('valBayarBPJS').textContent = bayarBPJS + ' Pasien';
-            document.getElementById('valBayarUmum').textContent = bayarUmum + ' Pasien';
-            document.getElementById('valBayarJPKM').textContent = bayarJPKM + ' Pasien';
-            document.getElementById('valBayarLain').textContent = bayarLain + ' Pasien';
-        }
+            document.getElementById('valTotal').textContent = total + ' Pasien';
+            document.getElementById('valMasihRawat').textContent = masihRawat + ' Pasien';
+            document.getElementById('valIzinDokter').textContent = izinDokter + ' Pasien';
+            document.getElementById('valPulangPaksa').textContent = pulangPaksa + ' Pasien';
+            document.getElementById('valMeninggal').textContent = meninggal + ' Pasien';
+            document.getElementById('valPindahAnggrek').textContent = pindahAnggrek + ' Pasien';
+            document.getElementById('valPindahBougenville').textContent = pindahBougenville + ' Pasien';
+            document.getElementById('valPindahCempaka').textContent = pindahCempaka + ' Pasien';
+            document.getElementById('valPindahDahlia').textContent = pindahDahlia + ' Pasien';
+            document.getElementById('valPindahKebidanan').textContent = pindahKebidanan + ' Pasien';
+            document.getElementById('valPindahPerina').textContent = pindahPerina + ' Pasien';
+            document.getElementById('valPindahICU').textContent = pindahICU + ' Pasien';
 
-        const listTopDiagnosa = document.getElementById('listTopDiagnosa');
-        if (listTopDiagnosa) {
-            listTopDiagnosa.innerHTML = '';
-            const sortedDiagnosa = Object.keys(petaDiagnosa).map(key => {
-                return { nama: key, jumlah: petaDiagnosa[key] };
-            }).sort((a, b) => b.jumlah - a.jumlah).slice(0, 5);
-
-            if (sortedDiagnosa.length === 0) {
-                listTopDiagnosa.innerHTML = '<li><span class="analytics-label">Tidak ada data</span> <span class="analytics-value">0</span></li>';
-            } else {
-                sortedDiagnosa.forEach(item => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<span class="analytics-label">🔹 ${item.nama}</span> <span class="analytics-value">${item.jumlah} Pasien</span>`;
-                    listTopDiagnosa.appendChild(li);
-                });
+            const jumlahHariBulan = akhirBulanFilter.getDate();
+            const kapasitasPeriode = KAPASITAS_TT * jumlahHariBulan;
+            const borHitung = ((totalHariPerawatan / kapasitasPeriode) * 100).toFixed(2);
+            
+            let alosHitung = 0;
+            if (totalPasienKeluar > 0) {
+                alosHitung = (totalHariPerawatan / totalPasienKeluar).toFixed(1);
             }
+
+            let toiHitung = 0;
+            if (totalPasienKeluar > 0) {
+                toiHitung = (((KAPASITAS_TT * jumlahHariBulan) - totalHariPerawatan) / totalPasienKeluar).toFixed(1);
+            }
+
+            document.getElementById('valBOR').textContent = borHitung + ' %';
+            document.getElementById('valALOS').textContent = alosHitung + ' Hari';
+            document.getElementById('valTOI').textContent = toiHitung + ' Hari';
         }
-
-        document.getElementById('valTotal').textContent = total + ' Pasien';
-        document.getElementById('valMasihRawat').textContent = masihRawat + ' Pasien';
-        document.getElementById('valIzinDokter').textContent = izinDokter + ' Pasien';
-        document.getElementById('valPulangPaksa').textContent = pulangPaksa + ' Pasien';
-        document.getElementById('valMeninggal').textContent = meninggal + ' Pasien';
-        document.getElementById('valPindahAnggrek').textContent = pindahAnggrek + ' Pasien';
-        document.getElementById('valPindahBougenville').textContent = pindahBougenville + ' Pasien';
-        document.getElementById('valPindahCempaka').textContent = pindahCempaka + ' Pasien';
-        document.getElementById('valPindahDahlia').textContent = pindahDahlia + ' Pasien';
-        document.getElementById('valPindahKebidanan').textContent = pindahKebidanan + ' Pasien';
-        document.getElementById('valPindahPerina').textContent = pindahPerina + ' Pasien';
-        document.getElementById('valPindahICU').textContent = pindahICU + ' Pasien';
-
-        const jumlahHariBulan = akhirBulanFilter.getDate();
-        const kapasitasPeriode = KAPASITAS_TT * jumlahHariBulan;
-        const borHitung = ((totalHariPerawatan / kapasitasPeriode) * 100).toFixed(2);
-        
-        let alosHitung = 0;
-        if (totalPasienKeluar > 0) {
-            alosHitung = (totalHariPerawatan / totalPasienKeluar).toFixed(1);
-        }
-
-        let toiHitung = 0;
-        if (totalPasienKeluar > 0) {
-            toiHitung = (((KAPASITAS_TT * jumlahHariBulan) - totalHariPerawatan) / totalPasienKeluar).toFixed(1);
-        }
-
-        document.getElementById('valBOR').textContent = borHitung + ' %';
-        document.getElementById('valALOS').textContent = alosHitung + ' Hari';
-        document.getElementById('valTOI').textContent = toiHitung + ' Hari';
-    }
-</script>
+    </script>
+</body>
+</html>
