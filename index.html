@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Ruang Edelweis - RS Daerah Sidawangi</title>
-    <!-- Library SheetJS untuk Import/Export Excel -->
+    <!-- Library SheetJS untuk Export Excel -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         * {
@@ -169,25 +169,6 @@
 
         .btn-excel:hover {
             background-color: #059669;
-        }
-
-        .btn-import {
-            padding: 7px 14px;
-            background-color: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-import:hover {
-            background-color: #2563eb;
         }
 
         .btn-cancel {
@@ -893,12 +874,6 @@
                     <div class="card-header">
                         <h3>📋 List Pasien Periode (<span id="lblPeriodeTabel">Oktober 2026</span>)</h3>
                         <div class="header-actions">
-                            <!-- TOMBOL IMPORT EXCEL -->
-                            <label for="inputExcelFile" class="btn-import" style="cursor: pointer;">
-                                📥 Import Excel
-                            </label>
-                            <input type="file" id="inputExcelFile" accept=".xlsx, .xls, .xlsm" style="display: none;" onchange="importDariExcel(event)">
-
                             <!-- TOMBOL EXPORT KE EXCEL -->
                             <button type="button" class="btn-excel" onclick="exportKeExcel()">
                                 📊 Export Excel
@@ -1104,101 +1079,6 @@
             return String(str).toLowerCase().split(' ').map(word => {
                 return word.charAt(0).toUpperCase() + word.slice(1);
             }).join(' ');
-        }
-
-        function formatTanggalExcel(val) {
-            if (!val) return '-';
-            if (typeof val === 'number') {
-                const dateObj = XLSX.SSF.parse_date_code(val);
-                if (dateObj) {
-                    const d = String(dateObj.d).padStart(2, '0');
-                    const m = String(dateObj.m).padStart(2, '0');
-                    const y = dateObj.y;
-                    return `${d}/${m}/${y}`;
-                }
-            }
-            return String(val).trim();
-        }
-
-        // FUNGSI IMPORT DATA EXCEL
-        function importDariExcel(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-                    const tbody = document.getElementById('tabelPasienBody');
-                    tbody.innerHTML = ''; 
-
-                    let importedCount = 0;
-                    for (let i = 1; i < rows.length; i++) {
-                        const r = rows[i];
-                        if (!r || r.length < 2 || !r[1]) continue; 
-
-                        const nama = formatTitleCase(r[1] || '');
-                        const rm = r[2] || '-';
-                        const tglLahir = formatTanggalExcel(r[3]);
-                        const usia = r[4] || '-';
-                        const tglMasuk = formatTanggalExcel(r[5]);
-                        const statusBayar = r[6] || 'Umum';
-                        const statusPasien = r[7] || 'Pasien baru IGD';
-                        const dokter = r[8] || '-';
-                        const tglKeluar = formatTanggalExcel(r[9]);
-                        const statusKeluar = r[10] || 'Masih di rawat';
-                        let lama = r[11] || '0';
-                        if (!String(lama).includes('Hari')) {
-                            lama = lama + ' Hari';
-                        }
-                        const diagnosa = r[12] || '-';
-                        const pj = r[13] || '-';
-
-                        let badgeStatusKeluar = 'badge-info';
-                        if (String(statusKeluar).includes('Pulang Izin Dokter')) badgeStatusKeluar = 'badge-success';
-                        else if (String(statusKeluar).includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
-                        else if (String(statusKeluar).includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
-
-                        const newRow = document.createElement('tr');
-                        newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
-                        newRow.setAttribute('data-dokter', dokter);
-                        newRow.setAttribute('data-statuspasien', statusPasien);
-
-                        newRow.innerHTML = `
-                            <td></td>
-                            <td><strong>${nama}</strong></td>
-                            <td class="nowrap">${rm}</td>
-                            <td class="nowrap">${tglLahir}</td>
-                            <td class="nowrap">${usia}</td>
-                            <td class="nowrap">${tglMasuk}</td>
-                            <td>${statusBayar}</td>
-                            <td><span class="badge badge-info">${singkatStatusPasien(statusPasien)}</span></td>
-                            <td>${singkatDokter(dokter)}</td>
-                            <td class="nowrap">${tglKeluar}</td>
-                            <td><span class="badge ${badgeStatusKeluar}">${statusKeluar}</span></td>
-                            <td class="nowrap">${lama}</td>
-                            <td>${diagnosa}</td>
-                            <td>${pj}</td>
-                        `;
-                        tbody.appendChild(newRow);
-                        importedCount++;
-                    }
-
-                    simpanDataPasienKeStorage();
-                    alert(`Berhasil mengimpor ${importedCount} data pasien dari file Excel!`);
-                    updateDataBulan();
-                } catch (err) {
-                    console.error(err);
-                    alert('Gagal membaca file Excel.');
-                }
-                event.target.value = '';
-            };
-            reader.readAsArrayBuffer(file);
         }
 
         // FUNGSI EXPORT KE EXCEL (.XLS)
