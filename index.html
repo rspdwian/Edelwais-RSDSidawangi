@@ -173,6 +173,24 @@
             background-color: #059669;
         }
 
+        .btn-backup {
+            padding: 7px 14px;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-backup:hover {
+            background-color: #4f46e5;
+        }
+
         .btn-cancel {
             padding: 12px 24px;
             background-color: #64748b;
@@ -527,6 +545,14 @@
             background-color: #f0fdfa;
         }
 
+        /* Penanda Long-Stay (Perawatan > 10 Hari) */
+        .row-long-stay {
+            background-color: #fef9c3 !important;
+        }
+        .row-long-stay:hover {
+            background-color: #fef08a !important;
+        }
+
         .badge {
             display: inline-block;
             padding: 2px 5px;
@@ -547,7 +573,7 @@
                 background-color: white;
                 color: black;
             }
-            .navbar, .filter-card, .btn-container, .header-actions, .nav-links, .user-info, .btn-excel, .search-box, .btn-print-action {
+            .navbar, .filter-card, .btn-container, .header-actions, .nav-links, .user-info, .btn-excel, .btn-backup, .search-box, .btn-print-action {
                 display: none !important;
             }
             #mainApp {
@@ -950,10 +976,8 @@
                                 <datalist id="listOpsiDiagnosa">
                                     <option value="Hiperpirexia">
                                     <option value="Kejang Demam">
-                                    <option value="Typhoid Fever">
                                     <option value="Morbili">
                                     <option value="Vomitus">
-                                    <option value="Mumps">
                                     <option value="Hipertensi">
                                     <option value="ISPA">
                                     <option value="TB Paru">
@@ -962,45 +986,38 @@
                                     <option value="Bronchopneumonia">
                                     <option value="dypsnea">
                                     <option value="GEA">
-                                    <option value="Autoimun">
                                     <option value="DCA DRS">
                                     <option value="Dengue Fever">
                                     <option value="Epitaksis">
                                     <option value="Unidentified Snake">
                                     <option value="Kolik Abdoment">
-                                    <option value="Viral Infection">
-                                    <option value="Bacterial Infection">
-                                    <option value="Downsyndrome">
-                                    <option value="Epilepsi">
                                     <option value="Abdominal Pain">
                                     <option value="Asma">
-                                    <option value="DSS">
-                                    <option value="Pneumothorax">
                                     <option value="Prolong Fever">
                                 </datalist>
                             </div>
 
-                            <!-- PENANGGUNG JAWAB -->
+                            <!-- PENANGGUNG JAWAB (FLEKSIBEL VIA DATALIST) -->
                             <div class="form-group">
                                 <label>Penanggung Jawab (Opsional)</label>
-                                <select id="pPenanggungJawab">
-                                    <option value="" selected>-- Pilih Penanggung Jawab --</option>
-                                    <option value="Sinem, S.Kep.Ners">Sinem, S.Kep.Ners</option>
-                                    <option value="Ida Yuyun Yuningsih, S.Kep.Ners">Ida Yuyun Yuningsih, S.Kep.Ners</option>
-                                    <option value="Ratnawati, S.Kep">Ratnawati, S.Kep</option>
-                                    <option value="Tuti Herlina, S.Kep">Tuti Herlina, S.Kep</option>
-                                    <option value="Turini, S.Kep.Ners">Turini, S.Kep.Ners</option>
-                                    <option value="Nurwulan Ika Rahayu, A.Md.Kep">Nurwulan Ika Rahayu, A.Md.Kep</option>
-                                    <option value="Wulan Sondari, A.Md.Kep">Wulan Sondari, A.Md.Kep</option>
-                                    <option value="Ceceh Adam, A.Md.Kep">Ceceh Adam, A.Md.Kep</option>
-                                    <option value="Sri Widaningsih, A.Md.Kep">Sri Widaningsih, A.Md.Kep</option>
-                                    <option value="Saeful Munawar, S.Kep.Ners">Saeful Munawar, S.Kep.Ners</option>
-                                    <option value="Dwian Sidik Nugraha, A.Md.Kep">Dwian Sidik Nugraha, A.Md.Kep</option>
-                                    <option value="Iis Aisyah, A.Md.Kep">Iis Aisyah, A.Md.Kep</option>
-                                    <option value="Khabibatul Maula, A.Md.Kep">Khabibatul Maula, A.Md.Kep</option>
-                                    <option value="Fuji Firmansyah, A.Md.Kep">Fuji Firmansyah, A.Md.Kep</option>
-                                    <option value="Alkarim, A.Md.Kep">Alkarim, A.Md.Kep</option>
-                                </select>
+                                <input type="text" id="pPenanggungJawab" list="listOpsiPJ" placeholder="Ketik atau pilih nama PJ...">
+                                <datalist id="listOpsiPJ">
+                                    <option value="Sinem, S.Kep.Ners">
+                                    <option value="Ida Yuyun Yuningsih, S.Kep.Ners">
+                                    <option value="Ratnawati, S.Kep">
+                                    <option value="Tuti Herlina, S.Kep">
+                                    <option value="Turini, S.Kep.Ners">
+                                    <option value="Nurwulan Ika Rahayu, A.Md.Kep">
+                                    <option value="Wulan Sondari, A.Md.Kep">
+                                    <option value="Ceceh Adam, A.Md.Kep">
+                                    <option value="Sri Widaningsih, A.Md.Kep">
+                                    <option value="Saeful Munawar, S.Kep.Ners">
+                                    <option value="Dwian Sidik Nugraha, A.Md.Kep">
+                                    <option value="Iis Aisyah, A.Md.Kep">
+                                    <option value="Khabibatul Maula, A.Md.Kep">
+                                    <option value="Fuji Firmansyah, A.Md.Kep">
+                                    <option value="Alkarim, A.Md.Kep">
+                                </datalist>
                             </div>
                         </div>
                         <div class="btn-container">
@@ -1016,6 +1033,11 @@
                     <div class="card-header">
                         <h3>📋 List Pasien Periode (<span id="lblPeriodeTabel">Oktober 2026</span>)</h3>
                         <div class="header-actions">
+                            <!-- TOMBOL BACKUP & RESTORE DATA -->
+                            <button type="button" class="btn-backup" onclick="backupDatabase()">💾 Backup JSON</button>
+                            <button type="button" class="btn-backup" onclick="document.getElementById('inputRestoreFile').click()" style="background-color: #0284c7;">📂 Restore JSON</button>
+                            <input type="file" id="inputRestoreFile" style="display: none;" accept=".json" onchange="restoreDatabase(event)">
+
                             <!-- TOMBOL EXPORT KE EXCEL -->
                             <button type="button" class="btn-excel" onclick="exportKeExcel()">
                                 📊 Export Excel
@@ -1187,14 +1209,18 @@
                 else if (String(p.statusKeluar).includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
                 else if (String(p.statusKeluar).includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
 
+                const rawLamaAngka = parseInt(p.lamaRawat) || 0;
+                let isLongStay = (p.statusKeluar === 'Masih di rawat' || p.statusKeluar === '-') && rawLamaAngka > 10;
+
                 const newRow = document.createElement('tr');
+                if (isLongStay) newRow.classList.add('row-long-stay');
                 newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
                 newRow.setAttribute('data-dokter', p.dokter);
                 newRow.setAttribute('data-statuspasien', p.statusPasien);
 
                 newRow.innerHTML = `
                     <td></td>
-                    <td><strong>${p.nama}</strong></td>
+                    <td><strong>${p.nama}</strong> ${isLongStay ? '⚠️<small>(Long-Stay)</small>' : ''}</td>
                     <td class="nowrap">${p.rm}</td>
                     <td class="nowrap">${p.tglLahir}</td>
                     <td class="nowrap">${p.usia}</td>
@@ -1210,6 +1236,46 @@
                 `;
                 tbody.appendChild(newRow);
             });
+        }
+
+        // --- FITUR BACKUP & RESTORE DATABASE JSON ---
+        function backupDatabase() {
+            const dataStored = localStorage.getItem('dataPasienEdelweis') || '[]';
+            const blob = new Blob([dataStored], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Backup_Database_Edelweis_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function restoreDatabase(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsedData = JSON.parse(e.target.result);
+                    if (Array.isArray(parsedData)) {
+                        if (confirm(`Memuat file backup dengan ${parsedData.length} data pasien. Timpa data saat ini?`)) {
+                            localStorage.setItem('dataPasienEdelweis', JSON.stringify(parsedData));
+                            muatDataPasienDariStorage();
+                            updateDataBulan();
+                            alert("Restore database berhasil dilakukan!");
+                        }
+                    } else {
+                        alert("Format file JSON tidak valid.");
+                    }
+                } catch (err) {
+                    alert("Gagal membaca file JSON.");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
         }
 
         // --- MANAJEMEN PEMBERSIHAN DATA > 10 TAHUN ---
@@ -1300,6 +1366,7 @@
             let html = table.outerHTML;
 
             html = html.replace(/<span class="badge[^>]*>(.*?)<\/span>/g, '$1');
+            html = html.replace(/⚠️<small>\(Long-Stay\)<\/small>/g, '');
 
             const blob = new Blob(['\ufeff' + html], {
                 type: 'application/vnd.ms-excel'
@@ -1480,7 +1547,7 @@
         function pilihPasienUntukEdit(tr) {
             barisSedangDiedit = tr;
 
-            document.getElementById('pNama').value = tr.cells[1].textContent.trim();
+            document.getElementById('pNama').value = tr.cells[1].textContent.replace(/⚠️.*$/, '').trim();
             document.getElementById('pRM').value = tr.cells[2].textContent.trim();
             document.getElementById('pTglLahir').value = tr.cells[3].textContent.trim();
             document.getElementById('pUsia').value = tr.cells[4].textContent.trim();
@@ -1526,7 +1593,7 @@
             document.getElementById('pDokter').selectedIndex = 0;
             document.getElementById('pStatusKeluar').selectedIndex = 0;
             document.getElementById('pDiagnosa').value = '';
-            document.getElementById('pPenanggungJawab').selectedIndex = 0;
+            document.getElementById('pPenanggungJawab').value = '';
 
             document.getElementById('pUsia').value = '';
             document.getElementById('pLamaRawat').value = '';
@@ -1543,7 +1610,7 @@
             const namaInput = document.getElementById('pNama').value.trim();
             const nama = formatTitleCase(namaInput);
 
-            const rm = document.getElementById('pRM').value;
+            const rm = document.getElementById('pRM').value.trim();
             const tglLahir = document.getElementById('pTglLahir').value;
             const usia = document.getElementById('pUsia').value;
             const tglMasuk = konversiKeDDMMYYYY(document.getElementById('pTglMasuk').value);
@@ -1554,20 +1621,45 @@
             const statusKeluar = document.getElementById('pStatusKeluar').value;
             const lamaRawat = document.getElementById('pLamaRawat').value || '0';
             const diagnosa = document.getElementById('pDiagnosa').value.trim();
-            
-            const dropdownPJ = document.getElementById('pPenanggungJawab');
-            const penanggungJawab = dropdownPJ.value ? dropdownPJ.value : '-';
+            const penanggungJawab = document.getElementById('pPenanggungJawab').value.trim() || '-';
+
+            // --- CEK VALIDASI NO RM GANDA UNTUK PASIEN AKTIF ---
+            const statusKeluarBaru = statusKeluar;
+            const isPasienAktifBaru = (statusKeluarBaru === 'Masih di rawat' || statusKeluarBaru === '-');
+
+            if (isPasienAktifBaru) {
+                const rows = document.querySelectorAll('#tabelPasienBody tr');
+                for (let r of rows) {
+                    // Jika bukan baris yang sedang diedit
+                    if (r !== barisSedangDiedit) {
+                        const existingRM = r.cells[2].textContent.trim();
+                        const existingStatusKeluar = r.cells[10].textContent.trim();
+                        const isExistingAktif = (existingStatusKeluar === 'Masih di rawat' || existingStatusKeluar === '-');
+
+                        if (existingRM === rm && isExistingAktif) {
+                            alert(`Peringatan: Nomor Rekam Medis (RM) "${rm}" sudah terdaftar atas nama pasien aktif (${r.cells[1].textContent.trim()}) di ruangan ini! Masukkan No RM yang berbeda atau selesaikan status keluar pasien sebelumnya.`);
+                            document.getElementById('pRM').focus();
+                            return;
+                        }
+                    }
+                }
+            }
 
             let badgeStatusKeluar = 'badge-info';
             if (statusKeluar === 'Pulang Izin Dokter') badgeStatusKeluar = 'badge-success';
             if (statusKeluar === 'Pulang Paksa') badgeStatusKeluar = 'badge-warning';
             if (statusKeluar.includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
 
+            const rawLamaAngka = parseInt(lamaRawat) || 0;
+            let isLongStay = isPasienAktifBaru && rawLamaAngka > 10;
+
             if (barisSedangDiedit) {
                 barisSedangDiedit.setAttribute('data-dokter', dokter);
                 barisSedangDiedit.setAttribute('data-statuspasien', statusPasien);
+                if (isLongStay) barisSedangDiedit.classList.add('row-long-stay');
+                else barisSedangDiedit.classList.remove('row-long-stay');
 
-                barisSedangDiedit.cells[1].innerHTML = `<strong>${nama}</strong>`;
+                barisSedangDiedit.cells[1].innerHTML = `<strong>${nama}</strong> ${isLongStay ? '⚠️<small>(Long-Stay)</small>' : ''}`;
                 barisSedangDiedit.cells[2].textContent = rm;
                 barisSedangDiedit.cells[3].textContent = tglLahir;
                 barisSedangDiedit.cells[4].textContent = usia;
@@ -1586,13 +1678,14 @@
                 const tbody = document.getElementById('tabelPasienBody');
 
                 const newRow = document.createElement('tr');
+                if (isLongStay) newRow.classList.add('row-long-stay');
                 newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
                 newRow.setAttribute('data-dokter', dokter);
                 newRow.setAttribute('data-statuspasien', statusPasien);
 
                 newRow.innerHTML = `
                     <td></td>
-                    <td><strong>${nama}</strong></td>
+                    <td><strong>${nama}</strong> ${isLongStay ? '⚠️<small>(Long-Stay)</small>' : ''}</td>
                     <td class="nowrap">${rm}</td>
                     <td class="nowrap">${tglLahir}</td>
                     <td class="nowrap">${usia}</td>
