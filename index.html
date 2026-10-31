@@ -942,32 +942,44 @@
                                 <label>Lama Rawat (Hari)</label>
                                 <input type="number" id="pLamaRawat" placeholder="Otomatis terhitung" readonly required>
                             </div>
+
+                            <!-- INPUT DIAGNOSA FLEKSIBEL (KETIK BEBAS ATAU PILIH LIST) -->
                             <div class="form-group">
                                 <label>Diagnosa</label>
-                                <select id="pDiagnosa" required>
-                                    <option value="" disabled selected>-- Pilih Diagnosa --</option>
-                                    <option value="Hiperpirexia">Hiperpirexia</option>
-                                    <option value="Kejang Demam">Kejang Demam</option>
-                                    <option value="Morbili">Morbili</option>
-                                    <option value="Vomitus">Vomitus</option>
-                                    <option value="Hipertensi">Hipertensi</option>
-                                    <option value="ISPA">ISPA</option>
-                                    <option value="TB Paru">TB Paru</option>
-                                    <option value="Effusi Pleura">Effusi Pleura</option>
-                                    <option value="Haemaptoe">Haemaptoe</option>
-                                    <option value="Bronchopneumonia">Bronchopneumonia</option>
-                                    <option value="dypsnea">dypsnea</option>
-                                    <option value="GEA">GEA</option>
-                                    <option value="DCA DRS">DCA DRS</option>
-                                    <option value="Dengue Fever">Dengue Fever</option>
-                                    <option value="Epitaksis">Epitaksis</option>
-                                    <option value="Unidentified Snake">Unidentified Snake</option>
-                                    <option value="Kolik Abdoment">Kolik Abdoment</option>
-                                    <option value="Abdominal Pain">Abdominal Pain</option>
-                                    <option value="Asma">Asma</option>
-                                    <option value="Prolong Fever">Prolong Fever</option>
-                                </select>
+                                <input type="text" id="pDiagnosa" list="listOpsiDiagnosa" placeholder="Ketik atau pilih diagnosa..." required>
+                                <datalist id="listOpsiDiagnosa">
+                                    <option value="Hiperpirexia">
+                                    <option value="Kejang Demam">
+                                    <option value="Typhoid Fever">
+                                    <option value="Morbili">
+                                    <option value="Vomitus">
+                                    <option value="Mumps">
+                                    <option value="Hipertensi">
+                                    <option value="ISPA">
+                                    <option value="TB Paru">
+                                    <option value="Effusi Pleura">
+                                    <option value="Haemaptoe">
+                                    <option value="Bronchopneumonia">
+                                    <option value="dypsnea">
+                                    <option value="GEA">
+                                    <option value="Autoimun">
+                                    <option value="DCA DRS">
+                                    <option value="Dengue Fever">
+                                    <option value="Epitaksis">
+                                    <option value="Unidentified Snake">
+                                    <option value="Kolik Abdoment">
+                                    <option value="Viral Infection">
+                                    <option value="Bacterial Infection">
+                                    <option value="Downsyndrome">
+                                    <option value="Epilepsi">
+                                    <option value="Abdominal Pain">
+                                    <option value="Asma">
+                                    <option value="DSS">
+                                    <option value="Pneumothorax">
+                                    <option value="Prolong Fever">
+                                </datalist>
                             </div>
+
                             <!-- PENANGGUNG JAWAB -->
                             <div class="form-group">
                                 <label>Penanggung Jawab (Opsional)</label>
@@ -1513,7 +1525,7 @@
             document.getElementById('pStatusPasien').selectedIndex = 0;
             document.getElementById('pDokter').selectedIndex = 0;
             document.getElementById('pStatusKeluar').selectedIndex = 0;
-            document.getElementById('pDiagnosa').selectedIndex = 0;
+            document.getElementById('pDiagnosa').value = '';
             document.getElementById('pPenanggungJawab').selectedIndex = 0;
 
             document.getElementById('pUsia').value = '';
@@ -1541,7 +1553,7 @@
             const tglKeluar = konversiKeDDMMYYYY(document.getElementById('pTglKeluar').value);
             const statusKeluar = document.getElementById('pStatusKeluar').value;
             const lamaRawat = document.getElementById('pLamaRawat').value || '0';
-            const diagnosa = document.getElementById('pDiagnosa').value;
+            const diagnosa = document.getElementById('pDiagnosa').value.trim();
             
             const dropdownPJ = document.getElementById('pPenanggungJawab');
             const penanggungJawab = dropdownPJ.value ? dropdownPJ.value : '-';
