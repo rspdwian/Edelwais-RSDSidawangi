@@ -606,6 +606,10 @@
             display: none;
         }
     </style>
+
+    <!-- Firebase App (Core SDK) & Realtime Database SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -1070,7 +1074,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tabelPasienBody">
-                                <!-- Data Pasien Dimuat dari LocalStorage -->
+                                <!-- Data Pasien Dimuat dari Firebase -->
                             </tbody>
                         </table>
                     </div>
@@ -1081,8 +1085,23 @@
         </div>
     </div>
 
-    <!-- ================= SCRIPT JAVASCRIPT ================= -->
+    <!-- ================= SCRIPT JAVASCRIPT & FIREBASE ================= -->
     <script>
+        // Konfigurasi Firebase Anda
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEiwmlQ1sY49AK5vosIYs_GBR_x-Q7VqY",
+            authDomain: "rsdsidawangiedelwais.firebaseapp.com",
+            databaseURL: "https://rsdsidawangiedelwais-default-rtdb.firebaseio.com",
+            projectId: "rsdsidawangiedelwais",
+            storageBucket: "rsdsidawangiedelwais.firebasestorage.app",
+            messagingSenderId: "630911540003",
+            appId: "1:630911540003:web:b430c9f2c1c124ace40a96"
+        };
+
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         let barisSedangDiedit = null;
         const KAPASITAS_TT = 32;
 
@@ -1109,13 +1128,128 @@
             document.getElementById('filterTglAwal').value = today;
             document.getElementById('filterTglAkhir').value = today;
 
-            // Pembersihan Otomatis Data Pasien > 10 Tahun Ke Belakang
-            hapusDataOtomatis10Tahun();
-
-            // Muat Data Pasien dari LocalStorage
-            muatDataPasienDariStorage();
-            updateDataBulan();
+            // Muat Data Pasien dari Firebase secara real-time
+            muatDataPasienDariFirebase();
         };
+
+        // --- MANAJEMEN PENYIMPANAN FIREBASE DATABASE ---
+        function simpanDataPasienKeFirebase() {
+            const rows = document.querySelectorAll('#tabelPasienBody tr');
+            const dataPasien = [];
+
+            rows.forEach(row => {
+                dataPasien.push({
+                    nama: row.cells[1].textContent.replace(/⚠️.*$/, '').trim(),
+                    rm: row.cells[2].textContent.trim(),
+                    tglLahir: row.cells[3].textContent.trim(),
+                    usia: row.cells[4].textContent.trim(),
+                    tglMasuk: row.cells[5].textContent.trim(),
+                    statusBayar: row.cells[6].textContent.trim(),
+                    statusPasien: row.getAttribute('data-statuspasien') || row.cells[7].textContent.trim(),
+                    dokter: row.getAttribute('data-dokter') || row.cells[8].textContent.trim(),
+                    tglKeluar: row.cells[9].textContent.trim(),
+                    statusKeluar: row.cells[10].textContent.trim(),
+                    lamaRawat: row.cells[11].textContent.trim(),
+                    diagnosa: row.cells[12].textContent.trim(),
+                    penanggungJawab: row.cells[13].textContent.trim()
+                });
+            });
+
+            // Simpan ke Firebase Realtime Database di node 'pasienEdelweis'
+            database.ref('pasienEdelweis').set(dataPasien)
+                .then(() => {
+                    console.log("Data berhasil disinkronkan ke Firebase!");
+                })
+                .catch((error) => {
+                    console.error("Gagal menyimpan ke Firebase: ", error);
+                });
+        }
+
+        function muatDataPasienDariFirebase() {
+            database.ref('pasienEdelweis').on('value', (snapshot) => {
+                const dataStored = snapshot.val();
+                const tbody = document.getElementById('tabelPasienBody');
+                tbody.innerHTML = '';
+
+                let listPasien = [];
+                if (dataStored) {
+                    listPasien = dataStored;
+                } else {
+                    // Data Bawaan Awal jika database masih kosong
+                    listPasien = [
+                        {
+                            nama: 'Coba',
+                            rm: '08888',
+                            tglLahir: '02/02/2022',
+                            usia: '4 Thn 8 Bln',
+                            tglMasuk: '08/09/2026',
+                            statusBayar: 'Umum',
+                            statusPasien: 'Pasien baru IGD',
+                            dokter: 'dr. Suci Septyuni Permadi, Sp.A',
+                            tglKeluar: '17/09/2026',
+                            statusKeluar: 'Pulang Izin Dokter',
+                            lamaRawat: '10 Hari',
+                            diagnosa: 'Morbili',
+                            penanggungJawab: 'Nurwulan Ika Rahayu, A.Md.Kep'
+                        },
+                        {
+                            nama: 'Coba 1',
+                            rm: '08888',
+                            tglLahir: '02/02/2022',
+                            usia: '4 Thn 8 Bln',
+                            tglMasuk: '30/09/2026',
+                            statusBayar: 'Umum',
+                            statusPasien: 'Pasien baru IGD',
+                            dokter: 'dr. Suci Septyuni Permadi, Sp.A',
+                            tglKeluar: '-',
+                            statusKeluar: 'Masih di rawat',
+                            lamaRawat: '28 Hari',
+                            diagnosa: 'Hipertensi',
+                            penanggungJawab: 'Sri Widaningsih, A.Md.Kep'
+                        }
+                    ];
+                    // Simpan data bawaan awal ke Firebase
+                    database.ref('pasienEdelweis').set(listPasien);
+                }
+
+                listPasien.forEach(p => {
+                    let badgeStatusKeluar = 'badge-info';
+                    if (String(p.statusKeluar).includes('Pulang Izin Dokter')) badgeStatusKeluar = 'badge-success';
+                    else if (String(p.statusKeluar).includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
+                    else if (String(p.statusKeluar).includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
+
+                    const rawLamaAngka = parseInt(p.lamaRawat) || 0;
+                    let isLongStay = (p.statusKeluar === 'Masih di rawat' || p.statusKeluar === '-') && rawLamaAngka > 10;
+
+                    const newRow = document.createElement('tr');
+                    if (isLongStay) newRow.classList.add('row-long-stay');
+                    newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
+                    newRow.setAttribute('data-dokter', p.dokter);
+                    newRow.setAttribute('data-statuspasien', p.statusPasien);
+
+                    newRow.innerHTML = `
+                        <td></td>
+                        <td><strong>${p.nama}</strong> ${isLongStay ? '⚠️<small>(Long-Stay)</small>' : ''}</td>
+                        <td class="nowrap">${p.rm}</td>
+                        <td class="nowrap">${p.tglLahir}</td>
+                        <td class="nowrap">${p.usia}</td>
+                        <td class="nowrap">${p.tglMasuk}</td>
+                        <td>${p.statusBayar}</td>
+                        <td><span class="badge badge-info">${singkatStatusPasien(p.statusPasien)}</span></td>
+                        <td>${singkatDokter(p.dokter)}</td>
+                        <td class="nowrap">${p.tglKeluar}</td>
+                        <td><span class="badge ${badgeStatusKeluar}">${p.statusKeluar}</span></td>
+                        <td class="nowrap">${p.lamaRawat.includes('Hari') ? p.lamaRawat : p.lamaRawat + ' Hari'}</td>
+                        <td>${p.diagnosa}</td>
+                        <td>${p.penanggungJawab}</td>
+                    `;
+                    tbody.appendChild(newRow);
+                });
+
+                // Perbarui rekapitulasi setelah data dari firebase dimuat
+                updateDataBulan();
+            });
+        }
 
         // GANTI MODE FILTER (BULANAN VS CUSTOM DATE RANGE)
         function gantiModeFilter() {
@@ -1133,123 +1267,20 @@
             updateDataBulan();
         }
 
-        // --- MANAJEMEN PENYIMPANAN LOCALSTORAGE ---
-        function simpanDataPasienKeStorage() {
-            const rows = document.querySelectorAll('#tabelPasienBody tr');
-            const dataPasien = [];
-
-            rows.forEach(row => {
-                dataPasien.push({
-                    nama: row.cells[1].textContent.trim(),
-                    rm: row.cells[2].textContent.trim(),
-                    tglLahir: row.cells[3].textContent.trim(),
-                    usia: row.cells[4].textContent.trim(),
-                    tglMasuk: row.cells[5].textContent.trim(),
-                    statusBayar: row.cells[6].textContent.trim(),
-                    statusPasien: row.getAttribute('data-statuspasien') || row.cells[7].textContent.trim(),
-                    dokter: row.getAttribute('data-dokter') || row.cells[8].textContent.trim(),
-                    tglKeluar: row.cells[9].textContent.trim(),
-                    statusKeluar: row.cells[10].textContent.trim(),
-                    lamaRawat: row.cells[11].textContent.trim(),
-                    diagnosa: row.cells[12].textContent.trim(),
-                    penanggungJawab: row.cells[13].textContent.trim()
-                });
-            });
-
-            localStorage.setItem('dataPasienEdelweis', JSON.stringify(dataPasien));
-        }
-
-        function muatDataPasienDariStorage() {
-            const dataStored = localStorage.getItem('dataPasienEdelweis');
-            const tbody = document.getElementById('tabelPasienBody');
-            tbody.innerHTML = '';
-
-            let listPasien = [];
-            if (dataStored) {
-                listPasien = JSON.parse(dataStored);
-            } else {
-                // Data Bawaan Awal jika storage masih kosong
-                listPasien = [
-                    {
-                        nama: 'Coba',
-                        rm: '08888',
-                        tglLahir: '02/02/2022',
-                        usia: '4 Thn 8 Bln',
-                        tglMasuk: '08/09/2026',
-                        statusBayar: 'Umum',
-                        statusPasien: 'Pasien baru IGD',
-                        dokter: 'dr. Suci Septyuni Permadi, Sp.A',
-                        tglKeluar: '17/09/2026',
-                        statusKeluar: 'Pulang Izin Dokter',
-                        lamaRawat: '10 Hari',
-                        diagnosa: 'Morbili',
-                        penanggungJawab: 'Nurwulan Ika Rahayu, A.Md.Kep'
-                    },
-                    {
-                        nama: 'Coba 1',
-                        rm: '08888',
-                        tglLahir: '02/02/2022',
-                        usia: '4 Thn 8 Bln',
-                        tglMasuk: '30/09/2026',
-                        statusBayar: 'Umum',
-                        statusPasien: 'Pasien baru IGD',
-                        dokter: 'dr. Suci Septyuni Permadi, Sp.A',
-                        tglKeluar: '-',
-                        statusKeluar: 'Masih di rawat',
-                        lamaRawat: '28 Hari',
-                        diagnosa: 'Hipertensi',
-                        penanggungJawab: 'Sri Widaningsih, A.Md.Kep'
-                    }
-                ];
-            }
-
-            listPasien.forEach(p => {
-                let badgeStatusKeluar = 'badge-info';
-                if (String(p.statusKeluar).includes('Pulang Izin Dokter')) badgeStatusKeluar = 'badge-success';
-                else if (String(p.statusKeluar).includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
-                else if (String(p.statusKeluar).includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
-
-                const rawLamaAngka = parseInt(p.lamaRawat) || 0;
-                let isLongStay = (p.statusKeluar === 'Masih di rawat' || p.statusKeluar === '-') && rawLamaAngka > 10;
-
-                const newRow = document.createElement('tr');
-                if (isLongStay) newRow.classList.add('row-long-stay');
-                newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
-                newRow.setAttribute('data-dokter', p.dokter);
-                newRow.setAttribute('data-statuspasien', p.statusPasien);
-
-                newRow.innerHTML = `
-                    <td></td>
-                    <td><strong>${p.nama}</strong> ${isLongStay ? '⚠️<small>(Long-Stay)</small>' : ''}</td>
-                    <td class="nowrap">${p.rm}</td>
-                    <td class="nowrap">${p.tglLahir}</td>
-                    <td class="nowrap">${p.usia}</td>
-                    <td class="nowrap">${p.tglMasuk}</td>
-                    <td>${p.statusBayar}</td>
-                    <td><span class="badge badge-info">${singkatStatusPasien(p.statusPasien)}</span></td>
-                    <td>${singkatDokter(p.dokter)}</td>
-                    <td class="nowrap">${p.tglKeluar}</td>
-                    <td><span class="badge ${badgeStatusKeluar}">${p.statusKeluar}</span></td>
-                    <td class="nowrap">${p.lamaRawat.includes('Hari') ? p.lamaRawat : p.lamaRawat + ' Hari'}</td>
-                    <td>${p.diagnosa}</td>
-                    <td>${p.penanggungJawab}</td>
-                `;
-                tbody.appendChild(newRow);
-            });
-        }
-
         // --- FITUR BACKUP & RESTORE DATABASE JSON ---
         function backupDatabase() {
-            const dataStored = localStorage.getItem('dataPasienEdelweis') || '[]';
-            const blob = new Blob([dataStored], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Backup_Database_Edelweis_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            database.ref('pasienEdelweis').once('value', (snapshot) => {
+                const data = snapshot.val() || [];
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Backup_Database_Edelweis_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
         }
 
         function restoreDatabase(event) {
@@ -1261,11 +1292,14 @@
                 try {
                     const parsedData = JSON.parse(e.target.result);
                     if (Array.isArray(parsedData)) {
-                        if (confirm(`Memuat file backup dengan ${parsedData.length} data pasien. Timpa data saat ini?`)) {
-                            localStorage.setItem('dataPasienEdelweis', JSON.stringify(parsedData));
-                            muatDataPasienDariStorage();
-                            updateDataBulan();
-                            alert("Restore database berhasil dilakukan!");
+                        if (confirm(`Memuat file backup dengan ${parsedData.length} data pasien ke Firebase. Timpa data online saat ini?`)) {
+                            database.ref('pasienEdelweis').set(parsedData)
+                                .then(() => {
+                                    alert("Restore database online berhasil dilakukan!");
+                                })
+                                .catch((err) => {
+                                    alert("Gagal menyimpan ke Firebase: " + err.message);
+                                });
                         }
                     } else {
                         alert("Format file JSON tidak valid.");
@@ -1278,36 +1312,29 @@
             event.target.value = '';
         }
 
-        // --- MANAJEMEN PEMBERSIHAN DATA > 10 TAHUN ---
-        function hapusDataOtomatis10Tahun() {
-            const dataStored = localStorage.getItem('dataPasienEdelweis');
-            if (!dataStored) return;
-
-            let listPasien = JSON.parse(dataStored);
-            const tahunSekarang = new Date().getFullYear();
-            const batasTahunMin = tahunSekarang - 10; 
-
-            let dataBaru = listPasien.filter(p => {
-                if (!p.tglMasuk || p.tglMasuk === '-') return true; 
-                const parts = p.tglMasuk.split('/');
-                if (parts.length === 3) {
-                    const tahunMasuk = parseInt(parts[2], 10);
-                    return tahunMasuk >= batasTahunMin;
-                }
-                return true;
-            });
-
-            if (dataBaru.length < listPasien.length) {
-                localStorage.setItem('dataPasienEdelweis', JSON.stringify(dataBaru));
-            }
-        }
-
+        // --- PEMBERSIHAN DATA > 10 TAHUN ---
         function bersihkanDataLalu() {
-            if (confirm("Apakah Anda yakin ingin menghapus semua data pasien yang usianya sudah lebih dari 10 tahun ke belakang dari penyimpanan browser?")) {
-                hapusDataOtomatis10Tahun();
-                muatDataPasienDariStorage();
-                updateDataBulan();
-                alert("Pembersihan data lama berhasil dilakukan!");
+            if (confirm("Apakah Anda yakin ingin menghapus semua data pasien di database online yang usianya sudah lebih dari 10 tahun ke belakang?")) {
+                database.ref('pasienEdelweis').once('value', (snapshot) => {
+                    const listPasien = snapshot.val() || [];
+                    const tahunSekarang = new Date().getFullYear();
+                    const batasTahunMin = tahunSekarang - 10;
+
+                    let dataBaru = listPasien.filter(p => {
+                        if (!p.tglMasuk || p.tglMasuk === '-') return true;
+                        const parts = p.tglMasuk.split('/');
+                        if (parts.length === 3) {
+                            const tahunMasuk = parseInt(parts[2], 10);
+                            return tahunMasuk >= batasTahunMin;
+                        }
+                        return true;
+                    });
+
+                    database.ref('pasienEdelweis').set(dataBaru)
+                        .then(() => {
+                            alert("Pembersihan data lama di database online berhasil dilakukan!");
+                        });
+                });
             }
         }
 
@@ -1573,13 +1600,12 @@
 
         function hapusPasienDipilih() {
             if (barisSedangDiedit) {
-                const namaPasien = barisSedangDiedit.cells[1].textContent.trim();
+                const namaPasien = barisSedangDiedit.cells[1].textContent.replace(/⚠️.*$/, '').trim();
                 if (confirm(`Apakah Anda yakin ingin menghapus data pasien ${namaPasien}?`)) {
                     barisSedangDiedit.remove();
-                    simpanDataPasienKeStorage();
+                    simpanDataPasienKeFirebase();
                     alert(`Data pasien ${namaPasien} berhasil dihapus!`);
                     batalEdit();
-                    updateDataBulan();
                 }
             }
         }
@@ -1630,7 +1656,6 @@
             if (isPasienAktifBaru) {
                 const rows = document.querySelectorAll('#tabelPasienBody tr');
                 for (let r of rows) {
-                    // Jika bukan baris yang sedang diedit
                     if (r !== barisSedangDiedit) {
                         const existingRM = r.cells[2].textContent.trim();
                         const existingStatusKeluar = r.cells[10].textContent.trim();
@@ -1704,9 +1729,8 @@
                 alert('Data pasien berhasil ditambahkan!');
             }
 
-            simpanDataPasienKeStorage();
+            simpanDataPasienKeFirebase();
             batalEdit();
-            updateDataBulan();
         }
 
         function updateDataBulan() {
