@@ -806,6 +806,14 @@
                     </div>
                 </div>
 
+                <!-- SECTION GRAFIK TREN BULANAN (BARU) -->
+                <div class="section-title">📉 Grafik Tren Efisiensi Bulanan (6 Bulan Terakhir)</div>
+                <div class="card" style="margin-bottom: 35px;">
+                    <div class="chart-container" style="height: 280px;">
+                        <canvas id="chartTrenBulanan"></canvas>
+                    </div>
+                </div>
+
                 <!-- SECTION 2: REKAPITULASI PASIEN BULANAN -->
                 <div class="section-title">👥 Rekapitulasi Data Pasien (<span id="lblPeriode2">November 2026</span>)</div>
                 
@@ -1125,6 +1133,7 @@
         // Instance Chart.js
         let chartBayarInstance = null;
         let chartDiagnosaInstance = null;
+        let chartTrenInstance = null;
 
         window.onload = function() {
             // Cek Sesi Login di LocalStorage
@@ -1874,6 +1883,7 @@
 
             renderChartStatusBayar(bayarBPJS, bayarUmum, bayarJPKM, bayarLain);
             renderChartTopDiagnosa(petaDiagnosa);
+            renderChartTrenBulanan();
 
             document.getElementById('valTotal').textContent = total + ' Pasien';
             document.getElementById('valMasihRawat').textContent = masihRawat + ' Pasien';
@@ -1965,6 +1975,104 @@
                     },
                     plugins: {
                         legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // FUNGSI RENDER GRAFIK TREN BULANAN (6 BULAN TERAKHIR)
+        function renderChartTrenBulanan() {
+            const ctx = document.getElementById('chartTrenBulanan').getContext('2d');
+            const namaBulanList = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+            
+            const tglSkrg = new Date();
+            let labelsBulan = [];
+            let dataBorHistoris = [];
+            let dataAlosHistoris = [];
+
+            const rows = document.querySelectorAll('#tabelPasienBody tr');
+
+            // Ambil 6 bulan ke belakang secara dinamis
+            for (let i = 5; i >= 0; i--) {
+                let d = new Date(tglSkrg.getFullYear(), tglSkrg.getMonth() - i, 1);
+                let bIdx = d.getMonth();
+                let thn = d.getFullYear();
+                labelsBulan.push(`${namaBulanList[bIdx]} ${thn}`);
+
+                let awalBulan = new Date(thn, bIdx, 1);
+                let akhirBulan = new Date(thn, bIdx + 1, 0);
+                let jmlHariBulan = akhirBulan.getDate();
+                let kapasitasBulan = KAPASITAS_TT * jmlHariBulan;
+
+                let hPerawatanBulan = 0;
+                let pKeluarBulan = 0;
+
+                rows.forEach(row => {
+                    const tglMasukTxt = row.cells[5].textContent.trim();
+                    const tglKeluarTxt = row.cells[9].textContent.trim();
+                    if (!tglMasukTxt || tglMasukTxt === '-') return;
+
+                    const pMasuk = tglMasukTxt.split('/');
+                    if (pMasuk.length < 3) return;
+                    let tMasuk = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
+
+                    let tKeluar = null;
+                    if (tglKeluarTxt && tglKeluarTxt !== '-') {
+                        const pKel = tglKeluarTxt.split('/');
+                        if (pKel.length === 3) tKeluar = new Date(pKel[2], pKel[1] - 1, pKel[0]);
+                    }
+
+                    if (tMasuk <= akhirBulan && (tKeluar === null || tKeluar >= awalBulan)) {
+                        const rawLama = row.cells[11].textContent.trim().replace(/\D/g, '');
+                        hPerawatanBulan += parseInt(rawLama) || 0;
+                        if (tKeluar !== null && tKeluar >= awalBulan && tKeluar <= akhirBulan) {
+                            pKeluarBulan++;
+                        }
+                    }
+                });
+
+                let borBulan = parseFloat(((hPerawatanBulan / kapasitasBulan) * 100).toFixed(1));
+                let alosBulan = pKeluarBulan > 0 ? parseFloat((hPerawatanBulan / pKeluarBulan).toFixed(1)) : 0;
+
+                dataBorHistoris.push(borBulan);
+                dataAlosHistoris.push(alosBulan);
+            }
+
+            if (chartTrenInstance) {
+                chartTrenInstance.destroy();
+            }
+
+            chartTrenInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labelsBulan,
+                    datasets: [
+                        {
+                            label: 'BOR (%)',
+                            data: dataBorHistoris,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'ALOS (Hari)',
+                            data: dataAlosHistoris,
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
                     }
                 }
             });
