@@ -749,23 +749,40 @@
                     <h3 style="font-size: 16px; font-weight: bold; margin-top: 10px; text-decoration: underline;">LAPORAN REKAPITULASI & INDIKATOR RAWAT INAP RUANG EDELWEIS</h3>
                 </div>
                 
-                <!-- SECTION 1: INDIKATOR EFISIENSI RUMAH SAKIT -->
+                <!-- SECTION 1: INDIKATOR EFISIENSI RUMAH SAKIT DENGAN RUMUS -->
                 <div class="section-title">📊 Indikator Efisiensi Rawat Inap (<span id="lblPeriode1">November 2026</span>)</div>
                 <div class="stats-grid-primary">
+                    <!-- KARTU BOR -->
                     <div class="stat-card blue">
                         <h4>BOR (Bed Occupancy Rate)</h4>
                         <p id="valBOR">0 %</p>
                         <span>Kapasitas: 32 Tempat Tidur (Ideal: 60-85%)</span>
+                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1; font-size: 11px; color: #475569;">
+                            <strong>📐 Rumus:</strong><br>
+                            <code>(Jumlah Hari Perawatan ÷ (32 Tempat Tidur × Jumlah Hari Periode)) × 100%</code>
+                        </div>
                     </div>
+
+                    <!-- KARTU ALOS -->
                     <div class="stat-card purple">
                         <h4>ALOS (Avg Length of Stay)</h4>
                         <p id="valALOS">0 Hari</p>
                         <span>Standar Ideal: 6 - 9 Hari</span>
+                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1; font-size: 11px; color: #475569;">
+                            <strong>📐 Rumus:</strong><br>
+                            <code>Jumlah Hari Perawatan Pasien Keluar ÷ Jumlah Pasien Keluar (Hidup + Mati)</code>
+                        </div>
                     </div>
+
+                    <!-- KARTU TOI -->
                     <div class="stat-card amber">
                         <h4>TOI (Turn Over Interval)</h4>
                         <p id="valTOI">0 Hari</p>
                         <span>Standar Ideal: 1 - 3 Hari</span>
+                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1; font-size: 11px; color: #475569;">
+                            <strong>📐 Rumus:</strong><br>
+                            <code>((32 TT × Jumlah Hari Periode) - Hari Perawatan) ÷ Jumlah Pasien Keluar</code>
+                        </div>
                     </div>
                 </div>
 
