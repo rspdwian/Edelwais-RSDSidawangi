@@ -170,7 +170,7 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -178,6 +178,7 @@
 
         .btn-excel:hover {
             background-color: #059669;
+            transform: translateY(-1px);
         }
 
         .btn-backup {
@@ -189,6 +190,7 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -196,6 +198,7 @@
 
         .btn-backup:hover {
             background-color: #4f46e5;
+            transform: translateY(-1px);
         }
 
         .btn-cancel {
@@ -232,7 +235,6 @@
             background-color: #dc2626;
         }
 
-        /* --- KELAS TRANSISI FORM AUTH (MASUK & DAFTAR) --- */
         .form-section {
             display: none;
             opacity: 0;
@@ -259,13 +261,13 @@
         }
 
         .navbar {
-            background-color: #0d9488;
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
             color: white;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
             flex-wrap: wrap;
             gap: 15px;
         }
@@ -284,12 +286,14 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.3s ease;
         }
 
         .nav-btn.active, .nav-btn:hover {
             background-color: white;
             color: #0d9488;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .user-info {
@@ -307,10 +311,12 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
         }
 
         .btn-logout:hover {
             background-color: #dc2626;
+            transform: translateY(-1px);
         }
 
         .dashboard-container {
@@ -322,8 +328,8 @@
         .app-page {
             display: none;
             opacity: 0;
-            transform: translateY(8px);
-            transition: opacity 0.35s ease, transform 0.35s ease;
+            transform: translateY(12px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .app-page.active {
@@ -334,10 +340,11 @@
 
         /* FILTER PERIODE BULAN, TAHUN & RENTANG TANGGAL */
         .filter-card {
-            background-color: white;
+            background: linear-gradient(to right, #ffffff, #f8fafc);
             padding: 18px 24px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
             margin-bottom: 25px;
             display: flex;
             align-items: center;
@@ -369,12 +376,14 @@
             font-size: 13px;
             color: #334155;
             outline: none;
-            background-color: #f8fafc;
+            background-color: #fff;
             font-weight: 600;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .filter-select:focus, .filter-date:focus {
             border-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
         }
 
         .section-title {
@@ -385,9 +394,11 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            border-left: 4px solid #0d9488;
+            padding-left: 10px;
         }
 
-        /* Stats Grid - Indikator Efisiensi */
+        /* --- KARTU STATISTIK YANG LEBIH HIDUP & INTERAKTIF --- */
         .stats-grid-primary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -395,7 +406,6 @@
             margin-bottom: 35px;
         }
 
-        /* Grid Khusus Analytics (Grafik & Rekap) */
         .analytics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -403,7 +413,6 @@
             margin-bottom: 35px;
         }
 
-        /* Stats Grid - Rekapitulasi Baris Umum & Pindahan */
         .rekap-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -412,16 +421,34 @@
         }
 
         .stat-card {
-            background-color: white;
+            background: linear-gradient(135deg, #ffffff 0%, #fcfcfc 100%);
             padding: 22px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
             border-left: 6px solid #0d9488;
-            transition: transform 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efek Kilau Halus di Kartu */
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(13,148,136,0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
         }
 
         .stat-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            border-color: #cbd5e1;
         }
 
         .stat-card.blue { border-left-color: #3b82f6; }
@@ -436,22 +463,25 @@
 
         .stat-card h4 {
             color: #64748b;
-            font-size: 13px;
+            font-size: 12.5px;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
             text-transform: uppercase;
+            font-weight: 700;
         }
 
         .stat-card p {
             font-size: 28px;
-            font-weight: bold;
+            font-weight: 800;
             color: #0f172a;
             margin-bottom: 4px;
+            letter-spacing: -0.5px;
         }
 
         .stat-card span {
             font-size: 12px;
             color: #94a3b8;
+            font-weight: 500;
         }
 
         .chart-container {
@@ -464,15 +494,21 @@
         /* Card Section untuk Form & Tabel Pasien */
         .card {
             background-color: white;
-            padding: 15px;
+            padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
             margin-bottom: 25px;
+            transition: box-shadow 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
         }
 
         .card-header {
             margin-bottom: 15px;
-            padding-bottom: 10px;
+            padding-bottom: 12px;
             border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
@@ -484,6 +520,7 @@
         .card-header h3 {
             color: #0f172a;
             font-size: 16px;
+            font-weight: 700;
         }
 
         .header-actions {
@@ -501,17 +538,19 @@
 
         .search-box input {
             width: 100%;
-            padding: 7px 12px 7px 32px;
+            padding: 8px 12px 8px 32px;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
             font-size: 13px;
             outline: none;
             background-color: #f8fafc;
+            transition: all 0.3s;
         }
 
         .search-box input:focus {
             border-color: #0d9488;
             background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
         }
 
         .search-icon {
@@ -545,7 +584,7 @@
         }
 
         table th, table td {
-            padding: 6px 4px;
+            padding: 8px 6px;
             border-bottom: 1px solid #e2e8f0;
             vertical-align: middle;
         }
@@ -570,17 +609,24 @@
             background-color: #f0fdfa;
         }
 
-        /* Penanda Long-Stay (Perawatan > 10 Hari) */
+        /* Penanda Long-Stay dengan animasi kedip halus */
         .row-long-stay {
             background-color: #fef9c3 !important;
+            animation: pulseWarning 2s infinite;
         }
         .row-long-stay:hover {
             background-color: #fef08a !important;
         }
 
+        @keyframes pulseWarning {
+            0% { background-color: #fef9c3; }
+            50% { background-color: #fef08a; }
+            100% { background-color: #fef9c3; }
+        }
+
         .badge {
             display: inline-block;
-            padding: 2px 5px;
+            padding: 3px 7px;
             border-radius: 4px;
             font-size: 9.5px;
             font-weight: 600;
@@ -651,7 +697,7 @@
         <div class="auth-container">
             <div class="auth-header">
                 <h2>Ruang Edelweis</h2>
-                <p>RS Daerah Sidawangi</p>
+                <p>Rumah Sakit Daerah Sidawangi</p>
             </div>
 
             <div class="tabs">
@@ -700,7 +746,7 @@
         <div class="navbar">
             <div>
                 <h1>Ruang Edelweis</h1>
-                <p>RS Daerah Sidawangi</p>
+                <p>Rumah Sakit Daerah Sidawangi</p>
             </div>
             <div class="nav-links">
                 <button class="nav-btn active" onclick="switchPage('pageDashboard', this)">🏠 Halaman Utama</button>
@@ -758,7 +804,7 @@
                     </div>
 
                     <!-- TOMBOL BERSIHKAN DATA LAMA MANUAL -->
-                    <button type="button" onclick="bersihkanDataLalu()" style="padding: 8px 12px; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
+                    <button type="button" onclick="bersihkanDataLalu()" style="padding: 8px 12px; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
                         🧹 Bersihkan Data > 10 Tahun
                     </button>
                 </div>
@@ -769,7 +815,7 @@
                 
                 <!-- TOMBOL CETAK LAPORAN -->
                 <div class="btn-print-action" style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
-                    <button type="button" onclick="cetakLaporanRuangan()" style="padding: 10px 18px; background-color: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <button type="button" onclick="cetakLaporanRuangan()" style="padding: 10px 18px; background-color: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s, background 0.3s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
                         🖨️ Cetak Laporan Resmi
                     </button>
                 </div>
@@ -1412,7 +1458,6 @@
             window.print();
         }
 
-        // --- ANIMASI TRANSISI DARI LOGIN KE HALAMAN UTAMA ---
         function handleLogin(event) {
             event.preventDefault();
             const username = document.getElementById('loginUsername').value;
@@ -1421,7 +1466,6 @@
             localStorage.setItem('loggedInUser', username);
             document.getElementById('loggedInUser').textContent = username;
 
-            // Efek Transisi Keluar (Fade Out) pada Halaman Login
             const authApp = document.getElementById('authApp');
             authApp.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
             authApp.style.opacity = '0';
@@ -1584,7 +1628,6 @@
             }
         }
 
-        // --- ANIMASI TRANSISI ANTARA TAB LOGIN DAN REGISTER ---
         function switchAuthTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             const loginForm = document.getElementById('loginForm');
@@ -2005,7 +2048,9 @@
                     labels: ['BPJS', 'Umum', 'JPKM', 'Asuransi Lain'],
                     datasets: [{
                         data: [bpjs, umum, jpkm, lain],
-                        backgroundColor: ['#0d9488', '#3b82f6', '#f59e0b', '#8b5cf6']
+                        backgroundColor: ['#0d9488', '#3b82f6', '#f59e0b', '#8b5cf6'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
                     }]
                 },
                 options: {
@@ -2039,7 +2084,8 @@
                     datasets: [{
                         label: 'Jumlah Pasien',
                         data: dataCounts.length > 0 ? dataCounts : [0],
-                        backgroundColor: '#6366f1'
+                        backgroundColor: '#6366f1',
+                        borderRadius: 6
                     }]
                 },
                 options: {
@@ -2126,7 +2172,8 @@
                             borderColor: '#3b82f6',
                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
                             fill: true,
-                            tension: 0.3
+                            tension: 0.35,
+                            borderWidth: 3
                         },
                         {
                             label: 'ALOS (Hari)',
@@ -2134,7 +2181,8 @@
                             borderColor: '#8b5cf6',
                             backgroundColor: 'rgba(139, 92, 246, 0.1)',
                             fill: true,
-                            tension: 0.3
+                            tension: 0.35,
+                            borderWidth: 3
                         }
                     ]
                 },
