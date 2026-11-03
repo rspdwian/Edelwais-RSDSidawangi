@@ -705,8 +705,8 @@
                             <option value="7">Juli</option>
                             <option value="8">Agustus</option>
                             <option value="9">September</option>
-                            <option value="10" selected>Oktober</option>
-                            <option value="11">November</option>
+                            <option value="10">Oktober</option>
+                            <option value="11" selected>November</option>
                             <option value="12">Desember</option>
                         </select>
 
@@ -750,7 +750,7 @@
                 </div>
                 
                 <!-- SECTION 1: INDIKATOR EFISIENSI RUMAH SAKIT -->
-                <div class="section-title">📊 Indikator Efisiensi Rawat Inap (<span id="lblPeriode1">Oktober 2026</span>)</div>
+                <div class="section-title">📊 Indikator Efisiensi Rawat Inap (<span id="lblPeriode1">November 2026</span>)</div>
                 <div class="stats-grid-primary">
                     <div class="stat-card blue">
                         <h4>BOR (Bed Occupancy Rate)</h4>
@@ -770,7 +770,7 @@
                 </div>
 
                 <!-- SECTION ANALYTICS VISUAL: GRAFIK CARA BAYAR & DIAGNOSA -->
-                <div class="section-title">📈 Analisis Visual Cara Bayar & Diagnosa (<span id="lblPeriodeAnalytics">Oktober 2026</span>)</div>
+                <div class="section-title">📈 Analisis Visual Cara Bayar & Diagnosa (<span id="lblPeriodeAnalytics">November 2026</span>)</div>
                 <div class="analytics-grid">
                     <!-- Kartu Grafik Cara Bayar -->
                     <div class="stat-card teal">
@@ -790,7 +790,7 @@
                 </div>
 
                 <!-- SECTION 2: REKAPITULASI PASIEN BULANAN -->
-                <div class="section-title">👥 Rekapitulasi Data Pasien (<span id="lblPeriode2">Oktober 2026</span>)</div>
+                <div class="section-title">👥 Rekapitulasi Data Pasien (<span id="lblPeriode2">November 2026</span>)</div>
                 
                 <div class="rekap-grid">
                     <div class="stat-card">
@@ -1035,7 +1035,7 @@
                 <!-- SECTION 4: LIST SELURUH PASIEN DI RUANGAN -->
                 <div class="card">
                     <div class="card-header">
-                        <h3>📋 List Pasien Periode (<span id="lblPeriodeTabel">Oktober 2026</span>)</h3>
+                        <h3>📋 List Pasien Periode (<span id="lblPeriodeTabel">November 2026</span>)</h3>
                         <div class="header-actions">
                             <!-- TOMBOL BACKUP & RESTORE DATA -->
                             <button type="button" class="btn-backup" onclick="backupDatabase()">💾 Backup JSON</button>
@@ -1123,8 +1123,32 @@
                 document.getElementById('mainApp').style.display = 'none';
             }
 
+            // --- OTOMATIS SET FILTER KE BULAN & TAHUN REAL-TIME ---
+            const tanggalSekarang = new Date();
+            const bulanRealtime = tanggalSekarang.getMonth() + 1; // 1 - 12
+            const tahunRealtime = tanggalSekarang.getFullYear();
+
+            document.getElementById('filterBulan').value = bulanRealtime;
+            
+            const selectTahun = document.getElementById('filterTahun');
+            let tahunAda = false;
+            for (let i = 0; i < selectTahun.options.length; i++) {
+                if (selectTahun.options[i].value == tahunRealtime) {
+                    tahunAda = true;
+                    break;
+                }
+            }
+            if (!tahunAda) {
+                const opt = document.createElement('option');
+                opt.value = tahunRealtime;
+                opt.textContent = tahunRealtime;
+                selectTahun.insertBefore(opt, selectTahun.firstChild);
+            }
+            selectTahun.value = tahunRealtime;
+            // -----------------------------------------------------
+
             // Set default tanggal hari ini untuk filter custom
-            const today = new Date().toISOString().split('T')[0];
+            const today = tanggalSekarang.toISOString().split('T')[0];
             document.getElementById('filterTglAwal').value = today;
             document.getElementById('filterTglAkhir').value = today;
 
@@ -1155,7 +1179,6 @@
                 });
             });
 
-            // Simpan ke Firebase Realtime Database di node 'pasienEdelweis'
             database.ref('pasienEdelweis').set(dataPasien)
                 .then(() => {
                     console.log("Data berhasil disinkronkan ke Firebase!");
@@ -1175,7 +1198,6 @@
                 if (dataStored) {
                     listPasien = dataStored;
                 } else {
-                    // Data Bawaan Awal jika database masih kosong
                     listPasien = [
                         {
                             nama: 'Coba',
@@ -1191,24 +1213,8 @@
                             lamaRawat: '10 Hari',
                             diagnosa: 'Morbili',
                             penanggungJawab: 'Nurwulan Ika Rahayu, A.Md.Kep'
-                        },
-                        {
-                            nama: 'Coba 1',
-                            rm: '08888',
-                            tglLahir: '02/02/2022',
-                            usia: '4 Thn 8 Bln',
-                            tglMasuk: '30/09/2026',
-                            statusBayar: 'Umum',
-                            statusPasien: 'Pasien baru IGD',
-                            dokter: 'dr. Suci Septyuni Permadi, Sp.A',
-                            tglKeluar: '-',
-                            statusKeluar: 'Masih di rawat',
-                            lamaRawat: '28 Hari',
-                            diagnosa: 'Hipertensi',
-                            penanggungJawab: 'Sri Widaningsih, A.Md.Kep'
                         }
                     ];
-                    // Simpan data bawaan awal ke Firebase
                     database.ref('pasienEdelweis').set(listPasien);
                 }
 
@@ -1246,12 +1252,10 @@
                     tbody.appendChild(newRow);
                 });
 
-                // Perbarui rekapitulasi setelah data dari firebase dimuat
                 updateDataBulan();
             });
         }
 
-        // GANTI MODE FILTER (BULANAN VS CUSTOM DATE RANGE)
         function gantiModeFilter() {
             const mode = document.getElementById('filterMode').value;
             const wrapBulan = document.getElementById('wrapperFilterBulan');
@@ -1267,7 +1271,6 @@
             updateDataBulan();
         }
 
-        // --- FITUR BACKUP & RESTORE DATABASE JSON ---
         function backupDatabase() {
             database.ref('pasienEdelweis').once('value', (snapshot) => {
                 const data = snapshot.val() || [];
@@ -1312,7 +1315,6 @@
             event.target.value = '';
         }
 
-        // --- PEMBERSIHAN DATA > 10 TAHUN ---
         function bersihkanDataLalu() {
             if (confirm("Apakah Anda yakin ingin menghapus semua data pasien di database online yang usianya sudah lebih dari 10 tahun ke belakang?")) {
                 database.ref('pasienEdelweis').once('value', (snapshot) => {
@@ -1338,7 +1340,6 @@
             }
         }
 
-        // --- CETAK LAPORAN RESMI ---
         function cetakLaporanRuangan() {
             const userAktif = localStorage.getItem('loggedInUser') || 'Petugas';
             document.getElementById('namaPetugasCetak').textContent = userAktif;
@@ -1350,7 +1351,6 @@
             window.print();
         }
 
-        // --- AUTH & LOGIN LOGIC ---
         function handleLogin(event) {
             event.preventDefault();
             const username = document.getElementById('loginUsername').value;
@@ -1387,7 +1387,6 @@
             }).join(' ');
         }
 
-        // FUNGSI EXPORT KE EXCEL (.XLS)
         function exportKeExcel() {
             const table = document.getElementById('tabelDataPasien');
             let html = table.outerHTML;
@@ -1649,7 +1648,6 @@
             const diagnosa = document.getElementById('pDiagnosa').value.trim();
             const penanggungJawab = document.getElementById('pPenanggungJawab').value.trim() || '-';
 
-            // --- CEK VALIDASI NO RM GANDA UNTUK PASIEN AKTIF ---
             const statusKeluarBaru = statusKeluar;
             const isPasienAktifBaru = (statusKeluarBaru === 'Masih di rawat' || statusKeluarBaru === '-');
 
@@ -1784,7 +1782,6 @@
             let pindahPerina = 0;
             let pindahICU = 0;
 
-            // Hitung Status Bayar & Diagnosa
             let bayarBPJS = 0;
             let bayarUmum = 0;
             let bayarJPKM = 0;
@@ -1821,14 +1818,12 @@
                     row.cells[0].textContent = nomorUrut++;
                     total++;
 
-                    // Hitung Status Bayar
                     const stBayar = row.cells[6].textContent.trim();
                     if (stBayar === 'BPJS') bayarBPJS++;
                     else if (stBayar === 'Umum') bayarUmum++;
                     else if (stBayar === 'JPKM') bayarJPKM++;
                     else if (stBayar.includes('Asuransi')) bayarLain++;
 
-                    // Hitung Diagnosa
                     const diag = row.cells[12].textContent.trim();
                     if (diag && diag !== '-') {
                         petaDiagnosa[diag] = (petaDiagnosa[diag] || 0) + 1;
@@ -1860,7 +1855,6 @@
                 }
             });
 
-            // UPDATE GRAFIK VISUAL CHART.JS
             renderChartStatusBayar(bayarBPJS, bayarUmum, bayarJPKM, bayarLain);
             renderChartTopDiagnosa(petaDiagnosa);
 
@@ -1896,7 +1890,6 @@
             document.getElementById('valTOI').textContent = toiHitung + ' Hari';
         }
 
-        // FUNGSI RENDER GRAFIK STATUS BAYAR (DOUGHNUT CHART)
         function renderChartStatusBayar(bpjs, umum, jpkm, lain) {
             const ctx = document.getElementById('chartStatusBayar').getContext('2d');
             
@@ -1923,7 +1916,6 @@
             });
         }
 
-        // FUNGSI RENDER GRAFIK TOP 5 DIAGNOSA (BAR CHART)
         function renderChartTopDiagnosa(petaDiagnosa) {
             const ctx = document.getElementById('chartTopDiagnosa').getContext('2d');
 
