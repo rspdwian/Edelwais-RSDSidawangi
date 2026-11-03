@@ -20,15 +20,17 @@
             background-color: #f1f5f9;
             color: #334155;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* --- HALAMAN AUTH (LOGIN & REGISTER) --- */
+        /* --- HALAMAN AUTH (LOGIN & REGISTER) DENGAN ANIMASI FADE-IN --- */
         .auth-wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            animation: fadeIn 0.6s ease-in-out;
         }
 
         .auth-container {
@@ -37,7 +39,9 @@
             max-width: 400px;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(0);
+            transition: transform 0.4s ease, opacity 0.4s ease;
         }
 
         .auth-header {
@@ -105,6 +109,7 @@
             font-size: 13px;
             outline: none;
             background-color: #fff;
+            transition: border-color 0.3s;
         }
 
         .form-group input[readonly] {
@@ -147,11 +152,13 @@
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
+            width: 100%;
         }
 
         .btn-submit:hover {
             background-color: #0f766e;
+            transform: translateY(-1px);
         }
 
         .btn-excel {
@@ -225,17 +232,30 @@
             background-color: #dc2626;
         }
 
+        /* --- KELAS TRANSISI FORM AUTH (MASUK & DAFTAR) --- */
         .form-section {
             display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .form-section.active {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        /* --- HALAMAN APLIKASI UTAMA --- */
+        /* --- HALAMAN APLIKASI UTAMA DENGAN ANIMASI FADE-IN --- */
         #mainApp {
             display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        #mainApp.show {
+            display: block;
+            opacity: 1;
         }
 
         .navbar {
@@ -301,10 +321,15 @@
 
         .app-page {
             display: none;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
         }
 
         .app-page.active {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* FILTER PERIODE BULAN, TAHUN & RENTANG TANGGAL */
@@ -567,6 +592,11 @@
         .badge-warning { background-color: #fef3c7; color: #d97706; }
         .badge-danger { background-color: #fee2e2; color: #dc2626; }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
         /* --- FORMAT KHUSUS CETAK / PRINT --- */
         @media print {
             body {
@@ -578,9 +608,12 @@
             }
             #mainApp {
                 display: block !important;
+                opacity: 1 !important;
             }
             .app-page {
                 display: block !important;
+                opacity: 1 !important;
+                transform: none !important;
             }
             .card, .stat-card {
                 box-shadow: none !important;
@@ -806,7 +839,7 @@
                     </div>
                 </div>
 
-                <!-- SECTION GRAFIK TREN BULANAN (BARU) -->
+                <!-- SECTION GRAFIK TREN BULANAN -->
                 <div class="section-title">📉 Grafik Tren Efisiensi Bulanan (6 Bulan Terakhir)</div>
                 <div class="card" style="margin-bottom: 35px;">
                     <div class="chart-container" style="height: 280px;">
@@ -1143,7 +1176,9 @@
             if (isLogged === 'true' && user) {
                 document.getElementById('loggedInUser').textContent = user;
                 document.getElementById('authApp').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
+                const mainApp = document.getElementById('mainApp');
+                mainApp.style.display = 'block';
+                setTimeout(() => mainApp.classList.add('show'), 50);
             } else {
                 document.getElementById('authApp').style.display = 'flex';
                 document.getElementById('mainApp').style.display = 'none';
@@ -1377,26 +1412,45 @@
             window.print();
         }
 
+        // --- ANIMASI TRANSISI DARI LOGIN KE HALAMAN UTAMA ---
         function handleLogin(event) {
             event.preventDefault();
             const username = document.getElementById('loginUsername').value;
 
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('loggedInUser', username);
-
             document.getElementById('loggedInUser').textContent = username;
-            document.getElementById('authApp').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            updateDataBulan();
+
+            // Efek Transisi Keluar (Fade Out) pada Halaman Login
+            const authApp = document.getElementById('authApp');
+            authApp.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            authApp.style.opacity = '0';
+            authApp.style.transform = 'scale(0.95)';
+
+            setTimeout(() => {
+                authApp.style.display = 'none';
+                const mainApp = document.getElementById('mainApp');
+                mainApp.style.display = 'block';
+                setTimeout(() => mainApp.classList.add('show'), 50);
+                updateDataBulan();
+            }, 400);
         }
 
         function handleLogout() {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('loggedInUser');
 
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('authApp').style.display = 'flex';
-            document.getElementById('loginPassword').value = '';
+            const mainApp = document.getElementById('mainApp');
+            mainApp.classList.remove('show');
+
+            setTimeout(() => {
+                mainApp.style.display = 'none';
+                const authApp = document.getElementById('authApp');
+                authApp.style.display = 'flex';
+                authApp.style.opacity = '1';
+                authApp.style.transform = 'scale(1)';
+                document.getElementById('loginPassword').value = '';
+            }, 400);
         }
 
         function handleRegister(event) {
@@ -1530,16 +1584,36 @@
             }
         }
 
+        // --- ANIMASI TRANSISI ANTARA TAB LOGIN DAN REGISTER ---
         function switchAuthTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.form-section').forEach(form => form.classList.remove('active'));
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
 
             if (tab === 'login') {
                 document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('loginForm').classList.add('active');
+                registerForm.style.opacity = '0';
+                registerForm.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    registerForm.classList.remove('active');
+                    loginForm.classList.add('active');
+                    setTimeout(() => {
+                        loginForm.style.opacity = '1';
+                        loginForm.style.transform = 'translateY(0)';
+                    }, 20);
+                }, 200);
             } else {
                 document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('registerForm').classList.add('active');
+                loginForm.style.opacity = '0';
+                loginForm.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    loginForm.classList.remove('active');
+                    registerForm.classList.add('active');
+                    setTimeout(() => {
+                        registerForm.style.opacity = '1';
+                        registerForm.style.transform = 'translateY(0)';
+                    }, 20);
+                }, 200);
             }
         }
 
@@ -1547,7 +1621,8 @@
             document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
-            document.getElementById(pageId).classList.add('active');
+            const targetPage = document.getElementById(pageId);
+            targetPage.classList.add('active');
             btn.classList.add('active');
         }
 
@@ -1980,7 +2055,6 @@
             });
         }
 
-        // FUNGSI RENDER GRAFIK TREN BULANAN (6 BULAN TERAKHIR)
         function renderChartTrenBulanan() {
             const ctx = document.getElementById('chartTrenBulanan').getContext('2d');
             const namaBulanList = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
@@ -1992,7 +2066,6 @@
 
             const rows = document.querySelectorAll('#tabelPasienBody tr');
 
-            // Ambil 6 bulan ke belakang secara dinamis
             for (let i = 5; i >= 0; i--) {
                 let d = new Date(tglSkrg.getFullYear(), tglSkrg.getMonth() - i, 1);
                 let bIdx = d.getMonth();
