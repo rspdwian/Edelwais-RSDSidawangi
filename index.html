@@ -275,6 +275,7 @@
         .nav-links {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .nav-btn {
@@ -741,7 +742,7 @@
 
     <!-- ================= APLIKASI UTAMA ================= -->
     <div id="mainApp">
-        <!-- Navbar Header -->
+        <!-- Navbar Header dengan 3 Menu: Utama, Data Pasien, Mutu -->
         <div class="navbar">
             <div>
                 <h1>Ruang Edelweis</h1>
@@ -750,6 +751,7 @@
             <div class="nav-links">
                 <button class="nav-btn active" onclick="switchPage('pageDashboard', this)">🏠 Halaman Utama</button>
                 <button class="nav-btn" onclick="switchPage('pageDataPasien', this)">👥 Data Pasien</button>
+                <button class="nav-btn" onclick="switchPage('pageMutu', this)">🛡️ Mutu</button>
             </div>
             <div class="user-info">
                 <span>Halo, <strong id="loggedInUser">Petugas</strong></span>
@@ -861,41 +863,6 @@
                             <strong>📐 Rumus:</strong><br>
                             <code>((32 TT × Jumlah Hari Periode) - Hari Perawatan) ÷ Jumlah Pasien Keluar</code>
                         </div>
-                    </div>
-                </div>
-
-                <!-- SECTION 6 INDIKATOR MUTU RUMAH SAKIT SESUAI PERMINTAAN -->
-                <div class="section-title">🛡️ Indikator Mutu Pelayanan & Keselamatan Pasien</div>
-                <div class="mutu-grid">
-                    <div class="stat-card indigo">
-                        <h4>1. Kepatuhan Identifikasi Pasien</h4>
-                        <p>100 %</p>
-                        <span>Standar Mutu: 100%</span>
-                    </div>
-                    <div class="stat-card teal">
-                        <h4>2. Kepatuhan Kebersihan Tangan</h4>
-                        <p>95 %</p>
-                        <span>Standar Mutu: Minimal ≥ 85%</span>
-                    </div>
-                    <div class="stat-card red">
-                        <h4>3. Teridentifikasinya Kejadian Dekubitus</h4>
-                        <p>0 Kejadian</p>
-                        <span>Standar Mutu: 0% (Pencegahan optimal)</span>
-                    </div>
-                    <div class="stat-card amber">
-                        <h4>4. Teridentifikasinya Kesalahan Pemberian Obat</h4>
-                        <p>0 Kejadian</p>
-                        <span>Standar Mutu: 0% (Zero Error)</span>
-                    </div>
-                    <div class="stat-card blue">
-                        <h4>5. Kepatuhan Pencegahan Risiko Pasien Jatuh</h4>
-                        <p>100 %</p>
-                        <span>Standar Mutu: 100%</span>
-                    </div>
-                    <div class="stat-card pink">
-                        <h4>6. Kepuasan Pasien dan Keluarga</h4>
-                        <p>90 %</p>
-                        <span>Standar Mutu: Minimal ≥ 85%</span>
                     </div>
                 </div>
 
@@ -1218,6 +1185,45 @@
                     </div>
                 </div>
 
+            </div>
+
+
+            <!-- ================= HALAMAN 3: MUTU (INDIKATOR MUTU RUMAH SAKIT) ================= -->
+            <div id="pageMutu" class="app-page">
+                <div class="section-title">🛡️ Indikator Mutu Pelayanan & Keselamatan Pasien Ruang Edelweis</div>
+                
+                <div class="mutu-grid">
+                    <div class="stat-card indigo">
+                        <h4>1. Kepatuhan Identifikasi Pasien</h4>
+                        <p>100 %</p>
+                        <span>Standar Mutu: 100% (Gelang & Prosedur Verbal)</span>
+                    </div>
+                    <div class="stat-card teal">
+                        <h4>2. Kepatuhan Kebersihan Tangan</h4>
+                        <p>95 %</p>
+                        <span>Standar Mutu: Minimal ≥ 85%</span>
+                    </div>
+                    <div class="stat-card red">
+                        <h4>3. Teridentifikasinya Kejadian Dekubitus</h4>
+                        <p>0 Kejadian</p>
+                        <span>Standar Mutu: 0% (Pencegahan Optimal)</span>
+                    </div>
+                    <div class="stat-card amber">
+                        <h4>4. Teridentifikasinya Kesalahan Pemberian Obat</h4>
+                        <p>0 Kejadian</p>
+                        <span>Standar Mutu: 0% (Zero Error)</span>
+                    </div>
+                    <div class="stat-card blue">
+                        <h4>5. Kepatuhan Pencegahan Risiko Pasien Jatuh</h4>
+                        <p>100 %</p>
+                        <span>Standar Mutu: 100%</span>
+                    </div>
+                    <div class="stat-card pink">
+                        <h4>6. Kepuasan Pasien dan Keluarga</h4>
+                        <p>90 %</p>
+                        <span>Standar Mutu: Minimal ≥ 85%</span>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -1880,7 +1886,7 @@
 
                 const newRow = document.createElement('tr');
                 if (isLongStay) newRow.classList.add('row-long-stay');
-                newRow.setAttribute('ondblclick', 'pilihPasienForEdit(this)');
+                newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
                 newRow.setAttribute('data-dokter', dokter);
                 newRow.setAttribute('data-statuspasien', statusPasien);
 
