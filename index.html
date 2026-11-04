@@ -807,7 +807,7 @@
                 </div>
             </div>
 
-            <!-- ================= HALAMAN 1: UTAMA (DASHBOARD SESUAI URUTAN BARU) ================= -->
+            <!-- ================= HALAMAN 1: UTAMA ================= -->
             <div id="pageDashboard" class="app-page active">
                 
                 <div class="btn-print-action" style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
@@ -1113,7 +1113,7 @@
             </div>
 
 
-            <!-- ================= HALAMAN 3: MUTU (OTOMATIS DARI PASIEN & TERSIMPAN PER BULAN) ================= -->
+            <!-- ================= HALAMAN 3: MUTU ================= -->
             <div id="pageMutu" class="app-page">
                 <div class="section-title">🛡️ Indikator Mutu Unit - Ruang Edelweis (<span id="lblPeriodeMutu">November 2026</span>)</div>
                 
@@ -1230,7 +1230,6 @@
             muatDataPasienDariFirebase();
         };
 
-        // --- INISIALISASI TABEL MUTU HARIAN ---
         function inisialisasiTabelMutuHarian() {
             const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
             const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
@@ -1284,7 +1283,6 @@
             muatDataMutuBulananDariFirebase();
         }
 
-        // --- OTOMATIS ISI NUM & DENUM BERDASARKAN DATA PASIEN AKTIF / KELUAR PADA TANGGAL TERSEBUT ---
         function sinkronisasiMutuOtomatisDariPasien() {
             const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
             const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
@@ -1315,16 +1313,18 @@
                     }
                 });
 
-                // Set otomatis ke tabel mutu harian jika belum diisi / untuk sinkronisasi standar 100%
                 for (let i = 1; i <= 6; i++) {
                     const inputNum = document.getElementById(`mutu-${i}-${d}-NUM`);
                     const inputDenum = document.getElementById(`mutu-${i}-${d}-DENUM`);
 
                     if (inputNum && inputDenum) {
-                        // Jika indikator 1, 3, 5, 6 (misal kepatuhan/kepuasan), Denum = jumlah pasien aktif, Num = jumlah pasien aktif (atau tersinkron 100%)
                         if (jmlPasienAktifHariIni > 0) {
                             if (inputDenum.value == "0") inputDenum.value = jmlPasienAktifHariIni;
-                            if (inputNum.value == "0") inputNum.value = jmlPasienAktifHariIni;
+                            if (i === 3 || i === 4) {
+                                inputNum.value = 0; // Dekubitus & Kesalahan Obat default NUM = 0
+                            } else {
+                                if (inputNum.value == "0") inputNum.value = jmlPasienAktifHariIni;
+                            }
                         }
                     }
                 }
@@ -1354,7 +1354,13 @@
 
                     let p = 0;
                     if (valDenum > 0) {
-                        p = ((valNum / valDenum) * 100).toFixed(0);
+                        if ((i === 3 || i === 4) && valNum === 0) {
+                            p = 100;
+                        } else {
+                            p = Math.round((valNum / valDenum) * 100);
+                        }
+                    } else if (i === 3 || i === 4) {
+                        p = 100;
                     }
                     if (tdPersen) tdPersen.textContent = p + '%';
                 }
@@ -1364,7 +1370,13 @@
 
                 let totalP = 0;
                 if (sumDenumTotal > 0) {
-                    totalP = ((sumNumTotal / sumDenumTotal) * 100).toFixed(2);
+                    if ((i === 3 || i === 4) && sumNumTotal === 0) {
+                        totalP = 100;
+                    } else {
+                        totalP = ((sumNumTotal / sumDenumTotal) * 100).toFixed(2);
+                    }
+                } else if (i === 3 || i === 4) {
+                    totalP = 100;
                 }
                 document.getElementById(`total-persen-${i}`).textContent = totalP + '%';
             }
@@ -1414,7 +1426,6 @@
             });
         }
 
-        // --- MANAJEMEN PASIEN & FIREBASE ---
         function simpanDataPasienKeFirebase() {
             const rows = document.querySelectorAll('#tabelPasienBody tr');
             const dataPasien = [];
@@ -1791,7 +1802,6 @@
             }
         }
 
-        // --- TRANSISI HALAMAN YANG HALUS & FLEKSIBEL (Poin 1) ---
         function switchPage(pageId, btn) {
             document.querySelectorAll('.app-page').forEach(page => {
                 page.style.opacity = '0';
@@ -2126,7 +2136,6 @@
             });
         }
 
-        // --- GRAFIK TREN BULANAN SELAMA 1 TAHUN PENUH (Poin 2) ---
         function renderChartTrenBulanan1Tahun() {
             const ctx = document.getElementById('chartTrenBulanan').getContext('2d');
             const namaBulanList = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
