@@ -398,8 +398,8 @@
             padding-left: 10px;
         }
 
-        /* --- KARTU STATISTIK YANG LEBIH HIDUP & INTERAKTIF --- */
-        .stats-grid-primary {
+        /* --- KARTU STATISTIK & MUTU --- */
+        .stats-grid-primary, .mutu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
@@ -432,7 +432,6 @@
             overflow: hidden;
         }
 
-        /* Efek Kilau Halus di Kartu */
         .stat-card::after {
             content: '';
             position: absolute;
@@ -471,7 +470,7 @@
         }
 
         .stat-card p {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
             color: #0f172a;
             margin-bottom: 4px;
@@ -697,7 +696,7 @@
         <div class="auth-container">
             <div class="auth-header">
                 <h2>Ruang Edelweis</h2>
-                <p>Rumah Sakit Daerah Sidawangi</p>
+                <p>RS Daerah Sidawangi</p>
             </div>
 
             <div class="tabs">
@@ -746,7 +745,7 @@
         <div class="navbar">
             <div>
                 <h1>Ruang Edelweis</h1>
-                <p>Rumah Sakit Daerah Sidawangi</p>
+                <p>RS Daerah Sidawangi</p>
             </div>
             <div class="nav-links">
                 <button class="nav-btn active" onclick="switchPage('pageDashboard', this)">🏠 Halaman Utama</button>
@@ -862,6 +861,41 @@
                             <strong>📐 Rumus:</strong><br>
                             <code>((32 TT × Jumlah Hari Periode) - Hari Perawatan) ÷ Jumlah Pasien Keluar</code>
                         </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 6 INDIKATOR MUTU RUMAH SAKIT SESUAI PERMINTAAN -->
+                <div class="section-title">🛡️ Indikator Mutu Pelayanan & Keselamatan Pasien</div>
+                <div class="mutu-grid">
+                    <div class="stat-card indigo">
+                        <h4>1. Kepatuhan Identifikasi Pasien</h4>
+                        <p>100 %</p>
+                        <span>Standar Mutu: 100%</span>
+                    </div>
+                    <div class="stat-card teal">
+                        <h4>2. Kepatuhan Kebersihan Tangan</h4>
+                        <p>95 %</p>
+                        <span>Standar Mutu: Minimal ≥ 85%</span>
+                    </div>
+                    <div class="stat-card red">
+                        <h4>3. Teridentifikasinya Kejadian Dekubitus</h4>
+                        <p>0 Kejadian</p>
+                        <span>Standar Mutu: 0% (Pencegahan optimal)</span>
+                    </div>
+                    <div class="stat-card amber">
+                        <h4>4. Teridentifikasinya Kesalahan Pemberian Obat</h4>
+                        <p>0 Kejadian</p>
+                        <span>Standar Mutu: 0% (Zero Error)</span>
+                    </div>
+                    <div class="stat-card blue">
+                        <h4>5. Kepatuhan Pencegahan Risiko Pasien Jatuh</h4>
+                        <p>100 %</p>
+                        <span>Standar Mutu: 100%</span>
+                    </div>
+                    <div class="stat-card pink">
+                        <h4>6. Kepuasan Pasien dan Keluarga</h4>
+                        <p>90 %</p>
+                        <span>Standar Mutu: Minimal ≥ 85%</span>
                     </div>
                 </div>
 
@@ -1846,7 +1880,7 @@
 
                 const newRow = document.createElement('tr');
                 if (isLongStay) newRow.classList.add('row-long-stay');
-                newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
+                newRow.setAttribute('ondblclick', 'pilihPasienForEdit(this)');
                 newRow.setAttribute('data-dokter', dokter);
                 newRow.setAttribute('data-statuspasien', statusPasien);
 
