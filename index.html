@@ -1249,7 +1249,7 @@
             daftarIndikatorMutu.forEach((ind, idx) => {
                 let no = idx + 1;
 
-                // NUM
+                // NUM (Default 0 untuk Dekubitus No.3 dan Kesalahan Obat No.4 dari Tgl 1 s/d Akhir Bulan)
                 let trNum = document.createElement('tr');
                 let htmlNum = `<td rowspan="3">${no}</td><td rowspan="3" style="text-align: left; font-weight: 600;">${ind.substring(2)}</td><td>NUM</td>`;
                 for (let d = 1; d <= 31; d++) {
@@ -1318,11 +1318,15 @@
                     const inputDenum = document.getElementById(`mutu-${i}-${d}-DENUM`);
 
                     if (inputNum && inputDenum) {
-                        if (jmlPasienAktifHariIni > 0) {
-                            if (inputDenum.value == "0") inputDenum.value = jmlPasienAktifHariIni;
-                            if (i === 3 || i === 4) {
-                                inputNum.value = 0; // Dekubitus & Kesalahan Obat default NUM = 0
-                            } else {
+                        if (i === 3 || i === 4) {
+                            // Indikator Dekubitus & Kesalahan Obat selalu dipaksa Default NUM = 0 dari tgl 1 s/d akhir bulan
+                            inputNum.value = 0;
+                            if (jmlPasienAktifHariIni > 0 && inputDenum.value == "0") {
+                                inputDenum.value = jmlPasienAktifHariIni;
+                            }
+                        } else {
+                            if (jmlPasienAktifHariIni > 0) {
+                                if (inputDenum.value == "0") inputDenum.value = jmlPasienAktifHariIni;
                                 if (inputNum.value == "0") inputNum.value = jmlPasienAktifHariIni;
                             }
                         }
