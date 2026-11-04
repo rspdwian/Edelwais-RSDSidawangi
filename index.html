@@ -23,7 +23,7 @@
             overflow-x: hidden;
         }
 
-        /* --- HALAMAN AUTH (LOGIN & REGISTER) DENGAN ANIMASI FADE-IN --- */
+        /* --- HALAMAN AUTH (LOGIN & REGISTER) --- */
         .auth-wrapper {
             display: flex;
             justify-content: center;
@@ -40,8 +40,6 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transform: translateY(0);
-            transition: transform 0.4s ease, opacity 0.4s ease;
         }
 
         .auth-header {
@@ -248,11 +246,11 @@
             transform: translateY(0);
         }
 
-        /* --- HALAMAN APLIKASI UTAMA DENGAN ANIMASI FADE-IN --- */
+        /* --- HALAMAN APLIKASI UTAMA & ANIMASI TRANSISI HALUS --- */
         #mainApp {
             display: none;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.4s ease-in-out;
         }
 
         #mainApp.show {
@@ -326,10 +324,11 @@
             padding: 0 10px;
         }
 
+        /* Animasi Transisi Halus Antar Halaman Aplikasi */
         .app-page {
             display: none;
             opacity: 0;
-            transform: translateY(12px);
+            transform: translateY(15px);
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
@@ -619,13 +618,9 @@
             background-color: #f0fdfa;
         }
 
-        /* Penanda Long-Stay dengan animasi kedip halus */
         .row-long-stay {
             background-color: #fef9c3 !important;
             animation: pulseWarning 2s infinite;
-        }
-        .row-long-stay:hover {
-            background-color: #fef08a !important;
         }
 
         @keyframes pulseWarning {
@@ -653,7 +648,6 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* --- FORMAT KHUSUS CETAK / PRINT --- */
         @media print {
             body {
                 background-color: white;
@@ -715,7 +709,6 @@
                 <button class="tab-btn" onclick="switchAuthTab('register')">Daftar</button>
             </div>
 
-            <!-- Form Login -->
             <form id="loginForm" class="form-section active" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label for="loginUsername">Username</label>
@@ -731,7 +724,6 @@
                 <button type="submit" class="btn-submit">Masuk ke Aplikasi</button>
             </form>
 
-            <!-- Form Register -->
             <form id="registerForm" class="form-section" onsubmit="handleRegister(event)">
                 <div class="form-group">
                     <label for="regUsername">Username Baru</label>
@@ -752,7 +744,6 @@
 
     <!-- ================= APLIKASI UTAMA ================= -->
     <div id="mainApp">
-        <!-- Navbar Header dengan 3 Menu: Utama, Data Pasien, Mutu -->
         <div class="navbar">
             <div>
                 <h1>Ruang Edelweis</h1>
@@ -771,19 +762,16 @@
 
         <div class="dashboard-container">
             
-            <!-- CARD FILTER PERIODE & RENTANG TANGGAL -->
             <div class="filter-card">
                 <div class="filter-title">
                     📅 Filter Periode Laporan & Tabel:
                 </div>
                 <div class="filter-controls">
-                    <!-- OPSI MODE FILTER -->
                     <select id="filterMode" class="filter-select" onchange="gantiModeFilter()">
                         <option value="bulan" selected>Mode Bulanan</option>
                         <option value="custom">Mode Rentang Tanggal</option>
                     </select>
 
-                    <!-- KONTROL MODE BULANAN -->
                     <div id="wrapperFilterBulan" style="display: flex; gap: 8px;">
                         <select id="filterBulan" class="filter-select" onchange="updateDataBulan()">
                             <option value="1">Januari</option>
@@ -807,31 +795,27 @@
                         </select>
                     </div>
 
-                    <!-- KONTROL MODE RENTANG TANGGAL (CUSTOM) -->
                     <div id="wrapperFilterCustom" style="display: none; align-items: center; gap: 6px;">
                         <input type="date" id="filterTglAwal" class="filter-date" onchange="updateDataBulan()">
                         <span style="font-size: 12px; font-weight: 600;">s/d</span>
                         <input type="date" id="filterTglAkhir" class="filter-date" onchange="updateDataBulan()">
                     </div>
 
-                    <!-- TOMBOL BERSIHKAN DATA LAMA MANUAL -->
-                    <button type="button" onclick="bersihkanDataLalu()" style="padding: 8px 12px; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
+                    <button type="button" onclick="bersihkanDataLalu()" style="padding: 8px 12px; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
                         🧹 Bersihkan Data > 10 Tahun
                     </button>
                 </div>
             </div>
 
-            <!-- ================= HALAMAN 1: UTAMA (DASHBOARD LAPORAN) ================= -->
+            <!-- ================= HALAMAN 1: UTAMA (DASHBOARD SESUAI URUTAN BARU) ================= -->
             <div id="pageDashboard" class="app-page active">
                 
-                <!-- TOMBOL CETAK LAPORAN -->
                 <div class="btn-print-action" style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
-                    <button type="button" onclick="cetakLaporanRuangan()" style="padding: 10px 18px; background-color: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s, background 0.3s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
+                    <button type="button" onclick="cetakLaporanRuangan()" style="padding: 10px 18px; background-color: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
                         🖨️ Cetak Laporan Resmi
                     </button>
                 </div>
 
-                <!-- KOP SURAT KHUSUS CETAK -->
                 <div class="kop-surat-print">
                     <h2 style="font-size: 18px; font-weight: bold; text-transform: uppercase;">PEMERINTAH DAERAH PROVINSI JAWA BARAT</h2>
                     <h1 style="font-size: 20px; font-weight: bold; text-transform: uppercase;">RUMAH SAKIT DAERAH SIDAWANGI</h1>
@@ -839,55 +823,88 @@
                     <h3 style="font-size: 16px; font-weight: bold; margin-top: 10px; text-decoration: underline;">LAPORAN REKAPITULASI & INDIKATOR RAWAT INAP RUANG EDELWEIS</h3>
                 </div>
                 
-                <!-- SECTION 1: INDIKATOR EFISIENSI RUMAH SAKIT DENGAN RUMUS -->
+                <!-- URUTAN 1: Indikator Efisiensi Rawat Inap -->
                 <div class="section-title">📊 Indikator Efisiensi Rawat Inap (<span id="lblPeriode1">November 2026</span>)</div>
                 <div class="stats-grid-primary">
-                    <!-- KARTU BOR -->
                     <div class="stat-card blue">
                         <h4>BOR (Bed Occupancy Rate)</h4>
                         <p id="valBOR">0 %</p>
                         <span>Kapasitas: 32 Tempat Tidur (Ideal: 60-85%)</span>
-                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1; font-size: 11px; color: #475569;">
-                            <strong>📐 Rumus:</strong><br>
-                            <code>(Jumlah Hari Perawatan ÷ (32 Tempat Tidur × Jumlah Hari Periode)) × 100%</code>
-                        </div>
                     </div>
-
-                    <!-- KARTU ALOS -->
                     <div class="stat-card purple">
                         <h4>ALOS (Avg Length of Stay)</h4>
                         <p id="valALOS">0 Hari</p>
                         <span>Standar Ideal: 6 - 9 Hari</span>
-                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1; font-size: 11px; color: #475569;">
-                            <strong>📐 Rumus:</strong><br>
-                            <code>Jumlah Hari Perawatan Pasien Keluar ÷ Jumlah Pasien Keluar (Hidup + Mati)</code>
-                        </div>
                     </div>
-
-                    <!-- KARTU TOI -->
                     <div class="stat-card amber">
                         <h4>TOI (Turn Over Interval)</h4>
                         <p id="valTOI">0 Hari</p>
                         <span>Standar Ideal: 1 - 3 Hari</span>
-                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1; font-size: 11px; color: #475569;">
-                            <strong>📐 Rumus:</strong><br>
-                            <code>((32 TT × Jumlah Hari Periode) - Hari Perawatan) ÷ Jumlah Pasien Keluar</code>
-                        </div>
                     </div>
                 </div>
 
-                <!-- SECTION ANALYTICS VISUAL: GRAFIK CARA BAYAR & DIAGNOSA -->
+                <!-- URUTAN 2: Rekapitulasi Data Pasien -->
+                <div class="section-title">👥 Rekapitulasi Data Pasien (<span id="lblPeriode2">November 2026</span>)</div>
+                <div class="rekap-grid">
+                    <div class="stat-card">
+                        <h4>Total Jumlah Pasien Dirawat</h4>
+                        <p id="valTotal">0 Pasien</p>
+                    </div>
+                    <div class="stat-card blue">
+                        <h4>Pasien Masih Dirawat</h4>
+                        <p id="valMasihRawat">0 Pasien</p>
+                    </div>
+                    <div class="stat-card green">
+                        <h4>Pasien Pulang Izin Dokter</h4>
+                        <p id="valIzinDokter">0 Pasien</p>
+                    </div>
+                    <div class="stat-card amber">
+                        <h4>Pasien Pulang Paksa (APS)</h4>
+                        <p id="valPulangPaksa">0 Pasien</p>
+                    </div>
+                    <div class="stat-card red">
+                        <h4>Pasien Meninggal Dunia</h4>
+                        <p id="valMeninggal">0 Pasien</p>
+                    </div>
+                    <div class="stat-card indigo">
+                        <h4>Pindah ke Ruang Anggrek</h4>
+                        <p id="valPindahAnggrek">0 Pasien</p>
+                    </div>
+                    <div class="stat-card pink">
+                        <h4>Pindah ke Ruang Bougenville</h4>
+                        <p id="valPindahBougenville">0 Pasien</p>
+                    </div>
+                    <div class="stat-card teal">
+                        <h4>Pindah ke Ruang Cempaka</h4>
+                        <p id="valPindahCempaka">0 Pasien</p>
+                    </div>
+                    <div class="stat-card purple">
+                        <h4>Pindah ke Ruang Dahlia</h4>
+                        <p id="valPindahDahlia">0 Pasien</p>
+                    </div>
+                    <div class="stat-card orange">
+                        <h4>Pindah ke Ruang Kebidanan</h4>
+                        <p id="valPindahKebidanan">0 Pasien</p>
+                    </div>
+                    <div class="stat-card blue">
+                        <h4>Pindah ke Ruang Perina</h4>
+                        <p id="valPindahPerina">0 Pasien</p>
+                    </div>
+                    <div class="stat-card red">
+                        <h4>Pindah ke Ruang ICU</h4>
+                        <p id="valPindahICU">0 Pasien</p>
+                    </div>
+                </div>
+
+                <!-- URUTAN 3: Analisis Visual Cara Bayar & Diagnosa -->
                 <div class="section-title">📈 Analisis Visual Cara Bayar & Diagnosa (<span id="lblPeriodeAnalytics">November 2026</span>)</div>
                 <div class="analytics-grid">
-                    <!-- Kartu Grafik Cara Bayar -->
                     <div class="stat-card teal">
                         <h4>Distribusi Status Bayar</h4>
                         <div class="chart-container">
                             <canvas id="chartStatusBayar"></canvas>
                         </div>
                     </div>
-
-                    <!-- Kartu Grafik Top 5 Diagnosa -->
                     <div class="stat-card indigo">
                         <h4>5 Diagnosa Terbanyak (Top 5)</h4>
                         <div class="chart-container">
@@ -896,81 +913,14 @@
                     </div>
                 </div>
 
-                <!-- SECTION GRAFIK TREN BULANAN -->
-                <div class="section-title">📉 Grafik Tren Efisiensi Bulanan (6 Bulan Terakhir)</div>
+                <!-- URUTAN 4: Grafik Tren Efisiensi Bulanan (Selama 1 Tahun Penuh) -->
+                <div class="section-title">📉 Grafik Tren Efisiensi Bulanan (Selama 1 Tahun Penuh)</div>
                 <div class="card" style="margin-bottom: 35px;">
                     <div class="chart-container" style="height: 280px;">
                         <canvas id="chartTrenBulanan"></canvas>
                     </div>
                 </div>
 
-                <!-- SECTION 2: REKAPITULASI PASIEN BULANAN -->
-                <div class="section-title">👥 Rekapitulasi Data Pasien (<span id="lblPeriode2">November 2026</span>)</div>
-                
-                <div class="rekap-grid">
-                    <div class="stat-card">
-                        <h4>Total Jumlah Pasien Dirawat</h4>
-                        <p id="valTotal">0 Pasien</p>
-                        <span>Laporan periode ini</span>
-                    </div>
-                    <div class="stat-card blue">
-                        <h4>Pasien Masih Dirawat</h4>
-                        <p id="valMasihRawat">0 Pasien</p>
-                        <span>Aktif di ruangan</span>
-                    </div>
-                    <div class="stat-card green">
-                        <h4>Pasien Pulang Izin Dokter</h4>
-                        <p id="valIzinDokter">0 Pasien</p>
-                        <span>Sembuh / Membaik</span>
-                    </div>
-                    <div class="stat-card amber">
-                        <h4>Pasien Pulang Paksa (APS)</h4>
-                        <p id="valPulangPaksa">0 Pasien</p>
-                        <span>Atas Permintaan Sendiri</span>
-                    </div>
-                    <div class="stat-card red">
-                        <h4>Pasien Meninggal Dunia</h4>
-                        <p id="valMeninggal">0 Pasien</p>
-                        <span>Rekap bulanan</span>
-                    </div>
-                    <div class="stat-card indigo">
-                        <h4>Pindah ke Ruang Anggrek</h4>
-                        <p id="valPindahAnggrek">0 Pasien</p>
-                        <span>Mutasi ruangan</span>
-                    </div>
-                    <div class="stat-card pink">
-                        <h4>Pindah ke Ruang Bougenville</h4>
-                        <p id="valPindahBougenville">0 Pasien</p>
-                        <span>Mutasi ruangan</span>
-                    </div>
-                    <div class="stat-card teal">
-                        <h4>Pindah ke Ruang Cempaka</h4>
-                        <p id="valPindahCempaka">0 Pasien</p>
-                        <span>Mutasi ruangan</span>
-                    </div>
-                    <div class="stat-card purple">
-                        <h4>Pindah ke Ruang Dahlia</h4>
-                        <p id="valPindahDahlia">0 Pasien</p>
-                        <span>Mutasi ruangan</span>
-                    </div>
-                    <div class="stat-card orange">
-                        <h4>Pindah ke Ruang Kebidanan</h4>
-                        <p id="valPindahKebidanan">0 Pasien</p>
-                        <span>Mutasi ruangan</span>
-                    </div>
-                    <div class="stat-card blue">
-                        <h4>Pindah ke Ruang Perina</h4>
-                        <p id="valPindahPerina">0 Pasien</p>
-                        <span>Mutasi ruangan</span>
-                    </div>
-                    <div class="stat-card red">
-                        <h4>Pindah ke Ruang ICU</h4>
-                        <p id="valPindahICU">0 Pasien</p>
-                        <span>Mutasi ruangan</span>
-                    </div>
-                </div>
-
-                <!-- AREA TANDA TANGAN KHUSUS CETAK -->
                 <div class="tanda-tangan-print">
                     <div style="text-align: center;">
                         <p>Mengetahui,</p>
@@ -987,14 +937,11 @@
                         <p>NIP. ...................................</p>
                     </div>
                 </div>
-
             </div>
 
 
-            <!-- ================= HALAMAN 2: DATA PASIEN (INPUT & LIST) ================= -->
+            <!-- ================= HALAMAN 2: DATA PASIEN ================= -->
             <div id="pageDataPasien" class="app-page">
-                
-                <!-- SECTION 3: FORM INPUT PASIEN LENGKAP -->
                 <div class="card">
                     <div class="card-header">
                         <h3 id="formTitle">+ Input Data Pasien Baru (Ruang Edelweis)</h3>
@@ -1009,7 +956,6 @@
                                 <label>Nomer RM</label>
                                 <input type="text" id="pRM" placeholder="Contoh: RM-10293" required>
                             </div>
-                            <!-- Tanggal Lahir: Ketik Manual dd/mm/yyyy -->
                             <div class="form-group">
                                 <label>Tanggal Lahir (dd/mm/yyyy)</label>
                                 <input type="text" id="pTglLahir" placeholder="dd/mm/yyyy" maxlength="10" oninput="formatTglKetik(this); hitungUsiaOtomatis();" required>
@@ -1018,7 +964,6 @@
                                 <label>Usia (Otomatis)</label>
                                 <input type="text" id="pUsia" placeholder="Otomatis terhitung" readonly required>
                             </div>
-                            <!-- Tanggal Masuk: Pilih Kalender -->
                             <div class="form-group">
                                 <label>Tanggal Masuk</label>
                                 <input type="date" id="pTglMasuk" onchange="hitungLamaRawatOtomatis()" required>
@@ -1062,7 +1007,6 @@
                                     <option value="dr. Ibrahim Risyad Pradana, Sp.B">dr. Ibrahim Risyad Pradana, Sp.B</option>
                                 </select>
                             </div>
-                            <!-- Tanggal Keluar: Pilih Kalender -->
                             <div class="form-group">
                                 <label>Tanggal Keluar</label>
                                 <input type="date" id="pTglKeluar" onchange="hitungLamaRawatOtomatis()">
@@ -1074,6 +1018,7 @@
                                     <option value="Masih di rawat">Masih di rawat</option>
                                     <option value="Pulang Izin Dokter">Pulang Izin Dokter</option>
                                     <option value="Pulang Paksa">Pulang Paksa</option>
+                                    <option value="Meninggal Dunia">Meninggal Dunia</option>
                                     <option value="Pindah Ke Anggrek">Pindah Ke Anggrek</option>
                                     <option value="Pindah Ke Bougenville">Pindah Ke Bougenville</option>
                                     <option value="Pindah Ke Cempaka">Pindah Ke Cempaka</option>
@@ -1087,8 +1032,6 @@
                                 <label>Lama Rawat (Hari)</label>
                                 <input type="number" id="pLamaRawat" placeholder="Otomatis terhitung" readonly required>
                             </div>
-
-                            <!-- INPUT DIAGNOSA FLEKSIBEL (KETIK BEBAS ATAU PILIH LIST) -->
                             <div class="form-group">
                                 <label>Diagnosa</label>
                                 <input type="text" id="pDiagnosa" list="listOpsiDiagnosa" placeholder="Ketik atau pilih diagnosa..." required>
@@ -1100,23 +1043,12 @@
                                     <option value="Hipertensi">
                                     <option value="ISPA">
                                     <option value="TB Paru">
-                                    <option value="Effusi Pleura">
-                                    <option value="Haemaptoe">
                                     <option value="Bronchopneumonia">
-                                    <option value="dypsnea">
                                     <option value="GEA">
-                                    <option value="DCA DRS">
                                     <option value="Dengue Fever">
-                                    <option value="Epitaksis">
-                                    <option value="Unidentified Snake">
-                                    <option value="Kolik Abdoment">
-                                    <option value="Abdominal Pain">
                                     <option value="Asma">
-                                    <option value="Prolong Fever">
                                 </datalist>
                             </div>
-
-                            <!-- PENANGGUNG JAWAB (FLEKSIBEL VIA DATALIST) -->
                             <div class="form-group">
                                 <label>Penanggung Jawab (Opsional)</label>
                                 <input type="text" id="pPenanggungJawab" list="listOpsiPJ" placeholder="Ketik atau pilih nama PJ...">
@@ -1124,18 +1056,7 @@
                                     <option value="Sinem, S.Kep.Ners">
                                     <option value="Ida Yuyun Yuningsih, S.Kep.Ners">
                                     <option value="Ratnawati, S.Kep">
-                                    <option value="Tuti Herlina, S.Kep">
-                                    <option value="Turini, S.Kep.Ners">
-                                    <option value="Nurwulan Ika Rahayu, A.Md.Kep">
-                                    <option value="Wulan Sondari, A.Md.Kep">
-                                    <option value="Ceceh Adam, A.Md.Kep">
-                                    <option value="Sri Widaningsih, A.Md.Kep">
-                                    <option value="Saeful Munawar, S.Kep.Ners">
                                     <option value="Dwian Sidik Nugraha, A.Md.Kep">
-                                    <option value="Iis Aisyah, A.Md.Kep">
-                                    <option value="Khabibatul Maula, A.Md.Kep">
-                                    <option value="Fuji Firmansyah, A.Md.Kep">
-                                    <option value="Alkarim, A.Md.Kep">
                                 </datalist>
                             </div>
                         </div>
@@ -1147,21 +1068,17 @@
                     </form>
                 </div>
 
-                <!-- SECTION 4: LIST SELURUH PASIEN DI RUANGAN -->
                 <div class="card">
                     <div class="card-header">
                         <h3>📋 List Pasien Periode (<span id="lblPeriodeTabel">November 2026</span>)</h3>
                         <div class="header-actions">
-                            <!-- TOMBOL BACKUP & RESTORE DATA -->
                             <button type="button" class="btn-backup" onclick="backupDatabase()">💾 Backup JSON</button>
                             <button type="button" class="btn-backup" onclick="document.getElementById('inputRestoreFile').click()" style="background-color: #0284c7;">📂 Restore JSON</button>
                             <input type="file" id="inputRestoreFile" style="display: none;" accept=".json" onchange="restoreDatabase(event)">
 
-                            <!-- TOMBOL EXPORT KE EXCEL -->
                             <button type="button" class="btn-excel" onclick="exportKeExcel()">
                                 📊 Export Excel
                             </button>
-                            <!-- KOTAK PENCARIAN -->
                             <div class="search-box">
                                 <span class="search-icon">🔍</span>
                                 <input type="text" id="inputCariPasien" placeholder="Cari nama, RM..." onkeyup="cariPasien()">
@@ -1189,22 +1106,20 @@
                                 </tr>
                             </thead>
                             <tbody id="tabelPasienBody">
-                                <!-- Data Pasien Dimuat dari Firebase -->
                             </tbody>
                         </table>
                     </div>
                 </div>
-
             </div>
 
 
-            <!-- ================= HALAMAN 3: MUTU (TABEL HARIAN NUM & DENUM) ================= -->
+            <!-- ================= HALAMAN 3: MUTU (OTOMATIS DARI PASIEN & TERSIMPAN PER BULAN) ================= -->
             <div id="pageMutu" class="app-page">
                 <div class="section-title">🛡️ Indikator Mutu Unit - Ruang Edelweis (<span id="lblPeriodeMutu">November 2026</span>)</div>
                 
                 <div class="card">
                     <div class="card-header">
-                        <h3>📊 Rekapitulasi Harian Mutu (Tanggal 1 s.d 31)</h3>
+                        <h3>📊 Rekapitulasi Harian Mutu (Otomatis dari Data Pasien & Tersimpan Bulanan)</h3>
                         <button type="button" class="btn-excel" onclick="exportMutuKeExcel()">📊 Export Mutu ke Excel</button>
                     </div>
                     <div class="table-responsive table-mutu">
@@ -1218,17 +1133,14 @@
                                     <th rowspan="2" width="55">TOTAL</th>
                                 </tr>
                                 <tr id="subHeaderTglMutu">
-                                    <!-- Diisi otomatis script tanggal 1-31 -->
                                 </tr>
                             </thead>
                             <tbody id="tbodyMutuHarian">
-                                <!-- Dibuat dinamis oleh JavaScript -->
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- TANDA TANGAN KEPALA RUANGAN KHUSUS MUTU -->
                 <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
                     <div style="text-align: center; width: 220px;">
                         <p>Kepala Ruangan</p>
@@ -1244,7 +1156,6 @@
 
     <!-- ================= SCRIPT JAVASCRIPT & FIREBASE ================= -->
     <script>
-        // Konfigurasi Firebase Anda
         const firebaseConfig = {
             apiKey: "AIzaSyDEiwmlQ1sY49AK5vosIYs_GBR_x-Q7VqY",
             authDomain: "rsdsidawangiedelwais.firebaseapp.com",
@@ -1255,14 +1166,12 @@
             appId: "1:630911540003:web:b430c9f2c1c124ace40a96"
         };
 
-        // Inisialisasi Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
         let barisSedangDiedit = null;
         const KAPASITAS_TT = 32;
 
-        // Instance Chart.js
         let chartBayarInstance = null;
         let chartDiagnosaInstance = null;
         let chartTrenInstance = null;
@@ -1277,7 +1186,6 @@
         ];
 
         window.onload = function() {
-            // Cek Sesi Login di LocalStorage
             const isLogged = localStorage.getItem('isLoggedIn');
             const user = localStorage.getItem('loggedInUser');
 
@@ -1292,9 +1200,8 @@
                 document.getElementById('mainApp').style.display = 'none';
             }
 
-            // --- OTOMATIS SET FILTER KE BULAN & TAHUN REAL-TIME ---
             const tanggalSekarang = new Date();
-            const bulanRealtime = tanggalSekarang.getMonth() + 1; // 1 - 12
+            const bulanRealtime = tanggalSekarang.getMonth() + 1;
             const tahunRealtime = tanggalSekarang.getFullYear();
 
             document.getElementById('filterBulan').value = bulanRealtime;
@@ -1314,69 +1221,57 @@
                 selectTahun.insertBefore(opt, selectTahun.firstChild);
             }
             selectTahun.value = tahunRealtime;
-            // -----------------------------------------------------
 
-            // Set default tanggal hari ini untuk filter custom
             const today = tanggalSekarang.toISOString().split('T')[0];
             document.getElementById('filterTglAwal').value = today;
             document.getElementById('filterTglAkhir').value = today;
 
-            // Inisialisasi Tabel Mutu Harian
             inisialisasiTabelMutuHarian();
-
-            // Muat Data Pasien & Mutu dari Firebase
             muatDataPasienDariFirebase();
-            muatDataMutuDariFirebase();
         };
 
-        // --- MANAJEMEN TABEL MUTU HARIAN ---
+        // --- INISIALISASI TABEL MUTU HARIAN ---
         function inisialisasiTabelMutuHarian() {
             const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
             const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
             const jmlHari = new Date(tahunVal, bulanVal, 0).getDate();
 
-            // Update colspan header tanggal
             document.getElementById('headerTglMutu').setAttribute('colspan', jmlHari);
 
-            // Render sub-header tanggal (1 s.d jmlHari)
             let subHeaderHtml = '';
             for (let d = 1; d <= 31; d++) {
                 subHeaderHtml += `<th class="th-tgl-${d}" width="28" style="${d > jmlHari ? 'display:none;' : ''}">${d}</th>`;
             }
             document.getElementById('subHeaderTglMutu').innerHTML = subHeaderHtml;
 
-            // Render baris indikator mutu
             const tbody = document.getElementById('tbodyMutuHarian');
             tbody.innerHTML = '';
 
             daftarIndikatorMutu.forEach((ind, idx) => {
                 let no = idx + 1;
 
-                // Baris NUM
+                // NUM
                 let trNum = document.createElement('tr');
-                trNum.className = `mutu-row-${no}-NUM`;
                 let htmlNum = `<td rowspan="3">${no}</td><td rowspan="3" style="text-align: left; font-weight: 600;">${ind.substring(2)}</td><td>NUM</td>`;
                 for (let d = 1; d <= 31; d++) {
-                    htmlNum += `<td class="col-tgl-${d}" style="${d > jmlHari ? 'display:none;' : ''}"><input type="number" data-ind="${no}" data-tgl="${d}" data-jenis="NUM" value="0" oninput="hitungMutuHarianOtomatis()"></td>`;
+                    htmlNum += `<td class="col-tgl-${d}" style="${d > jmlHari ? 'display:none;' : ''}"><input type="number" id="mutu-${no}-${d}-NUM" data-ind="${no}" data-tgl="${d}" data-jenis="NUM" value="0" oninput="simpanDataMutuBulanan()"></td>`;
                 }
                 htmlNum += `<td id="total-num-${no}" style="font-weight: 700; background: #f8fafc;">0</td>`;
                 trNum.innerHTML = htmlNum;
                 tbody.appendChild(trNum);
 
-                // Baris DENUM
+                // DENUM
                 let trDenum = document.createElement('tr');
-                trDenum.className = `mutu-row-${no}-DENUM`;
                 let htmlDenum = `<td>DENUM</td>`;
                 for (let d = 1; d <= 31; d++) {
-                    htmlDenum += `<td class="col-tgl-${d}" style="${d > jmlHari ? 'display:none;' : ''}"><input type="number" data-ind="${no}" data-tgl="${d}" data-jenis="DENUM" value="0" oninput="hitungMutuHarianOtomatis()"></td>`;
+                    htmlDenum += `<td class="col-tgl-${d}" style="${d > jmlHari ? 'display:none;' : ''}"><input type="number" id="mutu-${no}-${d}-DENUM" data-ind="${no}" data-tgl="${d}" data-jenis="DENUM" value="0" oninput="simpanDataMutuBulanan()"></td>`;
                 }
                 htmlDenum += `<td id="total-denum-${no}" style="font-weight: 700; background: #f8fafc;">0</td>`;
                 trDenum.innerHTML = htmlDenum;
                 tbody.appendChild(trDenum);
 
-                // Baris %
+                // PERSEN
                 let trPersen = document.createElement('tr');
-                trPersen.className = `mutu-row-${no}-PERSEN`;
                 let htmlPersen = `<td>%</td>`;
                 for (let d = 1; d <= 31; d++) {
                     htmlPersen += `<td class="col-tgl-${d}" id="val-${no}-${d}" style="${d > jmlHari ? 'display:none;' : ''}; font-size: 10px; font-weight: 600; color: #0d9488;">0%</td>`;
@@ -1385,9 +1280,59 @@
                 trPersen.innerHTML = htmlPersen;
                 tbody.appendChild(trPersen);
             });
+
+            muatDataMutuBulananDariFirebase();
         }
 
-        function hitungMutuHarianOtomatis() {
+        // --- OTOMATIS ISI NUM & DENUM BERDASARKAN DATA PASIEN AKTIF / KELUAR PADA TANGGAL TERSEBUT ---
+        function sinkronisasiMutuOtomatisDariPasien() {
+            const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
+            const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
+            const jmlHari = new Date(tahunVal, bulanVal, 0).getDate();
+
+            const rowsPasien = document.querySelectorAll('#tabelPasienBody tr');
+
+            for (let d = 1; d <= jmlHari; d++) {
+                let tglTarget = new Date(tahunVal, bulanVal - 1, d);
+                
+                let jmlPasienAktifHariIni = 0;
+                rowsPasien.forEach(row => {
+                    const tglMasukTxt = row.cells[5].textContent.trim();
+                    const tglKeluarTxt = row.cells[9].textContent.trim();
+                    if (!tglMasukTxt || tglMasukTxt === '-') return;
+
+                    const pMasuk = tglMasukTxt.split('/');
+                    const tMasuk = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
+
+                    let tKeluar = null;
+                    if (tglKeluarTxt && tglKeluarTxt !== '-') {
+                        const pKel = tglKeluarTxt.split('/');
+                        tKeluar = new Date(pKel[2], pKel[1] - 1, pKel[0]);
+                    }
+
+                    if (tMasuk <= tglTarget && (tKeluar === null || tKeluar >= tglTarget)) {
+                        jmlPasienAktifHariIni++;
+                    }
+                });
+
+                // Set otomatis ke tabel mutu harian jika belum diisi / untuk sinkronisasi standar 100%
+                for (let i = 1; i <= 6; i++) {
+                    const inputNum = document.getElementById(`mutu-${i}-${d}-NUM`);
+                    const inputDenum = document.getElementById(`mutu-${i}-${d}-DENUM`);
+
+                    if (inputNum && inputDenum) {
+                        // Jika indikator 1, 3, 5, 6 (misal kepatuhan/kepuasan), Denum = jumlah pasien aktif, Num = jumlah pasien aktif (atau tersinkron 100%)
+                        if (jmlPasienAktifHariIni > 0) {
+                            if (inputDenum.value == "0") inputDenum.value = jmlPasienAktifHariIni;
+                            if (inputNum.value == "0") inputNum.value = jmlPasienAktifHariIni;
+                        }
+                    }
+                }
+            }
+            hitungTotalMutuHarian();
+        }
+
+        function hitungTotalMutuHarian() {
             const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
             const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
             const jmlHari = new Date(tahunVal, bulanVal, 0).getDate();
@@ -1397,8 +1342,8 @@
                 let sumDenumTotal = 0;
 
                 for (let d = 1; d <= jmlHari; d++) {
-                    const inputNum = document.querySelector(`input[data-ind="${i}"][data-tgl="${d}"][data-jenis="NUM"]`);
-                    const inputDenum = document.querySelector(`input[data-ind="${i}"][data-tgl="${d}"][data-jenis="DENUM"]`);
+                    const inputNum = document.getElementById(`mutu-${i}-${d}-NUM`);
+                    const inputDenum = document.getElementById(`mutu-${i}-${d}-DENUM`);
                     const tdPersen = document.getElementById(`val-${i}-${d}`);
 
                     const valNum = parseFloat(inputNum ? inputNum.value : 0) || 0;
@@ -1423,11 +1368,14 @@
                 }
                 document.getElementById(`total-persen-${i}`).textContent = totalP + '%';
             }
-
-            simpanDataMutuKeFirebase();
         }
 
-        function simpanDataMutuKeFirebase() {
+        function simpanDataMutuBulanan() {
+            hitungTotalMutuHarian();
+            const bulanVal = document.getElementById('filterBulan').value;
+            const tahunVal = document.getElementById('filterTahun').value;
+            const keyPeriode = `${tahunVal}_Bulan_${bulanVal}`;
+
             const inputs = document.querySelectorAll('#tbodyMutuHarian input');
             const mutuData = {};
             inputs.forEach(input => {
@@ -1438,11 +1386,15 @@
                 mutuData[key] = input.value;
             });
 
-            database.ref('mutuHarianEdelweis').set(mutuData);
+            database.ref(`mutuBulananEdelweis/${keyPeriode}`).set(mutuData);
         }
 
-        function muatDataMutuDariFirebase() {
-            database.ref('mutuHarianEdelweis').on('value', (snapshot) => {
+        function muatDataMutuBulananDariFirebase() {
+            const bulanVal = document.getElementById('filterBulan').value;
+            const tahunVal = document.getElementById('filterTahun').value;
+            const keyPeriode = `${tahunVal}_Bulan_${bulanVal}`;
+
+            database.ref(`mutuBulananEdelweis/${keyPeriode}`).once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     const inputs = document.querySelectorAll('#tbodyMutuHarian input');
@@ -1455,40 +1407,14 @@
                             input.value = data[key];
                         }
                     });
-                    hitungMutuHarianOtomatis();
+                } else {
+                    sinkronisasiMutuOtomatisDariPasien();
                 }
+                hitungTotalMutuHarian();
             });
         }
 
-        function exportMutuKeExcel() {
-            const table = document.getElementById('tabelMutuHarian');
-            let html = table.outerHTML;
-
-            // Ganti elemen input dengan teks nilainya agar rapi di excel
-            const inputs = table.querySelectorAll('input');
-            inputs.forEach(inp => {
-                html = html.replace(inp.outerHTML, inp.value);
-            });
-
-            const blob = new Blob(['\ufeff' + html], {
-                type: 'application/vnd.ms-excel'
-            });
-
-            const bulanSelect = document.getElementById('filterBulan');
-            const labelFile = `${bulanSelect.options[bulanSelect.selectedIndex].text}_${document.getElementById('filterTahun').value}`;
-            const filename = `Indikator_Mutu_Ruang_Edelweis_${labelFile}.xls`;
-
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // --- MANAJEMEN PENYIMPANAN FIREBASE DATABASE ---
+        // --- MANAJEMEN PASIEN & FIREBASE ---
         function simpanDataPasienKeFirebase() {
             const rows = document.querySelectorAll('#tabelPasienBody tr');
             const dataPasien = [];
@@ -1548,6 +1474,7 @@
                     let badgeStatusKeluar = 'badge-info';
                     if (String(p.statusKeluar).includes('Pulang Izin Dokter')) badgeStatusKeluar = 'badge-success';
                     else if (String(p.statusKeluar).includes('Pulang Paksa')) badgeStatusKeluar = 'badge-warning';
+                    else if (String(p.statusKeluar).includes('Meninggal')) badgeStatusKeluar = 'badge-danger';
                     else if (String(p.statusKeluar).includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
 
                     const rawLamaAngka = parseInt(p.lamaRawat) || 0;
@@ -1622,13 +1549,9 @@
                     const parsedData = JSON.parse(e.target.result);
                     if (Array.isArray(parsedData)) {
                         if (confirm(`Memuat file backup dengan ${parsedData.length} data pasien ke Firebase. Timpa data online saat ini?`)) {
-                            database.ref('pasienEdelweis').set(parsedData)
-                                .then(() => {
-                                    alert("Restore database online berhasil dilakukan!");
-                                })
-                                .catch((err) => {
-                                    alert("Gagal menyimpan ke Firebase: " + err.message);
-                                });
+                            database.ref('pasienEdelweis').set(parsedData).then(() => {
+                                alert("Restore database online berhasil dilakukan!");
+                            });
                         }
                     } else {
                         alert("Format file JSON tidak valid.");
@@ -1652,16 +1575,14 @@
                         if (!p.tglMasuk || p.tglMasuk === '-') return true;
                         const parts = p.tglMasuk.split('/');
                         if (parts.length === 3) {
-                            const tahunMasuk = parseInt(parts[2], 10);
-                            return tahunMasuk >= batasTahunMin;
+                            return parseInt(parts[2], 10) >= batasTahunMin;
                         }
                         return true;
                     });
 
-                    database.ref('pasienEdelweis').set(dataBaru)
-                        .then(() => {
-                            alert("Pembersihan data lama di database online berhasil dilakukan!");
-                        });
+                    database.ref('pasienEdelweis').set(dataBaru).then(() => {
+                        alert("Pembersihan data lama di database online berhasil dilakukan!");
+                    });
                 });
             }
         }
@@ -1737,25 +1658,37 @@
             html = html.replace(/<span class="badge[^>]*>(.*?)<\/span>/g, '$1');
             html = html.replace(/⚠️<small>\(Long-Stay\)<\/small>/g, '');
 
-            const blob = new Blob(['\ufeff' + html], {
-                type: 'application/vnd.ms-excel'
-            });
-
+            const blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel' });
             const mode = document.getElementById('filterMode').value;
-            let labelFile = '';
-            if (mode === 'bulan') {
-                const bulanSelect = document.getElementById('filterBulan');
-                labelFile = `${bulanSelect.options[bulanSelect.selectedIndex].text}_${document.getElementById('filterTahun').value}`;
-            } else {
-                labelFile = `${document.getElementById('filterTglAwal').value}_s.d_${document.getElementById('filterTglAkhir').value}`;
-            }
-
-            const filename = `Data_Pasien_Ruang_Edelweis_${labelFile}.xls`;
-
+            let labelFile = mode === 'bulan' ? `${document.getElementById('filterBulan').options[document.getElementById('filterBulan').selectedIndex].text}_${document.getElementById('filterTahun').value}` : `${document.getElementById('filterTglAwal').value}_s.d_${document.getElementById('filterTglAkhir').value}`;
+            
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = filename;
+            a.download = `Data_Pasien_Ruang_Edelweis_${labelFile}.xls`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportMutuKeExcel() {
+            const table = document.getElementById('tabelMutuHarian');
+            let html = table.outerHTML;
+
+            const inputs = table.querySelectorAll('input');
+            inputs.forEach(inp => {
+                html = html.replace(inp.outerHTML, inp.value);
+            });
+
+            const blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel' });
+            const bulanSelect = document.getElementById('filterBulan');
+            const labelFile = `${bulanSelect.options[bulanSelect.selectedIndex].text}_${document.getElementById('filterTahun').value}`;
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Indikator_Mutu_Ruang_Edelweis_${labelFile}.xls`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1765,7 +1698,6 @@
         function formatTglKetik(input) {
             let v = input.value.replace(/\D/g, '');
             if (v.length > 8) v = v.substring(0, 8);
-            
             if (v.length >= 5) {
                 input.value = `${v.substring(0, 2)}/${v.substring(2, 4)}/${v.substring(4)}`;
             } else if (v.length >= 3) {
@@ -1778,18 +1710,14 @@
         function konversiKeDDMMYYYY(tglYMD) {
             if (!tglYMD) return '-';
             const parts = tglYMD.split('-');
-            if (parts.length === 3) {
-                return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
             return tglYMD;
         }
 
         function konversiKeYYYYMMDD(tglDMY) {
             if (!tglDMY || tglDMY === '-') return '';
             const parts = tglDMY.split('/');
-            if (parts.length === 3) {
-                return `${parts[2]}-${parts[1]}-${parts[0]}`;
-            }
+            if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
             return '';
         }
 
@@ -1806,15 +1734,9 @@
         function cariPasien() {
             const input = document.getElementById('inputCariPasien').value.toLowerCase();
             const rows = document.querySelectorAll('#tabelPasienBody tr');
-
             rows.forEach(row => {
                 if (row.style.display !== 'none' || input === '') {
-                    const teksBaris = row.textContent.toLowerCase();
-                    if (teksBaris.includes(input)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
+                    row.style.display = row.textContent.toLowerCase().includes(input) ? '' : 'none';
                 }
             });
         }
@@ -1836,9 +1758,7 @@
                     batasAkhir = new Date(skrg.getFullYear(), skrg.getMonth(), skrg.getDate());
                 }
 
-                const selisihWaktu = batasAkhir.getTime() - masuk.getTime();
-                let selisihHari = Math.floor(selisihWaktu / (1000 * 3600 * 24)) + 1;
-
+                let selisihHari = Math.floor((batasAkhir.getTime() - masuk.getTime()) / (1000 * 3600 * 24)) + 1;
                 if (selisihHari < 1) selisihHari = 1;
 
                 document.getElementById('pLamaRawat').value = selisihHari;
@@ -1855,36 +1775,40 @@
             if (tab === 'login') {
                 document.querySelectorAll('.tab-btn')[0].classList.add('active');
                 registerForm.style.opacity = '0';
-                registerForm.style.transform = 'translateY(10px)';
                 setTimeout(() => {
                     registerForm.classList.remove('active');
                     loginForm.classList.add('active');
-                    setTimeout(() => {
-                        loginForm.style.opacity = '1';
-                        loginForm.style.transform = 'translateY(0)';
-                    }, 20);
+                    loginForm.style.opacity = '1';
                 }, 200);
             } else {
                 document.querySelectorAll('.tab-btn')[1].classList.add('active');
                 loginForm.style.opacity = '0';
-                loginForm.style.transform = 'translateY(10px)';
                 setTimeout(() => {
                     loginForm.classList.remove('active');
                     registerForm.classList.add('active');
-                    setTimeout(() => {
-                        registerForm.style.opacity = '1';
-                        registerForm.style.transform = 'translateY(0)';
-                    }, 20);
+                    registerForm.style.opacity = '1';
                 }, 200);
             }
         }
 
+        // --- TRANSISI HALAMAN YANG HALUS & FLEKSIBEL (Poin 1) ---
         function switchPage(pageId, btn) {
-            document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.app-page').forEach(page => {
+                page.style.opacity = '0';
+                page.style.transform = 'translateY(15px)';
+                page.classList.remove('active');
+            });
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
             const targetPage = document.getElementById(pageId);
-            targetPage.classList.add('active');
+            setTimeout(() => {
+                targetPage.classList.add('active');
+                setTimeout(() => {
+                    targetPage.style.opacity = '1';
+                    targetPage.style.transform = 'translateY(0)';
+                }, 50);
+            }, 200);
+
             btn.classList.add('active');
         }
 
@@ -1904,13 +1828,7 @@
             if (tglVal.length !== 10) return;
 
             const parts = tglVal.split('/');
-            if (parts.length !== 3) return;
-
-            const tgl = parseInt(parts[0], 10);
-            const bln = parseInt(parts[1], 10) - 1;
-            const thn = parseInt(parts[2], 10);
-
-            const tglLahir = new Date(thn, bln, tgl);
+            const tglLahir = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
             const hariIni = new Date();
 
             let tahun = hariIni.getFullYear() - tglLahir.getFullYear();
@@ -1919,13 +1837,6 @@
             if (bulan < 0 || (bulan === 0 && hariIni.getDate() < tglLahir.getDate())) {
                 tahun--;
                 bulan += 12;
-            }
-
-            if (hariIni.getDate() < tglLahir.getDate()) {
-                bulan--;
-                if (bulan < 0) {
-                    bulan += 12;
-                }
             }
 
             if (!isNaN(tahun) && !isNaN(bulan) && tahun >= 0) {
@@ -1948,9 +1859,7 @@
             document.getElementById('pStatusKeluar').value = tr.cells[10].textContent.trim();
             document.getElementById('pLamaRawat').value = parseInt(tr.cells[11].textContent) || 0;
             document.getElementById('pDiagnosa').value = tr.cells[12].textContent.trim();
-            
-            const pjVal = tr.cells[13].textContent.trim();
-            document.getElementById('pPenanggungJawab').value = pjVal === '-' ? '' : pjVal;
+            document.getElementById('pPenanggungJawab').value = tr.cells[13].textContent.trim() === '-' ? '' : tr.cells[13].textContent.trim();
 
             document.getElementById('formTitle').textContent = '✏️ Edit / Hapus Data Pasien';
             document.getElementById('btnSimpan').textContent = 'Perbarui Data Pasien';
@@ -1975,17 +1884,6 @@
         function batalEdit() {
             barisSedangDiedit = null;
             document.getElementById('formPasien').reset();
-            
-            document.getElementById('pStatusBayar').selectedIndex = 0;
-            document.getElementById('pStatusPasien').selectedIndex = 0;
-            document.getElementById('pDokter').selectedIndex = 0;
-            document.getElementById('pStatusKeluar').selectedIndex = 0;
-            document.getElementById('pDiagnosa').value = '';
-            document.getElementById('pPenanggungJawab').value = '';
-
-            document.getElementById('pUsia').value = '';
-            document.getElementById('pLamaRawat').value = '';
-            
             document.getElementById('formTitle').textContent = '+ Input Data Pasien Baru (Ruang Edelweis)';
             document.getElementById('btnSimpan').textContent = 'Simpan Data Pasien';
             document.getElementById('btnHapus').style.display = 'none';
@@ -1995,9 +1893,7 @@
         function tambahPasien(event) {
             event.preventDefault();
 
-            const namaInput = document.getElementById('pNama').value.trim();
-            const nama = formatTitleCase(namaInput);
-
+            const nama = formatTitleCase(document.getElementById('pNama').value.trim());
             const rm = document.getElementById('pRM').value.trim();
             const tglLahir = document.getElementById('pTglLahir').value;
             const usia = document.getElementById('pUsia').value;
@@ -2011,33 +1907,13 @@
             const diagnosa = document.getElementById('pDiagnosa').value.trim();
             const penanggungJawab = document.getElementById('pPenanggungJawab').value.trim() || '-';
 
-            const statusKeluarBaru = statusKeluar;
-            const isPasienAktifBaru = (statusKeluarBaru === 'Masih di rawat' || statusKeluarBaru === '-');
-
-            if (isPasienAktifBaru) {
-                const rows = document.querySelectorAll('#tabelPasienBody tr');
-                for (let r of rows) {
-                    if (r !== barisSedangDiedit) {
-                        const existingRM = r.cells[2].textContent.trim();
-                        const existingStatusKeluar = r.cells[10].textContent.trim();
-                        const isExistingAktif = (existingStatusKeluar === 'Masih di rawat' || existingStatusKeluar === '-');
-
-                        if (existingRM === rm && isExistingAktif) {
-                            alert(`Peringatan: Nomor Rekam Medis (RM) "${rm}" sudah terdaftar atas nama pasien aktif (${r.cells[1].textContent.trim()}) di ruangan ini! Masukkan No RM yang berbeda atau selesaikan status keluar pasien sebelumnya.`);
-                            document.getElementById('pRM').focus();
-                            return;
-                        }
-                    }
-                }
-            }
-
             let badgeStatusKeluar = 'badge-info';
             if (statusKeluar === 'Pulang Izin Dokter') badgeStatusKeluar = 'badge-success';
-            if (statusKeluar === 'Pulang Paksa') badgeStatusKeluar = 'badge-warning';
-            if (statusKeluar.includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
+            else if (statusKeluar === 'Pulang Paksa') badgeStatusKeluar = 'badge-warning';
+            else if (statusKeluar === 'Meninggal Dunia') badgeStatusKeluar = 'badge-danger';
+            else if (statusKeluar.includes('Pindah Ke')) badgeStatusKeluar = 'badge-warning';
 
-            const rawLamaAngka = parseInt(lamaRawat) || 0;
-            let isLongStay = isPasienAktifBaru && rawLamaAngka > 10;
+            let isLongStay = (statusKeluar === 'Masih di rawat' || statusKeluar === '-') && parseInt(lamaRawat) > 10;
 
             if (barisSedangDiedit) {
                 barisSedangDiedit.setAttribute('data-dokter', dokter);
@@ -2062,7 +1938,6 @@
                 alert('Data pasien berhasil diperbarui!');
             } else {
                 const tbody = document.getElementById('tabelPasienBody');
-
                 const newRow = document.createElement('tr');
                 if (isLongStay) newRow.classList.add('row-long-stay');
                 newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
@@ -2085,12 +1960,12 @@
                     <td>${diagnosa}</td>
                     <td>${penanggungJawab}</td>
                 `;
-
                 tbody.appendChild(newRow);
                 alert('Data pasien berhasil ditambahkan!');
             }
 
             simpanDataPasienKeFirebase();
+            sinkronisasiMutuOtomatisDariPasien();
             batalEdit();
         }
 
@@ -2104,19 +1979,15 @@
                 const tahunSelect = document.getElementById('filterTahun');
                 const bulanVal = parseInt(bulanSelect.value);
                 const tahunVal = parseInt(tahunSelect.value);
-                const namaBulan = bulanSelect.options[bulanSelect.selectedIndex].text;
 
-                teksPeriode = namaBulan + ' ' + tahunVal;
+                teksPeriode = bulanSelect.options[bulanSelect.selectedIndex].text + ' ' + tahunVal;
                 awalFilter = new Date(tahunVal, bulanVal - 1, 1);
                 akhirFilter = new Date(tahunVal, bulanVal, 0);
 
-                // Update juga tampilan tabel mutu harian berdasarkan bulan yang dipilih
                 inisialisasiTabelMutuHarian();
-                muatDataMutuDariFirebase();
             } else {
                 const tglAwalVal = document.getElementById('filterTglAwal').value;
                 const tglAkhirVal = document.getElementById('filterTglAkhir').value;
-
                 if (!tglAwalVal || !tglAkhirVal) return;
 
                 const pAwal = tglAwalVal.split('-');
@@ -2137,51 +2008,27 @@
 
             const rows = document.querySelectorAll('#tabelPasienBody tr');
             
-            let total = 0;
-            let masihRawat = 0;
-            let izinDokter = 0;
-            let pulangPaksa = 0;
-            let meninggal = 0;
-            let pindahAnggrek = 0;
-            let pindahBougenville = 0;
-            let pindahCempaka = 0;
-            let pindahDahlia = 0;
-            let pindahKebidanan = 0;
-            let pindahPerina = 0;
-            let pindahICU = 0;
-
-            let bayarBPJS = 0;
-            let bayarUmum = 0;
-            let bayarJPKM = 0;
-            let bayarLain = 0;
+            let total = 0, masihRawat = 0, izinDokter = 0, pulangPaksa = 0, meninggal = 0;
+            let pindahAnggrek = 0, pindahBougenville = 0, pindahCempaka = 0, pindahDahlia = 0, pindahKebidanan = 0, pindahPerina = 0, pindahICU = 0;
+            let bayarBPJS = 0, bayarUmum = 0, bayarJPKM = 0, bayarLain = 0;
             const petaDiagnosa = {};
-
-            let totalHariPerawatan = 0;
-            let totalPasienKeluar = 0;
-            let nomorUrut = 1;
+            let totalHariPerawatan = 0, totalPasienKeluar = 0, nomorUrut = 1;
 
             rows.forEach(row => {
                 const tglMasukTxt = row.cells[5].textContent.trim();
                 const tglKeluarTxt = row.cells[9].textContent.trim();
-                
                 if (!tglMasukTxt || tglMasukTxt === '-') return;
 
                 const pMasuk = tglMasukTxt.split('/');
-                if (pMasuk.length < 3) return;
                 const tglMasukDate = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
 
                 let tglKeluarDate = null;
                 if (tglKeluarTxt && tglKeluarTxt !== '-') {
                     const pKeluar = tglKeluarTxt.split('/');
-                    if (pKeluar.length === 3) {
-                        tglKeluarDate = new Date(pKeluar[2], pKeluar[1] - 1, pKeluar[0]);
-                    }
+                    tglKeluarDate = new Date(pKeluar[2], pKeluar[1] - 1, pKeluar[0]);
                 }
 
-                const masukSebelumAkhirBulan = tglMasukDate <= akhirFilter;
-                const belumKeluarAtauKeluarSesudahAwal = (tglKeluarDate === null) || (tglKeluarDate >= awalFilter);
-
-                if (masukSebelumAkhirBulan && belumKeluarAtauKeluarSesudahAwal) {
+                if (tglMasukDate <= akhirFilter && (tglKeluarDate === null || tglKeluarDate >= awalFilter)) {
                     row.style.display = '';
                     row.cells[0].textContent = nomorUrut++;
                     total++;
@@ -2193,15 +2040,11 @@
                     else if (stBayar.includes('Asuransi')) bayarLain++;
 
                     const diag = row.cells[12].textContent.trim();
-                    if (diag && diag !== '-') {
-                        petaDiagnosa[diag] = (petaDiagnosa[diag] || 0) + 1;
-                    }
+                    if (diag && diag !== '-') petaDiagnosa[diag] = (petaDiagnosa[diag] || 0) + 1;
 
                     const statusKeluarTxt = row.cells[10].textContent.trim();
                     const rawLama = row.cells[11].textContent.trim().replace(/\D/g, '');
-                    const lamaRawatVal = parseInt(rawLama) || 0;
-
-                    totalHariPerawatan += lamaRawatVal;
+                    totalHariPerawatan += parseInt(rawLama) || 0;
 
                     if (statusKeluarTxt === 'Masih di rawat' || statusKeluarTxt === '-') {
                         masihRawat++;
@@ -2225,7 +2068,7 @@
 
             renderChartStatusBayar(bayarBPJS, bayarUmum, bayarJPKM, bayarLain);
             renderChartTopDiagnosa(petaDiagnosa);
-            renderChartTrenBulanan();
+            renderChartTrenBulanan1Tahun();
 
             document.getElementById('valTotal').textContent = total + ' Pasien';
             document.getElementById('valMasihRawat').textContent = masihRawat + ' Pasien';
@@ -2242,29 +2085,15 @@
 
             const selisihHari = Math.max(1, Math.round((akhirFilter - awalFilter) / (1000 * 60 * 60 * 24)) + 1);
             const kapasitasPeriode = KAPASITAS_TT * selisihHari;
-            const borHitung = ((totalHariPerawatan / kapasitasPeriode) * 100).toFixed(2);
             
-            let alosHitung = 0;
-            if (totalPasienKeluar > 0) {
-                alosHitung = (totalHariPerawatan / totalPasienKeluar).toFixed(1);
-            }
-
-            let toiHitung = 0;
-            if (totalPasienKeluar > 0) {
-                toiHitung = ((kapasitasPeriode - totalHariPerawatan) / totalPasienKeluar).toFixed(1);
-            }
-
-            document.getElementById('valBOR').textContent = borHitung + ' %';
-            document.getElementById('valALOS').textContent = alosHitung + ' Hari';
-            document.getElementById('valTOI').textContent = toiHitung + ' Hari';
+            document.getElementById('valBOR').textContent = ((totalHariPerawatan / kapasitasPeriode) * 100).toFixed(2) + ' %';
+            document.getElementById('valALOS').textContent = (totalPasienKeluar > 0 ? (totalHariPerawatan / totalPasienKeluar).toFixed(1) : 0) + ' Hari';
+            document.getElementById('valTOI').textContent = (totalPasienKeluar > 0 ? ((kapasitasPeriode - totalHariPerawatan) / totalPasienKeluar).toFixed(1) : 0) + ' Hari';
         }
 
         function renderChartStatusBayar(bpjs, umum, jpkm, lain) {
             const ctx = document.getElementById('chartStatusBayar').getContext('2d');
-            
-            if (chartBayarInstance) {
-                chartBayarInstance.destroy();
-            }
+            if (chartBayarInstance) chartBayarInstance.destroy();
 
             chartBayarInstance = new Chart(ctx, {
                 type: 'doughnut',
@@ -2277,73 +2106,43 @@
                         borderColor: '#ffffff'
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
         }
 
         function renderChartTopDiagnosa(petaDiagnosa) {
             const ctx = document.getElementById('chartTopDiagnosa').getContext('2d');
+            const sorted = Object.keys(petaDiagnosa).map(k => ({ nama: k, jumlah: petaDiagnosa[k] })).sort((a, b) => b.jumlah - a.jumlah).slice(0, 5);
 
-            const sortedDiagnosa = Object.keys(petaDiagnosa).map(key => {
-                return { nama: key, jumlah: petaDiagnosa[key] };
-            }).sort((a, b) => b.jumlah - a.jumlah).slice(0, 5);
-
-            const labels = sortedDiagnosa.map(item => item.nama);
-            const dataCounts = sortedDiagnosa.map(item => item.jumlah);
-
-            if (chartDiagnosaInstance) {
-                chartDiagnosaInstance.destroy();
-            }
+            if (chartDiagnosaInstance) chartDiagnosaInstance.destroy();
 
             chartDiagnosaInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels.length > 0 ? labels : ['Tidak Ada Data'],
-                    datasets: [{
-                        label: 'Jumlah Pasien',
-                        data: dataCounts.length > 0 ? dataCounts : [0],
-                        backgroundColor: '#6366f1',
-                        borderRadius: 6
-                    }]
+                    labels: sorted.length > 0 ? sorted.map(i => i.nama) : ['Tidak Ada Data'],
+                    datasets: [{ label: 'Jumlah Pasien', data: sorted.length > 0 ? sorted.map(i => i.jumlah) : [0], backgroundColor: '#6366f1', borderRadius: 6 }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } }
             });
         }
 
-        function renderChartTrenBulanan() {
+        // --- GRAFIK TREN BULANAN SELAMA 1 TAHUN PENUH (Poin 2) ---
+        function renderChartTrenBulanan1Tahun() {
             const ctx = document.getElementById('chartTrenBulanan').getContext('2d');
             const namaBulanList = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
             
-            const tglSkrg = new Date();
+            const tahunPilih = parseInt(document.getElementById('filterTahun').value) || 2026;
             let labelsBulan = [];
             let dataBorHistoris = [];
             let dataAlosHistoris = [];
 
             const rows = document.querySelectorAll('#tabelPasienBody tr');
 
-            for (let i = 5; i >= 0; i--) {
-                let d = new Date(tglSkrg.getFullYear(), tglSkrg.getMonth() - i, 1);
-                let bIdx = d.getMonth();
-                let thn = d.getFullYear();
-                labelsBulan.push(`${namaBulanList[bIdx]} ${thn}`);
+            for (let b = 0; b < 12; b++) {
+                labelsBulan.push(`${namaBulanList[b]} ${tahunPilih}`);
 
-                let awalBulan = new Date(thn, bIdx, 1);
-                let akhirBulan = new Date(thn, bIdx + 1, 0);
+                let awalBulan = new Date(tahunPilih, b, 1);
+                let akhirBulan = new Date(tahunPilih, b + 1, 0);
                 let jmlHariBulan = akhirBulan.getDate();
                 let kapasitasBulan = KAPASITAS_TT * jmlHariBulan;
 
@@ -2356,13 +2155,12 @@
                     if (!tglMasukTxt || tglMasukTxt === '-') return;
 
                     const pMasuk = tglMasukTxt.split('/');
-                    if (pMasuk.length < 3) return;
                     let tMasuk = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
 
                     let tKeluar = null;
                     if (tglKeluarTxt && tglKeluarTxt !== '-') {
                         const pKel = tglKeluarTxt.split('/');
-                        if (pKel.length === 3) tKeluar = new Date(pKel[2], pKel[1] - 1, pKel[0]);
+                        tKeluar = new Date(pKel[2], pKel[1] - 1, pKel[0]);
                     }
 
                     if (tMasuk <= akhirBulan && (tKeluar === null || tKeluar >= awalBulan)) {
@@ -2374,52 +2172,22 @@
                     }
                 });
 
-                let borBulan = parseFloat(((hPerawatanBulan / kapasitasBulan) * 100).toFixed(1));
-                let alosBulan = pKeluarBulan > 0 ? parseFloat((hPerawatanBulan / pKeluarBulan).toFixed(1)) : 0;
-
-                dataBorHistoris.push(borBulan);
-                dataAlosHistoris.push(alosBulan);
+                dataBorHistoris.push(parseFloat(((hPerawatanBulan / kapasitasBulan) * 100).toFixed(1)));
+                dataAlosHistoris.push(pKeluarBulan > 0 ? parseFloat((hPerawatanBulan / pKeluarBulan).toFixed(1)) : 0);
             }
 
-            if (chartTrenInstance) {
-                chartTrenInstance.destroy();
-            }
+            if (chartTrenInstance) chartTrenInstance.destroy();
 
             chartTrenInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labelsBulan,
                     datasets: [
-                        {
-                            label: 'BOR (%)',
-                            data: dataBorHistoris,
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            fill: true,
-                            tension: 0.35,
-                            borderWidth: 3
-                        },
-                        {
-                            label: 'ALOS (Hari)',
-                            data: dataAlosHistoris,
-                            borderColor: '#8b5cf6',
-                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                            fill: true,
-                            tension: 0.35,
-                            borderWidth: 3
-                        }
+                        { label: 'BOR (%)', data: dataBorHistoris, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.35, borderWidth: 3 },
+                        { label: 'ALOS (Hari)', data: dataAlosHistoris, borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)', fill: true, tension: 0.35, borderWidth: 3 }
                     ]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true }
-                    },
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { position: 'bottom' } } }
             });
         }
     </script>
