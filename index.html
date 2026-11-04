@@ -400,7 +400,7 @@
         }
 
         /* --- KARTU STATISTIK & MUTU --- */
-        .stats-grid-primary, .mutu-grid {
+        .stats-grid-primary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
@@ -572,19 +572,19 @@
         /* --- PENGATURAN TABEL --- */
         .table-responsive {
             width: 100%;
-            overflow-x: hidden;
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            font-size: 11px;
+            font-size: 12px;
             table-layout: auto;
         }
 
         table th, table td {
-            padding: 8px 6px;
+            padding: 10px 8px;
             border-bottom: 1px solid #e2e8f0;
             vertical-align: middle;
         }
@@ -593,7 +593,7 @@
             background-color: #f8fafc;
             color: #475569;
             font-weight: 700;
-            font-size: 10.5px;
+            font-size: 11.5px;
         }
 
         .nowrap {
@@ -1188,40 +1188,91 @@
             </div>
 
 
-            <!-- ================= HALAMAN 3: MUTU (INDIKATOR MUTU RUMAH SAKIT) ================= -->
+            <!-- ================= HALAMAN 3: MUTU (TABEL NUMERATOR & DENOMINATOR) ================= -->
             <div id="pageMutu" class="app-page">
-                <div class="section-title">🛡️ Indikator Mutu Pelayanan & Keselamatan Pasien Ruang Edelweis</div>
+                <div class="section-title">🛡️ Tabel Indikator Mutu & Keselamatan Pasien (Ruang Edelweis)</div>
                 
-                <div class="mutu-grid">
-                    <div class="stat-card indigo">
-                        <h4>1. Kepatuhan Identifikasi Pasien</h4>
-                        <p>100 %</p>
-                        <span>Standar Mutu: 100% (Gelang & Prosedur Verbal)</span>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📊 Rekapitulasi Num & Denum Indikator Mutu</h3>
+                        <span style="font-size: 13px; color: #64748b;">Standar Pelayanan & Keselamatan Pasien RS</span>
                     </div>
-                    <div class="stat-card teal">
-                        <h4>2. Kepatuhan Kebersihan Tangan</h4>
-                        <p>95 %</p>
-                        <span>Standar Mutu: Minimal ≥ 85%</span>
-                    </div>
-                    <div class="stat-card red">
-                        <h4>3. Teridentifikasinya Kejadian Dekubitus</h4>
-                        <p>0 Kejadian</p>
-                        <span>Standar Mutu: 0% (Pencegahan Optimal)</span>
-                    </div>
-                    <div class="stat-card amber">
-                        <h4>4. Teridentifikasinya Kesalahan Pemberian Obat</h4>
-                        <p>0 Kejadian</p>
-                        <span>Standar Mutu: 0% (Zero Error)</span>
-                    </div>
-                    <div class="stat-card blue">
-                        <h4>5. Kepatuhan Pencegahan Risiko Pasien Jatuh</h4>
-                        <p>100 %</p>
-                        <span>Standar Mutu: 100%</span>
-                    </div>
-                    <div class="stat-card pink">
-                        <h4>6. Kepuasan Pasien dan Keluarga</h4>
-                        <p>90 %</p>
-                        <span>Standar Mutu: Minimal ≥ 85%</span>
+                    <div class="table-responsive">
+                        <table style="text-align: center;">
+                            <thead>
+                                <tr>
+                                    <th width="40">No</th>
+                                    <th style="text-align: left;">Indikator Mutu</th>
+                                    <th>Numerator (NUM)</th>
+                                    <th>Denominator (DENUM)</th>
+                                    <th>Capaian (%)</th>
+                                    <th>Standar</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelMutuBody">
+                                <!-- Baris 1 -->
+                                <tr>
+                                    <td>1</td>
+                                    <td style="text-align: left; font-weight: 600;">Kepatuhan Identifikasi Pasien</td>
+                                    <td><input type="number" class="mutu-input" data-id="1" value="32" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><input type="number" class="mutu-input" data-id="1" value="32" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><strong id="cap1" style="color: #0d9488;">100 %</strong></td>
+                                    <td>= 100%</td>
+                                    <td><span class="badge badge-success" id="stat1">Tercapai</span></td>
+                                </tr>
+                                <!-- Baris 2 -->
+                                <tr>
+                                    <td>2</td>
+                                    <td style="text-align: left; font-weight: 600;">Kepatuhan Kebersihan Tangan</td>
+                                    <td><input type="number" class="mutu-input" data-id="2" value="95" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><input type="number" class="mutu-input" data-id="2" value="100" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><strong id="cap2" style="color: #0d9488;">95 %</strong></td>
+                                    <td>&ge; 85%</td>
+                                    <td><span class="badge badge-success" id="stat2">Tercapai</span></td>
+                                </tr>
+                                <!-- Baris 3 -->
+                                <tr>
+                                    <td>3</td>
+                                    <td style="text-align: left; font-weight: 600;">Teridentifikasinya Kejadian Dekubitus</td>
+                                    <td><input type="number" class="mutu-input" data-id="3" value="0" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><input type="number" class="mutu-input" data-id="3" value="32" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><strong id="cap3" style="color: #0d9488;">0 %</strong></td>
+                                    <td>0%</td>
+                                    <td><span class="badge badge-success" id="stat3">Tercapai</span></td>
+                                </tr>
+                                <!-- Baris 4 -->
+                                <tr>
+                                    <td>4</td>
+                                    <td style="text-align: left; font-weight: 600;">Teridentifikasinya Kesalahan Pemberian Obat</td>
+                                    <td><input type="number" class="mutu-input" data-id="4" value="0" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><input type="number" class="mutu-input" data-id="4" value="150" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><strong id="cap4" style="color: #0d9488;">0 %</strong></td>
+                                    <td>0%</td>
+                                    <td><span class="badge badge-success" id="stat4">Tercapai</span></td>
+                                </tr>
+                                <!-- Baris 5 -->
+                                <tr>
+                                    <td>5</td>
+                                    <td style="text-align: left; font-weight: 600;">Kepatuhan Pencegahan Risiko Pasien Jatuh</td>
+                                    <td><input type="number" class="mutu-input" data-id="5" value="32" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><input type="number" class="mutu-input" data-id="5" value="32" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><strong id="cap5" style="color: #0d9488;">100 %</strong></td>
+                                    <td>= 100%</td>
+                                    <td><span class="badge badge-success" id="stat5">Tercapai</span></td>
+                                </tr>
+                                <!-- Baris 6 -->
+                                <tr>
+                                    <td>6</td>
+                                    <td style="text-align: left; font-weight: 600;">Kepuasan Pasien dan Keluarga</td>
+                                    <td><input type="number" class="mutu-input" data-id="6" value="45" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><input type="number" class="mutu-input" data-id="6" value="50" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
+                                    <td><strong id="cap6" style="color: #0d9488;">90 %</strong></td>
+                                    <td>&ge; 85%</td>
+                                    <td><span class="badge badge-success" id="stat6">Tercapai</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -1299,9 +1350,74 @@
             document.getElementById('filterTglAwal').value = today;
             document.getElementById('filterTglAkhir').value = today;
 
-            // Muat Data Pasien dari Firebase secara real-time
+            // Muat Data Pasien & Mutu dari Firebase
             muatDataPasienDariFirebase();
+            muatDataMutuDariFirebase();
         };
+
+        // --- MANAJEMEN PENYIMPANAN MUTU KE FIREBASE ---
+        function simpanDataMutuKeFirebase() {
+            const inputs = document.querySelectorAll('.mutu-input');
+            const mutuData = {};
+            inputs.forEach(input => {
+                const id = input.getAttribute('data-id');
+                if (!mutuData[id]) mutuData[id] = [];
+                mutuData[id].push(input.value);
+            });
+
+            database.ref('mutuEdelweis').set(mutuData);
+        }
+
+        function muatDataMutuDariFirebase() {
+            database.ref('mutuEdelweis').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const inputs = document.querySelectorAll('.mutu-input');
+                    inputs.forEach(input => {
+                        const id = input.getAttribute('data-id');
+                        const index = Array.from(document.querySelectorAll(`.mutu-input[data-id="${id}"]`)).indexOf(input);
+                        if (data[id] && data[id][index] !== undefined) {
+                            input.value = data[id][index];
+                        }
+                    });
+                    hitungMutuOtomatis();
+                }
+            });
+        }
+
+        function hitungMutuOtomatis() {
+            for (let i = 1; i <= 6; i++) {
+                const inputs = document.querySelectorAll(`.mutu-input[data-id="${i}"]`);
+                if (inputs.length === 2) {
+                    const num = parseFloat(inputs[0].value) || 0;
+                    const denum = parseFloat(inputs[1].value) || 0;
+                    
+                    let persentase = 0;
+                    if (denum > 0) {
+                        persentase = ((num / denum) * 100).toFixed(1);
+                    }
+
+                    document.getElementById(`cap${i}`).textContent = persentase + ' %';
+
+                    // Evaluasi Standar
+                    const badge = document.getElementById(`stat{i}`.replace('{i}', i));
+                    let tercapai = true;
+
+                    if (i === 1 || i === 5) tercapai = (persentase >= 100);
+                    else if (i === 2 || i === 6) tercapai = (persentase >= 85);
+                    else if (i === 3 || i === 4) tercapai = (num === 0);
+
+                    if (tercapai) {
+                        badge.className = 'badge badge-success';
+                        badge.textContent = 'Tercapai';
+                    } else {
+                        badge.className = 'badge badge-danger';
+                        badge.textContent = 'Belum Tercapai';
+                    }
+                }
+            }
+            simpanDataMutuKeFirebase();
+        }
 
         // --- MANAJEMEN PENYIMPANAN FIREBASE DATABASE ---
         function simpanDataPasienKeFirebase() {
