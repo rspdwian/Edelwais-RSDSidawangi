@@ -579,21 +579,31 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            font-size: 12px;
+            font-size: 11px;
             table-layout: auto;
         }
 
         table th, table td {
-            padding: 10px 8px;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 6px 4px;
+            border: 1px solid #cbd5e1;
             vertical-align: middle;
+            text-align: center;
         }
 
         table th {
             background-color: #f8fafc;
             color: #475569;
             font-weight: 700;
-            font-size: 11.5px;
+            font-size: 10.5px;
+        }
+
+        .table-mutu input {
+            width: 42px;
+            padding: 3px;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+            border-radius: 3px;
+            font-size: 11px;
         }
 
         .nowrap {
@@ -626,8 +636,8 @@
 
         .badge {
             display: inline-block;
-            padding: 3px 7px;
-            border-radius: 4px;
+            padding: 2px 5px;
+            border-radius: 3px;
             font-size: 9.5px;
             font-weight: 600;
             text-align: center;
@@ -1188,91 +1198,43 @@
             </div>
 
 
-            <!-- ================= HALAMAN 3: MUTU (TABEL NUMERATOR & DENOMINATOR) ================= -->
+            <!-- ================= HALAMAN 3: MUTU (TABEL HARIAN NUM & DENUM) ================= -->
             <div id="pageMutu" class="app-page">
-                <div class="section-title">🛡️ Tabel Indikator Mutu & Keselamatan Pasien (Ruang Edelweis)</div>
+                <div class="section-title">🛡️ Indikator Mutu Unit - Ruang Edelweis (<span id="lblPeriodeMutu">November 2026</span>)</div>
                 
                 <div class="card">
                     <div class="card-header">
-                        <h3>📊 Rekapitulasi Num & Denum Indikator Mutu</h3>
-                        <span style="font-size: 13px; color: #64748b;">Standar Pelayanan & Keselamatan Pasien RS</span>
+                        <h3>📊 Rekapitulasi Harian Mutu (Tanggal 1 s.d 31)</h3>
+                        <button type="button" class="btn-excel" onclick="exportMutuKeExcel()">📊 Export Mutu ke Excel</button>
                     </div>
-                    <div class="table-responsive">
-                        <table style="text-align: center;">
+                    <div class="table-responsive table-mutu">
+                        <table id="tabelMutuHarian">
                             <thead>
                                 <tr>
-                                    <th width="40">No</th>
-                                    <th style="text-align: left;">Indikator Mutu</th>
-                                    <th>Numerator (NUM)</th>
-                                    <th>Denominator (DENUM)</th>
-                                    <th>Capaian (%)</th>
-                                    <th>Standar</th>
-                                    <th>Status</th>
+                                    <th rowspan="2" width="35">NO</th>
+                                    <th rowspan="2" style="min-width: 180px;">INDIKATOR</th>
+                                    <th rowspan="2" width="45">N/D</th>
+                                    <th colspan="31" id="headerTglMutu">TANGGAL</th>
+                                    <th rowspan="2" width="55">TOTAL</th>
+                                </tr>
+                                <tr id="subHeaderTglMutu">
+                                    <!-- Diisi otomatis script tanggal 1-31 -->
                                 </tr>
                             </thead>
-                            <tbody id="tabelMutuBody">
-                                <!-- Baris 1 -->
-                                <tr>
-                                    <td>1</td>
-                                    <td style="text-align: left; font-weight: 600;">Kepatuhan Identifikasi Pasien</td>
-                                    <td><input type="number" class="mutu-input" data-id="1" value="32" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><input type="number" class="mutu-input" data-id="1" value="32" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><strong id="cap1" style="color: #0d9488;">100 %</strong></td>
-                                    <td>= 100%</td>
-                                    <td><span class="badge badge-success" id="stat1">Tercapai</span></td>
-                                </tr>
-                                <!-- Baris 2 -->
-                                <tr>
-                                    <td>2</td>
-                                    <td style="text-align: left; font-weight: 600;">Kepatuhan Kebersihan Tangan</td>
-                                    <td><input type="number" class="mutu-input" data-id="2" value="95" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><input type="number" class="mutu-input" data-id="2" value="100" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><strong id="cap2" style="color: #0d9488;">95 %</strong></td>
-                                    <td>&ge; 85%</td>
-                                    <td><span class="badge badge-success" id="stat2">Tercapai</span></td>
-                                </tr>
-                                <!-- Baris 3 -->
-                                <tr>
-                                    <td>3</td>
-                                    <td style="text-align: left; font-weight: 600;">Teridentifikasinya Kejadian Dekubitus</td>
-                                    <td><input type="number" class="mutu-input" data-id="3" value="0" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><input type="number" class="mutu-input" data-id="3" value="32" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><strong id="cap3" style="color: #0d9488;">0 %</strong></td>
-                                    <td>0%</td>
-                                    <td><span class="badge badge-success" id="stat3">Tercapai</span></td>
-                                </tr>
-                                <!-- Baris 4 -->
-                                <tr>
-                                    <td>4</td>
-                                    <td style="text-align: left; font-weight: 600;">Teridentifikasinya Kesalahan Pemberian Obat</td>
-                                    <td><input type="number" class="mutu-input" data-id="4" value="0" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><input type="number" class="mutu-input" data-id="4" value="150" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><strong id="cap4" style="color: #0d9488;">0 %</strong></td>
-                                    <td>0%</td>
-                                    <td><span class="badge badge-success" id="stat4">Tercapai</span></td>
-                                </tr>
-                                <!-- Baris 5 -->
-                                <tr>
-                                    <td>5</td>
-                                    <td style="text-align: left; font-weight: 600;">Kepatuhan Pencegahan Risiko Pasien Jatuh</td>
-                                    <td><input type="number" class="mutu-input" data-id="5" value="32" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><input type="number" class="mutu-input" data-id="5" value="32" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><strong id="cap5" style="color: #0d9488;">100 %</strong></td>
-                                    <td>= 100%</td>
-                                    <td><span class="badge badge-success" id="stat5">Tercapai</span></td>
-                                </tr>
-                                <!-- Baris 6 -->
-                                <tr>
-                                    <td>6</td>
-                                    <td style="text-align: left; font-weight: 600;">Kepuasan Pasien dan Keluarga</td>
-                                    <td><input type="number" class="mutu-input" data-id="6" value="45" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><input type="number" class="mutu-input" data-id="6" value="50" oninput="hitungMutuOtomatis()" style="width: 80px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px;"></td>
-                                    <td><strong id="cap6" style="color: #0d9488;">90 %</strong></td>
-                                    <td>&ge; 85%</td>
-                                    <td><span class="badge badge-success" id="stat6">Tercapai</span></td>
-                                </tr>
+                            <tbody id="tbodyMutuHarian">
+                                <!-- Dibuat dinamis oleh JavaScript -->
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- TANDA TANGAN KEPALA RUANGAN KHUSUS MUTU -->
+                <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+                    <div style="text-align: center; width: 220px;">
+                        <p>Kepala Ruangan</p>
+                        <br><br><br>
+                        <p><b>( SINEM, S.Kep.Ners )</b></p>
+                        <p>NIP. ...................................</p>
                     </div>
                 </div>
             </div>
@@ -1304,6 +1266,15 @@
         let chartBayarInstance = null;
         let chartDiagnosaInstance = null;
         let chartTrenInstance = null;
+
+        const daftarIndikatorMutu = [
+            "1 Kepatuhan Identifikasi Pasien",
+            "2 Kepatuhan Hand Higiene",
+            "3 Teridentifikasinya Kejadian Dekubitus",
+            "4 Kesalahan Pemberian Obat",
+            "5 Kepatuhan Upaya Pencegahan Risiko Pasien Jatuh",
+            "6 Kepuasan Pasien"
+        ];
 
         window.onload = function() {
             // Cek Sesi Login di LocalStorage
@@ -1350,73 +1321,171 @@
             document.getElementById('filterTglAwal').value = today;
             document.getElementById('filterTglAkhir').value = today;
 
+            // Inisialisasi Tabel Mutu Harian
+            inisialisasiTabelMutuHarian();
+
             // Muat Data Pasien & Mutu dari Firebase
             muatDataPasienDariFirebase();
             muatDataMutuDariFirebase();
         };
 
-        // --- MANAJEMEN PENYIMPANAN MUTU KE FIREBASE ---
+        // --- MANAJEMEN TABEL MUTU HARIAN ---
+        function inisialisasiTabelMutuHarian() {
+            const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
+            const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
+            const jmlHari = new Date(tahunVal, bulanVal, 0).getDate();
+
+            // Update colspan header tanggal
+            document.getElementById('headerTglMutu').setAttribute('colspan', jmlHari);
+
+            // Render sub-header tanggal (1 s.d jmlHari)
+            let subHeaderHtml = '';
+            for (let d = 1; d <= 31; d++) {
+                subHeaderHtml += `<th class="th-tgl-${d}" width="28" style="${d > jmlHari ? 'display:none;' : ''}">${d}</th>`;
+            }
+            document.getElementById('subHeaderTglMutu').innerHTML = subHeaderHtml;
+
+            // Render baris indikator mutu
+            const tbody = document.getElementById('tbodyMutuHarian');
+            tbody.innerHTML = '';
+
+            daftarIndikatorMutu.forEach((ind, idx) => {
+                let no = idx + 1;
+
+                // Baris NUM
+                let trNum = document.createElement('tr');
+                trNum.className = `mutu-row-${no}-NUM`;
+                let htmlNum = `<td rowspan="3">${no}</td><td rowspan="3" style="text-align: left; font-weight: 600;">${ind.substring(2)}</td><td>NUM</td>`;
+                for (let d = 1; d <= 31; d++) {
+                    htmlNum += `<td class="col-tgl-${d}" style="${d > jmlHari ? 'display:none;' : ''}"><input type="number" data-ind="${no}" data-tgl="${d}" data-jenis="NUM" value="0" oninput="hitungMutuHarianOtomatis()"></td>`;
+                }
+                htmlNum += `<td id="total-num-${no}" style="font-weight: 700; background: #f8fafc;">0</td>`;
+                trNum.innerHTML = htmlNum;
+                tbody.appendChild(trNum);
+
+                // Baris DENUM
+                let trDenum = document.createElement('tr');
+                trDenum.className = `mutu-row-${no}-DENUM`;
+                let htmlDenum = `<td>DENUM</td>`;
+                for (let d = 1; d <= 31; d++) {
+                    htmlDenum += `<td class="col-tgl-${d}" style="${d > jmlHari ? 'display:none;' : ''}"><input type="number" data-ind="${no}" data-tgl="${d}" data-jenis="DENUM" value="0" oninput="hitungMutuHarianOtomatis()"></td>`;
+                }
+                htmlDenum += `<td id="total-denum-${no}" style="font-weight: 700; background: #f8fafc;">0</td>`;
+                trDenum.innerHTML = htmlDenum;
+                tbody.appendChild(trDenum);
+
+                // Baris %
+                let trPersen = document.createElement('tr');
+                trPersen.className = `mutu-row-${no}-PERSEN`;
+                let htmlPersen = `<td>%</td>`;
+                for (let d = 1; d <= 31; d++) {
+                    htmlPersen += `<td class="col-tgl-${d}" id="val-${no}-${d}" style="${d > jmlHari ? 'display:none;' : ''}; font-size: 10px; font-weight: 600; color: #0d9488;">0%</td>`;
+                }
+                htmlPersen += `<td id="total-persen-${no}" style="font-weight: 800; background: #f0fdfa; color: #0d9488;">0%</td>`;
+                trPersen.innerHTML = htmlPersen;
+                tbody.appendChild(trPersen);
+            });
+        }
+
+        function hitungMutuHarianOtomatis() {
+            const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
+            const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
+            const jmlHari = new Date(tahunVal, bulanVal, 0).getDate();
+
+            for (let i = 1; i <= 6; i++) {
+                let sumNumTotal = 0;
+                let sumDenumTotal = 0;
+
+                for (let d = 1; d <= jmlHari; d++) {
+                    const inputNum = document.querySelector(`input[data-ind="${i}"][data-tgl="${d}"][data-jenis="NUM"]`);
+                    const inputDenum = document.querySelector(`input[data-ind="${i}"][data-tgl="${d}"][data-jenis="DENUM"]`);
+                    const tdPersen = document.getElementById(`val-${i}-${d}`);
+
+                    const valNum = parseFloat(inputNum ? inputNum.value : 0) || 0;
+                    const valDenum = parseFloat(inputDenum ? inputDenum.value : 0) || 0;
+
+                    sumNumTotal += valNum;
+                    sumDenumTotal += valDenum;
+
+                    let p = 0;
+                    if (valDenum > 0) {
+                        p = ((valNum / valDenum) * 100).toFixed(0);
+                    }
+                    if (tdPersen) tdPersen.textContent = p + '%';
+                }
+
+                document.getElementById(`total-num-${i}`).textContent = sumNumTotal;
+                document.getElementById(`total-denum-${i}`).textContent = sumDenumTotal;
+
+                let totalP = 0;
+                if (sumDenumTotal > 0) {
+                    totalP = ((sumNumTotal / sumDenumTotal) * 100).toFixed(2);
+                }
+                document.getElementById(`total-persen-${i}`).textContent = totalP + '%';
+            }
+
+            simpanDataMutuKeFirebase();
+        }
+
         function simpanDataMutuKeFirebase() {
-            const inputs = document.querySelectorAll('.mutu-input');
+            const inputs = document.querySelectorAll('#tbodyMutuHarian input');
             const mutuData = {};
             inputs.forEach(input => {
-                const id = input.getAttribute('data-id');
-                if (!mutuData[id]) mutuData[id] = [];
-                mutuData[id].push(input.value);
+                const ind = input.getAttribute('data-ind');
+                const tgl = input.getAttribute('data-tgl');
+                const jenis = input.getAttribute('data-jenis');
+                const key = `${ind}_${tgl}_${jenis}`;
+                mutuData[key] = input.value;
             });
 
-            database.ref('mutuEdelweis').set(mutuData);
+            database.ref('mutuHarianEdelweis').set(mutuData);
         }
 
         function muatDataMutuDariFirebase() {
-            database.ref('mutuEdelweis').on('value', (snapshot) => {
+            database.ref('mutuHarianEdelweis').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    const inputs = document.querySelectorAll('.mutu-input');
+                    const inputs = document.querySelectorAll('#tbodyMutuHarian input');
                     inputs.forEach(input => {
-                        const id = input.getAttribute('data-id');
-                        const index = Array.from(document.querySelectorAll(`.mutu-input[data-id="${id}"]`)).indexOf(input);
-                        if (data[id] && data[id][index] !== undefined) {
-                            input.value = data[id][index];
+                        const ind = input.getAttribute('data-ind');
+                        const tgl = input.getAttribute('data-tgl');
+                        const jenis = input.getAttribute('data-jenis');
+                        const key = `${ind}_${tgl}_${jenis}`;
+                        if (data[key] !== undefined) {
+                            input.value = data[key];
                         }
                     });
-                    hitungMutuOtomatis();
+                    hitungMutuHarianOtomatis();
                 }
             });
         }
 
-        function hitungMutuOtomatis() {
-            for (let i = 1; i <= 6; i++) {
-                const inputs = document.querySelectorAll(`.mutu-input[data-id="${i}"]`);
-                if (inputs.length === 2) {
-                    const num = parseFloat(inputs[0].value) || 0;
-                    const denum = parseFloat(inputs[1].value) || 0;
-                    
-                    let persentase = 0;
-                    if (denum > 0) {
-                        persentase = ((num / denum) * 100).toFixed(1);
-                    }
+        function exportMutuKeExcel() {
+            const table = document.getElementById('tabelMutuHarian');
+            let html = table.outerHTML;
 
-                    document.getElementById(`cap${i}`).textContent = persentase + ' %';
+            // Ganti elemen input dengan teks nilainya agar rapi di excel
+            const inputs = table.querySelectorAll('input');
+            inputs.forEach(inp => {
+                html = html.replace(inp.outerHTML, inp.value);
+            });
 
-                    // Evaluasi Standar
-                    const badge = document.getElementById(`stat{i}`.replace('{i}', i));
-                    let tercapai = true;
+            const blob = new Blob(['\ufeff' + html], {
+                type: 'application/vnd.ms-excel'
+            });
 
-                    if (i === 1 || i === 5) tercapai = (persentase >= 100);
-                    else if (i === 2 || i === 6) tercapai = (persentase >= 85);
-                    else if (i === 3 || i === 4) tercapai = (num === 0);
+            const bulanSelect = document.getElementById('filterBulan');
+            const labelFile = `${bulanSelect.options[bulanSelect.selectedIndex].text}_${document.getElementById('filterTahun').value}`;
+            const filename = `Indikator_Mutu_Ruang_Edelweis_${labelFile}.xls`;
 
-                    if (tercapai) {
-                        badge.className = 'badge badge-success';
-                        badge.textContent = 'Tercapai';
-                    } else {
-                        badge.className = 'badge badge-danger';
-                        badge.textContent = 'Belum Tercapai';
-                    }
-                }
-            }
-            simpanDataMutuKeFirebase();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         // --- MANAJEMEN PENYIMPANAN FIREBASE DATABASE ---
@@ -1442,13 +1511,7 @@
                 });
             });
 
-            database.ref('pasienEdelweis').set(dataPasien)
-                .then(() => {
-                    console.log("Data berhasil disinkronkan ke Firebase!");
-                })
-                .catch((error) => {
-                    console.error("Gagal menyimpan ke Firebase: ", error);
-                });
+            database.ref('pasienEdelweis').set(dataPasien);
         }
 
         function muatDataPasienDariFirebase() {
@@ -2046,6 +2109,10 @@
                 teksPeriode = namaBulan + ' ' + tahunVal;
                 awalFilter = new Date(tahunVal, bulanVal - 1, 1);
                 akhirFilter = new Date(tahunVal, bulanVal, 0);
+
+                // Update juga tampilan tabel mutu harian berdasarkan bulan yang dipilih
+                inisialisasiTabelMutuHarian();
+                muatDataMutuDariFirebase();
             } else {
                 const tglAwalVal = document.getElementById('filterTglAwal').value;
                 const tglAkhirVal = document.getElementById('filterTglAkhir').value;
@@ -2063,6 +2130,7 @@
             document.getElementById('lblPeriode1').textContent = teksPeriode;
             document.getElementById('lblPeriode2').textContent = teksPeriode;
             document.getElementById('lblPeriodeTabel').textContent = teksPeriode;
+            document.getElementById('lblPeriodeMutu').textContent = teksPeriode;
             if (document.getElementById('lblPeriodeAnalytics')) {
                 document.getElementById('lblPeriodeAnalytics').textContent = teksPeriode;
             }
