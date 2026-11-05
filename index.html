@@ -324,7 +324,6 @@
             padding: 0 10px;
         }
 
-        /* Animasi Transisi Halus Antar Halaman Aplikasi */
         .app-page {
             display: none;
             opacity: 0;
@@ -338,7 +337,6 @@
             transform: translateY(0);
         }
 
-        /* FILTER PERIODE BULAN, TAHUN & RENTANG TANGGAL */
         .filter-card {
             background: linear-gradient(to right, #ffffff, #f8fafc);
             padding: 18px 24px;
@@ -398,7 +396,6 @@
             padding-left: 10px;
         }
 
-        /* --- KARTU STATISTIK & MUTU --- */
         .stats-grid-primary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -490,7 +487,6 @@
             margin-top: 10px;
         }
 
-        /* Card Section untuk Form & Tabel Pasien */
         .card {
             background-color: white;
             padding: 20px;
@@ -529,7 +525,6 @@
             flex-wrap: wrap;
         }
 
-        /* Kotak Pencarian */
         .search-box {
             position: relative;
             width: 240px;
@@ -568,7 +563,6 @@
             margin-bottom: 15px;
         }
 
-        /* --- PENGATURAN TABEL --- */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -1003,7 +997,6 @@
                                     <option value="dr. Trias Kusumasari, Sp.A">dr. Trias Kusumasari, Sp.A</option>
                                     <option value="dr. Rhiza Moh Ishaq, Sp.BA">dr. Rhiza Moh Ishaq, Sp.BA</option>
                                     <option value="dr. Rintang Rengganis, Sp.B">dr. Rintang Rengganis, Sp.B</option>
-                                    <option value="dr. Anggita Tri Yurisworo, Sp.OT">dr. Anggita Tri Yurisworo, Sp.OT</option>
                                     <option value="dr. Hj. Tresnawaty, Sp.B">dr. Hj. Tresnawaty, Sp.B</option>
                                     <option value="dr. Ibrahim Risyad Pradana, Sp.B">dr. Ibrahim Risyad Pradana, Sp.B</option>
                                 </select>
@@ -1250,7 +1243,7 @@
             daftarIndikatorMutu.forEach((ind, idx) => {
                 let no = idx + 1;
 
-                // NUM (Default 0 untuk Dekubitus No.3 dan Kesalahan Obat No.4 dari Tgl 1 s/d Akhir Bulan)
+                // NUM
                 let trNum = document.createElement('tr');
                 let htmlNum = `<td rowspan="3">${no}</td><td rowspan="3" style="text-align: left; font-weight: 600;">${ind.substring(2)}</td><td>NUM</td>`;
                 for (let d = 1; d <= 31; d++) {
@@ -1284,6 +1277,7 @@
             muatDataMutuBulananDariFirebase();
         }
 
+        // --- MENGHITUNG TOTAL PASIEN YANG TERDAFTAR/BERADA DI RUANGAN PADA TANGGAL HARIAN ---
         function sinkronisasiMutuOtomatisDariPasien() {
             const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
             const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
@@ -1294,7 +1288,8 @@
             for (let d = 1; d <= jmlHari; d++) {
                 let tglTarget = new Date(tahunVal, bulanVal - 1, d);
                 
-                let jmlPasienAktifHariIni = 0;
+                let jmlPasienTercatatHariIni = 0;
+
                 rowsPasien.forEach(row => {
                     const tglMasukTxt = row.cells[5].textContent.trim();
                     const tglKeluarTxt = row.cells[9].textContent.trim();
@@ -1309,8 +1304,10 @@
                         tKeluar = new Date(pKel[2], pKel[1] - 1, pKel[0]);
                     }
 
+                    // Pasien terhitung berada di ruangan pada tanggal target jika:
+                    // Sudah masuk (tMasuk <= tglTarget) DAN belum keluar ATAU baru keluar pada/setelah tglTarget
                     if (tMasuk <= tglTarget && (tKeluar === null || tKeluar >= tglTarget)) {
-                        jmlPasienAktifHariIni++;
+                        jmlPasienTercatatHariIni++;
                     }
                 });
 
@@ -1319,17 +1316,15 @@
                     const inputDenum = document.getElementById(`mutu-${i}-${d}-DENUM`);
 
                     if (inputNum && inputDenum) {
+                        // DENUM diisi total seluruh pasien (dirawat, pulang, pindah, meninggal) yang ada pada tanggal tsb
+                        inputDenum.value = jmlPasienTercatatHariIni;
+
                         if (i === 3 || i === 4) {
-                            // Indikator Dekubitus & Kesalahan Obat selalu dipaksa Default NUM = 0 dari tgl 1 s/d akhir bulan
+                            // Indikator 3 & 4: NUM default 0
                             inputNum.value = 0;
-                            if (jmlPasienAktifHariIni > 0 && inputDenum.value == "0") {
-                                inputDenum.value = jmlPasienAktifHariIni;
-                            }
                         } else {
-                            if (jmlPasienAktifHariIni > 0) {
-                                if (inputDenum.value == "0") inputDenum.value = jmlPasienAktifHariIni;
-                                if (inputNum.value == "0") inputNum.value = jmlPasienAktifHariIni;
-                            }
+                            // Indikator 1, 2, 5, 6: NUM disamakan dengan total pasien tercatat
+                            inputNum.value = jmlPasienTercatatHariIni;
                         }
                     }
                 }
