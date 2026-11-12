@@ -1115,7 +1115,10 @@
                 <div class="card">
                     <div class="card-header">
                         <h3>📊 Rekapitulasi Harian Mutu (Otomatis dari Data Pasien & Tersimpan Bulanan)</h3>
-                        <button type="button" class="btn-excel" onclick="exportMutuKeExcel()">📊 Export Mutu ke Excel</button>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="btn-backup" onclick="sinkronisasiMutuOtomatisDariPasien(); alert('Data mutu berhasil disinkronkan ulang dengan data pasien!');" style="background-color: #3b82f6;">🔄 Sinkronisasi Ulang Mutu</button>
+                            <button type="button" class="btn-excel" onclick="exportMutuKeExcel()">📊 Export Mutu ke Excel</button>
+                        </div>
                     </div>
                     <div class="table-responsive table-mutu">
                         <table id="tabelMutuHarian">
@@ -1325,6 +1328,7 @@
                     }
                 }
                 hitungTotalMutuHarian();
+                simpanDataMutuBulanan();
             });
         }
 
@@ -1417,10 +1421,10 @@
                             input.value = data[key];
                         }
                     });
+                    hitungTotalMutuHarian();
                 } else {
                     sinkronisasiMutuOtomatisDariPasien();
                 }
-                hitungTotalMutuHarian();
             });
         }
 
@@ -1515,6 +1519,7 @@
                 });
 
                 updateDataBulan();
+                sinkronisasiMutuOtomatisDariPasien();
             });
         }
 
