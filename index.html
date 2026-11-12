@@ -1278,57 +1278,54 @@
             muatDataMutuBulananDariFirebase();
         }
 
-        // --- SINKRONISASI OTOMATIS NUM & DENUM BERDASARKAN TOTAL PASIEN TERCATAT HARI TERSEBUT ---
         function sinkronisasiMutuOtomatisDariPasien() {
             const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
             const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
             const jmlHari = new Date(tahunVal, bulanVal, 0).getDate();
 
-            const rowsPasien = document.querySelectorAll('#tabelPasienBody tr');
+            database.ref('pasienEdelweis').once('value', (snapshot) => {
+                const listPasien = snapshot.val() || [];
 
-            for (let d = 1; d <= jmlHari; d++) {
-                let tglTarget = new Date(tahunVal, bulanVal - 1, d);
-                let jmlPasienTercatatHariIni = 0;
+                for (let d = 1; d <= jmlHari; d++) {
+                    let tglTarget = new Date(tahunVal, bulanVal - 1, d);
+                    let jmlPasienTercatatHariIni = 0;
 
-                rowsPasien.forEach(row => {
-                    const tglMasukTxt = row.cells[5].textContent.trim();
-                    const tglKeluarTxt = row.cells[9].textContent.trim();
-                    if (!tglMasukTxt || tglMasukTxt === '-') return;
+                    listPasien.forEach(p => {
+                        const tglMasukTxt = p.tglMasuk;
+                        const tglKeluarTxt = p.tglKeluar;
+                        if (!tglMasukTxt || tglMasukTxt === '-') return;
 
-                    const pMasuk = tglMasukTxt.split('/');
-                    const tMasuk = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
+                        const pMasuk = tglMasukTxt.split('/');
+                        const tMasuk = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
 
-                    let tKeluar = null;
-                    if (tglKeluarTxt && tglKeluarTxt !== '-') {
-                        const pKel = tglKeluarTxt.split('/');
-                        tKeluar = new Date(pKel[2], pKel[1] - 1, pKel[0]);
-                    }
+                        let tKeluar = null;
+                        if (tglKeluarTxt && tglKeluarTxt !== '-') {
+                            const pKel = tglKeluarTxt.split('/');
+                            tKeluar = new Date(pKel[2], pKel[1] - 1, pKel[0]);
+                        }
 
-                    // Pasien terhitung jika masuk <= tglTarget dan (belum keluar atau keluar >= tglTarget)
-                    if (tMasuk <= tglTarget && (tKeluar === null || tKeluar >= tglTarget)) {
-                        jmlPasienTercatatHariIni++;
-                    }
-                });
+                        if (tMasuk <= tglTarget && (tKeluar === null || tKeluar >= tglTarget)) {
+                            jmlPasienTercatatHariIni++;
+                        }
+                    });
 
-                for (let i = 1; i <= 6; i++) {
-                    const inputNum = document.getElementById(`mutu-${i}-${d}-NUM`);
-                    const inputDenum = document.getElementById(`mutu-${i}-${d}-DENUM`);
+                    for (let i = 1; i <= 6; i++) {
+                        const inputNum = document.getElementById(`mutu-${i}-${d}-NUM`);
+                        const inputDenum = document.getElementById(`mutu-${i}-${d}-DENUM`);
 
-                    if (inputNum && inputDenum) {
-                        // DENUM diisi total seluruh pasien tercatat pada tanggal tersebut
-                        inputDenum.value = jmlPasienTercatatHariIni;
+                        if (inputNum && inputDenum) {
+                            inputDenum.value = jmlPasienTercatatHariIni;
 
-                        if (i === 3 || i === 4) {
-                            // Indikator Dekubitus & Kesalahan Obat: NUM default 0 (tidak ada kejadian)
-                            inputNum.value = 0;
-                        } else {
-                            // Indikator 1, 2, 5, 6: NUM disamakan dengan DENUM (patuh 100%)
-                            inputNum.value = jmlPasienTercatatHariIni;
+                            if (i === 3 || i === 4) {
+                                inputNum.value = 0;
+                            } else {
+                                inputNum.value = jmlPasienTercatatHariIni;
+                            }
                         }
                     }
                 }
-            }
-            hitungTotalMutuHarian();
+                hitungTotalMutuHarian();
+            });
         }
 
         function hitungTotalMutuHarian() {
@@ -1354,7 +1351,6 @@
                     let p = 0;
                     if (valDenum > 0) {
                         if ((i === 3 || i === 4)) {
-                            // Rumus khusus mutu insiden (Dekubitus & Obat): ((Denum - Num) / Denum) * 100 atau 100% jika Num = 0
                             let kejadian = valNum > valDenum ? valDenum : valNum;
                             p = Math.round(((valDenum - kejadian) / valDenum) * 100);
                         } else {
