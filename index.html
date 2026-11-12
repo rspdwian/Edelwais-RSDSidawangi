@@ -590,6 +590,15 @@
             font-size: 10.5px;
         }
 
+        .table-mutu input {
+            width: 42px;
+            padding: 3px;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
         .nowrap {
             white-space: nowrap;
         }
@@ -737,6 +746,7 @@
             <div class="nav-links">
                 <button class="nav-btn active" onclick="switchPage('pageDashboard', this)">🏠 Halaman Utama</button>
                 <button class="nav-btn" onclick="switchPage('pageDataPasien', this)">👥 Data Pasien</button>
+                <button class="nav-btn" onclick="switchPage('pageMutu', this)">🛡️ Mutu Ruangan</button>
             </div>
             <div class="user-info">
                 <span>Halo, <strong id="loggedInUser">Petugas</strong></span>
@@ -1097,6 +1107,45 @@
                 </div>
             </div>
 
+
+            <!-- ================= HALAMAN 3: MUTU RUANGAN ================= -->
+            <div id="pageMutu" class="app-page">
+                <div class="section-title">🛡️ Indikator Mutu Unit - Ruang Edelweis (<span id="lblPeriodeMutu">November 2026</span>)</div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📊 Rekapitulasi Harian Mutu (Otomatis dari Data Pasien & Tersimpan Bulanan)</h3>
+                        <button type="button" class="btn-excel" onclick="exportMutuKeExcel()">📊 Export Mutu ke Excel</button>
+                    </div>
+                    <div class="table-responsive table-mutu">
+                        <table id="tabelMutuHarian">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" width="35">NO</th>
+                                    <th rowspan="2" style="min-width: 180px;">INDIKATOR</th>
+                                    <th rowspan="2" width="45">N/D</th>
+                                    <th colspan="31" id="headerTglMutu">TANGGAL</th>
+                                    <th rowspan="2" width="55">TOTAL</th>
+                                </tr>
+                                <tr id="subHeaderTglMutu">
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyMutuHarian">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+                    <div style="text-align: center; width: 220px;">
+                        <p>Kepala Ruangan</p>
+                        <br><br><br>
+                        <p><b>( SINEM, S.Kep.Ners )</b></p>
+                        <p>NIP. ...................................</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -1121,6 +1170,15 @@
         let chartBayarInstance = null;
         let chartDiagnosaInstance = null;
         let chartTrenInstance = null;
+
+        const daftarIndikatorMutu = [
+            "1 Kepatuhan Identifikasi Pasien",
+            "2 Kepatuhan Hand Higiene",
+            "3 Teridentifikasinya Kejadian Dekubitus",
+            "4 Kesalahan Pemberian Obat",
+            "5 Kepatuhan Upaya Pencegahan Risiko Pasien Jatuh",
+            "6 Kepuasan Pasien"
+        ];
 
         window.onload = function() {
             const isLogged = localStorage.getItem('isLoggedIn');
@@ -1163,8 +1221,203 @@
             document.getElementById('filterTglAwal').value = today;
             document.getElementById('filterTglAkhir').value = today;
 
+            inisialisasiTabelMutuHarian();
             muatDataPasienDariFirebase();
         };
+
+        function inisialisasiTabelMutuHarian() {
+            const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
+            const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
+            const jmlHari = new Date(tahunVal, bulanVal, 0).getDate();
+
+            document.getElementById('headerTglMutu').setAttribute('colspan', jmlHari);
+
+            let subHeaderHtml = '';
+            for (let d = 1; d <= 31; d++) {
+                subHeaderHtml += `<th class="th-tgl-${d}" width="28" style="${d > jmlHari ? 'display:none;' : ''}">${d}</th>`;
+            }
+            document.getElementById('subHeaderTglMutu').innerHTML = subHeaderHtml;
+
+            const tbody = document.getElementById('tbodyMutuHarian');
+            tbody.innerHTML = '';
+
+            daftarIndikatorMutu.forEach((ind, idx) => {
+                let no = idx + 1;
+
+                // NUM
+                let trNum = document.createElement('tr');
+                let htmlNum = `<td rowspan="3">${no}</td><td rowspan="3" style="text-align: left; font-weight: 600;">${ind.substring(2)}</td><td>NUM</td>`;
+                for (let d = 1; d <= 31; d++) {
+                    htmlNum += `<td class="col-tgl-${d}" style="${d > jmlHari ? 'display:none;' : ''}"><input type="number" id="mutu-${no}-${d}-NUM" data-ind="${no}" data-tgl="${d}" data-jenis="NUM" value="0" oninput="simpanDataMutuBulanan()"></td>`;
+                }
+                htmlNum += `<td id="total-num-${no}" style="font-weight: 700; background: #f8fafc;">0</td>`;
+                trNum.innerHTML = htmlNum;
+                tbody.appendChild(trNum);
+
+                // DENUM
+                let trDenum = document.createElement('tr');
+                let htmlDenum = `<td>DENUM</td>`;
+                for (let d = 1; d <= 31; d++) {
+                    htmlDenum += `<td class="col-tgl-${d}" style="${d > jmlHari ? 'display:none;' : ''}"><input type="number" id="mutu-${no}-${d}-DENUM" data-ind="${no}" data-tgl="${d}" data-jenis="DENUM" value="0" oninput="simpanDataMutuBulanan()"></td>`;
+                }
+                htmlDenum += `<td id="total-denum-${no}" style="font-weight: 700; background: #f8fafc;">0</td>`;
+                trDenum.innerHTML = htmlDenum;
+                tbody.appendChild(trDenum);
+
+                // PERSEN
+                let trPersen = document.createElement('tr');
+                let htmlPersen = `<td>%</td>`;
+                for (let d = 1; d <= 31; d++) {
+                    htmlPersen += `<td class="col-tgl-${d}" id="val-${no}-${d}" style="${d > jmlHari ? 'display:none;' : ''}; font-size: 10px; font-weight: 600; color: #0d9488;">0%</td>`;
+                }
+                htmlPersen += `<td id="total-persen-${no}" style="font-weight: 800; background: #f0fdfa; color: #0d9488;">0%</td>`;
+                trPersen.innerHTML = htmlPersen;
+                tbody.appendChild(trPersen);
+            });
+
+            muatDataMutuBulananDariFirebase();
+        }
+
+        function sinkronisasiMutuOtomatisDariPasien() {
+            const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
+            const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
+            const jmlHari = new Date(tahunVal, bulanVal, 0).getDate();
+
+            const rowsPasien = document.querySelectorAll('#tabelPasienBody tr');
+
+            for (let d = 1; d <= jmlHari; d++) {
+                let tglTarget = new Date(tahunVal, bulanVal - 1, d);
+                let jmlPasienTercatatHariIni = 0;
+
+                rowsPasien.forEach(row => {
+                    const tglMasukTxt = row.cells[5].textContent.trim();
+                    const tglKeluarTxt = row.cells[9].textContent.trim();
+                    if (!tglMasukTxt || tglMasukTxt === '-') return;
+
+                    const pMasuk = tglMasukTxt.split('/');
+                    const tMasuk = new Date(pMasuk[2], pMasuk[1] - 1, pMasuk[0]);
+
+                    let tKeluar = null;
+                    if (tglKeluarTxt && tglKeluarTxt !== '-') {
+                        const pKel = tglKeluarTxt.split('/');
+                        tKeluar = new Date(pKel[2], pKel[1] - 1, pKel[0]);
+                    }
+
+                    if (tMasuk <= tglTarget && (tKeluar === null || tKeluar >= tglTarget)) {
+                        jmlPasienTercatatHariIni++;
+                    }
+                });
+
+                for (let i = 1; i <= 6; i++) {
+                    const inputNum = document.getElementById(`mutu-${i}-${d}-NUM`);
+                    const inputDenum = document.getElementById(`mutu-${i}-${d}-DENUM`);
+
+                    if (inputNum && inputDenum) {
+                        inputDenum.value = jmlPasienTercatatHariIni;
+                        if (i === 3 || i === 4) {
+                            inputNum.value = 0;
+                        } else {
+                            inputNum.value = jmlPasienTercatatHariIni;
+                        }
+                    }
+                }
+            }
+            hitungTotalMutuHarian();
+        }
+
+        function hitungTotalMutuHarian() {
+            const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
+            const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
+            const jmlHari = new Date(tahunVal, bulanVal, 0).getDate();
+
+            for (let i = 1; i <= 6; i++) {
+                let sumNumTotal = 0;
+                let sumDenumTotal = 0;
+
+                for (let d = 1; d <= jmlHari; d++) {
+                    const inputNum = document.getElementById(`mutu-${i}-${d}-NUM`);
+                    const inputDenum = document.getElementById(`mutu-${i}-${d}-DENUM`);
+                    const tdPersen = document.getElementById(`val-${i}-${d}`);
+
+                    const valNum = parseFloat(inputNum ? inputNum.value : 0) || 0;
+                    const valDenum = parseFloat(inputDenum ? inputDenum.value : 0) || 0;
+
+                    sumNumTotal += valNum;
+                    sumDenumTotal += valDenum;
+
+                    let p = 0;
+                    if (valDenum > 0) {
+                        if ((i === 3 || i === 4) && valNum === 0) {
+                            p = 100;
+                        } else {
+                            p = Math.round((valNum / valDenum) * 100);
+                        }
+                    } else if (i === 3 || i === 4) {
+                        p = 100;
+                    }
+                    if (tdPersen) tdPersen.textContent = p + '%';
+                }
+
+                document.getElementById(`total-num-${i}`).textContent = sumNumTotal;
+                document.getElementById(`total-denum-${i}`).textContent = sumDenumTotal;
+
+                let totalP = 0;
+                if (sumDenumTotal > 0) {
+                    if ((i === 3 || i === 4) && sumNumTotal === 0) {
+                        totalP = 100;
+                    } else {
+                        totalP = ((sumNumTotal / sumDenumTotal) * 100).toFixed(2);
+                    }
+                } else if (i === 3 || i === 4) {
+                    totalP = 100;
+                }
+                document.getElementById(`total-persen-${i}`).textContent = totalP + '%';
+            }
+        }
+
+        function simpanDataMutuBulanan() {
+            hitungTotalMutuHarian();
+            const bulanVal = document.getElementById('filterBulan').value;
+            const tahunVal = document.getElementById('filterTahun').value;
+            const keyPeriode = `${tahunVal}_Bulan_${bulanVal}`;
+
+            const inputs = document.querySelectorAll('#tbodyMutuHarian input');
+            const mutuData = {};
+            inputs.forEach(input => {
+                const ind = input.getAttribute('data-ind');
+                const tgl = input.getAttribute('data-tgl');
+                const jenis = input.getAttribute('data-jenis');
+                const key = `${ind}_${tgl}_${jenis}`;
+                mutuData[key] = input.value;
+            });
+
+            database.ref(`mutuBulananEdelweis/${keyPeriode}`).set(mutuData);
+        }
+
+        function muatDataMutuBulananDariFirebase() {
+            const bulanVal = document.getElementById('filterBulan').value;
+            const tahunVal = document.getElementById('filterTahun').value;
+            const keyPeriode = `${tahunVal}_Bulan_${bulanVal}`;
+
+            database.ref(`mutuBulananEdelweis/${keyPeriode}`).once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const inputs = document.querySelectorAll('#tbodyMutuHarian input');
+                    inputs.forEach(input => {
+                        const ind = input.getAttribute('data-ind');
+                        const tgl = input.getAttribute('data-tgl');
+                        const jenis = input.getAttribute('data-jenis');
+                        const key = `${ind}_${tgl}_${jenis}`;
+                        if (data[key] !== undefined) {
+                            input.value = data[key];
+                        }
+                    });
+                } else {
+                    sinkronisasiMutuOtomatisDariPasien();
+                }
+                hitungTotalMutuHarian();
+            });
+        }
 
         function simpanDataPasienKeFirebase() {
             const rows = document.querySelectorAll('#tabelPasienBody tr');
@@ -1417,6 +1670,29 @@
             const a = document.createElement('a');
             a.href = url;
             a.download = `Data_Pasien_Ruang_Edelweis_${labelFile}.xls`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportMutuKeExcel() {
+            const table = document.getElementById('tabelMutuHarian');
+            let html = table.outerHTML;
+
+            const inputs = table.querySelectorAll('input');
+            inputs.forEach(inp => {
+                html = html.replace(inp.outerHTML, inp.value);
+            });
+
+            const blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel' });
+            const bulanSelect = document.getElementById('filterBulan');
+            const labelFile = `${bulanSelect.options[bulanSelect.selectedIndex].text}_${document.getElementById('filterTahun').value}`;
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Indikator_Mutu_Ruang_Edelweis_${labelFile}.xls`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1692,7 +1968,7 @@
             }
 
             simpanDataPasienKeFirebase();
-            updateDataBulan();
+            sinkronisasiMutuOtomatisDariPasien();
             batalEdit();
         }
 
@@ -1710,6 +1986,8 @@
                 teksPeriode = bulanSelect.options[bulanSelect.selectedIndex].text + ' ' + tahunVal;
                 awalFilter = new Date(tahunVal, bulanVal - 1, 1);
                 akhirFilter = new Date(tahunVal, bulanVal, 0);
+
+                inisialisasiTabelMutuHarian();
             } else {
                 const tglAwalVal = document.getElementById('filterTglAwal').value;
                 const tglAkhirVal = document.getElementById('filterTglAkhir').value;
@@ -1726,6 +2004,7 @@
             document.getElementById('lblPeriode1').textContent = teksPeriode;
             document.getElementById('lblPeriode2').textContent = teksPeriode;
             document.getElementById('lblPeriodeTabel').textContent = teksPeriode;
+            document.getElementById('lblPeriodeMutu').textContent = teksPeriode;
             if (document.getElementById('lblPeriodeAnalytics')) {
                 document.getElementById('lblPeriodeAnalytics').textContent = teksPeriode;
             }
