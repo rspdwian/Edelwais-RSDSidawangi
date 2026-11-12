@@ -1278,6 +1278,7 @@
             muatDataMutuBulananDariFirebase();
         }
 
+        // --- SINKRONISASI OTOMATIS NUM & DENUM BERDASARKAN TOTAL PASIEN TERCATAT HARI TERSEBUT ---
         function sinkronisasiMutuOtomatisDariPasien() {
             const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
             const tahunVal = parseInt(document.getElementById('filterTahun').value) || 2026;
@@ -1303,6 +1304,7 @@
                         tKeluar = new Date(pKel[2], pKel[1] - 1, pKel[0]);
                     }
 
+                    // Pasien terhitung jika masuk <= tglTarget dan (belum keluar atau keluar >= tglTarget)
                     if (tMasuk <= tglTarget && (tKeluar === null || tKeluar >= tglTarget)) {
                         jmlPasienTercatatHariIni++;
                     }
@@ -1313,10 +1315,14 @@
                     const inputDenum = document.getElementById(`mutu-${i}-${d}-DENUM`);
 
                     if (inputNum && inputDenum) {
+                        // DENUM diisi total seluruh pasien tercatat pada tanggal tersebut
                         inputDenum.value = jmlPasienTercatatHariIni;
+
                         if (i === 3 || i === 4) {
+                            // Indikator Dekubitus & Kesalahan Obat: NUM default 0 (tidak ada kejadian)
                             inputNum.value = 0;
                         } else {
+                            // Indikator 1, 2, 5, 6: NUM disamakan dengan DENUM (patuh 100%)
                             inputNum.value = jmlPasienTercatatHariIni;
                         }
                     }
@@ -1347,8 +1353,10 @@
 
                     let p = 0;
                     if (valDenum > 0) {
-                        if ((i === 3 || i === 4) && valNum === 0) {
-                            p = 100;
+                        if ((i === 3 || i === 4)) {
+                            // Rumus khusus mutu insiden (Dekubitus & Obat): ((Denum - Num) / Denum) * 100 atau 100% jika Num = 0
+                            let kejadian = valNum > valDenum ? valDenum : valNum;
+                            p = Math.round(((valDenum - kejadian) / valDenum) * 100);
                         } else {
                             p = Math.round((valNum / valDenum) * 100);
                         }
@@ -1363,8 +1371,9 @@
 
                 let totalP = 0;
                 if (sumDenumTotal > 0) {
-                    if ((i === 3 || i === 4) && sumNumTotal === 0) {
-                        totalP = 100;
+                    if ((i === 3 || i === 4)) {
+                        let totalKejadian = sumNumTotal > sumDenumTotal ? sumDenumTotal : sumNumTotal;
+                        totalP = (((sumDenumTotal - totalKejadian) / sumDenumTotal) * 100).toFixed(2);
                     } else {
                         totalP = ((sumNumTotal / sumDenumTotal) * 100).toFixed(2);
                     }
