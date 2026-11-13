@@ -641,12 +641,32 @@
         .ai-container {
             display: flex;
             flex-direction: column;
-            height: 650px;
+            height: 600px;
             background: #ffffff;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 15px rgba(0,0,0,0.04);
             overflow: hidden;
+        }
+
+        .ai-settings-bar {
+            background: #f8fafc;
+            padding: 12px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 13px;
+        }
+
+        .ai-settings-bar input {
+            padding: 6px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 12px;
+            flex: 1;
+            min-width: 220px;
         }
 
         .ai-chat-box {
@@ -665,6 +685,7 @@
             border-radius: 10px;
             font-size: 13.5px;
             line-height: 1.5;
+            white-space: pre-wrap;
         }
 
         .ai-message.user {
@@ -1234,18 +1255,26 @@
             </div>
 
 
-            <!-- ================= HALAMAN 4: AI RUANGAN ================= -->
+            <!-- ================= HALAMAN 4: AI RUANGAN (API CONNECTED & BEBAS) ================= -->
             <div id="pageAIRuangan" class="app-page">
-                <div class="section-title">🤖 Asisten AI Ruangan Edelweis (Bebas Batasan / Mandiri)</div>
+                <div class="section-title">🤖 Asisten AI Ruangan Edelweis (Hubungkan API Key Anda)</div>
                 <div class="ai-container">
+                    <div class="ai-settings-bar">
+                        <span>🔑 API Key (Groq / Gemini / OpenAI):</span>
+                        <input type="password" id="aiApiKeyInput" placeholder="Masukkan API Key Anda di sini..." oninput="simpanApiKey()">
+                        <select id="aiModelSelect" class="filter-select" style="font-size: 12px; padding: 5px;" onchange="simpanApiKey()">
+                            <option value="groq-llama3">Groq (Llama 3.3 70B - Super Cepat & Bebas)</option>
+                            <option value="gemini-flash">Google Gemini (Gemini 1.5 Flash)</option>
+                        </select>
+                    </div>
                     <div class="ai-chat-box" id="aiChatBox">
                         <div class="ai-message bot">
-                            Halo! Saya Asisten AI Ruangan Edelweis. Anda bisa bertanya mengenai rekap data pasien, analisis BOR/ALOS, atau meminta bantuan pengetikan laporan administrasi ruangan tanpa batasan sensor korporat. Ada yang bisa saya bantu hari ini?
+                            Halo! Masukkan API Key Anda di kolom atas (misalnya Groq API Key gratis dari console.groq.com). Setelah itu, Anda bisa bertanya apa saja secara bebas mengenai data pasien, laporan BOR/ALOS, atau meminta AI membuat draf asuhan keperawatan tanpa batasan korporat!
                         </div>
                     </div>
                     <div class="ai-input-area">
-                        <input type="text" id="aiInputPrompt" placeholder="Ketik pertanyaan atau perintah untuk AI..." onkeypress="handleAIPressKey(event)">
-                        <button type="button" onclick="kirimPesanAI()">Kirim Pesan</button>
+                        <input type="text" id="aiInputPrompt" placeholder="Ketik perintah atau pertanyaan untuk AI..." onkeypress="handleAIPressKey(event)">
+                        <button type="button" onclick="kirimPesanAIAPI()">Kirim ke AI</button>
                     </div>
                 </div>
             </div>
@@ -1299,6 +1328,14 @@
                 document.getElementById('mainApp').style.display = 'none';
             }
 
+            // Muat API Key tersimpan jika ada
+            if (localStorage.getItem('savedAiApiKey')) {
+                document.getElementById('aiApiKeyInput').value = localStorage.getItem('savedAiApiKey');
+            }
+            if (localStorage.getItem('savedAiModel')) {
+                document.getElementById('aiModelSelect').value = localStorage.getItem('savedAiModel');
+            }
+
             const tanggalSekarang = new Date();
             const bulanRealtime = tanggalSekarang.getMonth() + 1;
             const tahunRealtime = tanggalSekarang.getFullYear();
@@ -1329,18 +1366,33 @@
             muatDataPasienDariFirebase();
         };
 
-        // --- FUNGSI LOGIKA AI RUANGAN ---
+        function simpanApiKey() {
+            const key = document.getElementById('aiApiKeyInput').value.trim();
+            const model = document.getElementById('aiModelSelect').value;
+            localStorage.setItem('savedAiApiKey', key);
+            localStorage.setItem('savedAiModel', model);
+        }
+
+        // --- FUNGSI PANGGIL API AI (BEBAS BATASAN) ---
         function handleAIPressKey(e) {
             if (e.key === 'Enter') {
-                kirimPesanAI();
+                kirimPesanAIAPI();
             }
         }
 
-        function kirimPesanAI() {
+        async function kirimPesanAIAPI() {
             const inputField = document.getElementById('aiInputPrompt');
             const chatBox = document.getElementById('aiChatBox');
+            const apiKey = document.getElementById('aiApiKeyInput').value.trim();
+            const modelType = document.getElementById('aiModelSelect').value;
             const pesan = inputField.value.trim();
+
             if (!pesan) return;
+
+            if (!apiKey) {
+                alert("Harap masukkan API Key Anda terlebih dahulu pada kolom di atas!");
+                return;
+            }
 
             // Tampilkan pesan user
             const userDiv = document.createElement('div');
@@ -1351,25 +1403,72 @@
             inputField.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Simulasi respon cerdas mandiri berdasarkan data aplikasi
-            setTimeout(() => {
-                const botDiv = document.createElement('div');
-                botDiv.className = 'ai-message bot';
+            // Indikator loading
+            const botDiv = document.createElement('div');
+            botDiv.className = 'ai-message bot';
+            botDiv.textContent = 'Sedang berpikir...';
+            chatBox.appendChild(botDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
 
-                const pesanLower = pesan.toLowerCase();
-                if (pesanLower.includes('bor') || pesanLower.includes('efisiensi')) {
-                    const borVal = document.getElementById('valBOR').textContent;
-                    botDiv.textContent = `Berdasarkan rekapitulasi saat ini, BOR Ruang Edelweis berada di angka ${borVal} dengan kapasitas 32 tempat tidur. Standar ideal nasional adalah 60-85%.`;
-                } else if (pesanLower.includes('pasien') || pesanLower.includes('total')) {
-                    const totalPasien = document.getElementById('valTotal').textContent;
-                    botDiv.textContent = `Jumlah total pasien yang tercatat pada periode ini adalah ${totalPasien}.`;
+            // Ambil konteks data ringkasan aplikasi saat ini agar AI tahu kondisi ruangan
+            const totalPasien = document.getElementById('valTotal').textContent;
+            const borVal = document.getElementById('valBOR').textContent;
+            const alosVal = document.getElementById('valALOS').textContent;
+            const toiVal = document.getElementById('valTOI').textContent;
+
+            const systemPrompt = `Anda adalah Asisten AI medis dan administrasi profesional untuk Ruang Edelweis RS Daerah Sidawangi. Data saat ini: Total Pasien=${totalPasien}, BOR=${borVal}, ALOS=${alosVal}, TOI=${toiVal}. Jawablah dengan akurat, ramah, dan membantu.`;
+
+            try {
+                let url = '';
+                let headers = {};
+                let bodyData = {};
+
+                if (modelType.includes('groq')) {
+                    // Menggunakan Groq API (Sangat cepat dan gratis)
+                    url = 'https://api.groq.com/openai/v1/chat/completions';
+                    headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    };
+                    bodyData = {
+                        model: 'llama-3.3-70b-versatile',
+                        messages: [
+                            { role: 'system', content: systemPrompt },
+                            { role: 'user', content: pesan }
+                        ]
+                    };
                 } else {
-                    botDiv.textContent = `Merespons pertanyaan Anda: "${pesan}". Sebagai AI mandiri Ruang Edelweis, saya siap membantu mengolah data administrasi, rekam medis, dan pelaporan rumah sakit tanpa batasan sensor eksternal.`;
+                    // Menggunakan Google Gemini API
+                    url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                    headers = { 'Content-Type': 'application/json' };
+                    bodyData = {
+                        contents: [
+                            { parts: [{ text: `${systemPrompt}\n\nPertanyaan: ${pesan}` }] }
+                        ]
+                    };
                 }
 
-                chatBox.appendChild(botDiv);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 600);
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(bodyData)
+                });
+
+                const data = await response.json();
+                let hasilAI = '';
+
+                if (modelType.includes('groq')) {
+                    hasilAI = data.choices && data.choices[0] ? data.choices[0].message.content : 'Gagal memproses respon Groq.';
+                } else {
+                    hasilAI = data.candidates && data.candidates[0] ? data.candidates[0].content.parts[0].text : 'Gagal memproses respon Gemini.';
+                }
+
+                botDiv.textContent = hasilAI;
+            } catch (err) {
+                botDiv.textContent = 'Terjadi kesalahan koneksi ke server API. Pastikan API Key yang Anda masukkan sudah benar.';
+            }
+
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         function inisialisasiTabelMutuHarian() {
@@ -1447,8 +1546,8 @@
 
                         let tKeluar = null;
                         if (tglKeluarTxt && tglKeluarTxt !== '-') {
-                            const pKeluar = tglKeluarTxt.split('/');
-                            tKeluar = new Date(pKeluar[2], pKeluar[1] - 1, pKeluar[0]);
+                            const pKel = tglKeluarTxt.split('/');
+                            tKeluar = new Date(pKel[2], pKel[1] - 1, pKel[0]);
                         }
 
                         if (tMasuk <= tglTarget && (tKeluar === null || tKeluar >= tglTarget)) {
