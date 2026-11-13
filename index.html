@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Ruang Edelweis - RS Daerah Sidawangi</title>
+    <title>Aplikasi Ruang Edelweis - Rumah Sakit Daerah Sidawangi</title>
     <!-- Library SheetJS untuk Export Excel -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Library Chart.js untuk Grafik Visual -->
@@ -799,7 +799,7 @@
         <div class="auth-container">
             <div class="auth-header">
                 <h2>Ruang Edelweis</h2>
-                <p>RS Daerah Sidawangi</p>
+                <p>Rumah Sakit Daerah Sidawangi</p>
             </div>
 
             <div class="tabs">
@@ -845,7 +845,7 @@
         <div class="navbar">
             <div>
                 <h1>Ruang Edelweis</h1>
-                <p>RS Daerah Sidawangi</p>
+                <p>Rumah Sakit Daerah Sidawangi</p>
             </div>
             <div class="nav-links">
                 <button class="nav-btn active" onclick="switchPage('pageDashboard', this)">🏠 Halaman Utama</button>
@@ -1025,8 +1025,8 @@
                         <p>Mengetahui,</p>
                         <p>Kepala Ruang Edelweis</p>
                         <br><br><br>
-                        <p><b>( ......................................... )</b></p>
-                        <p>NIP. ...................................</p>
+                        <p><b>( Sinem, S.Kep.,Ners )</b></p>
+                        <p>NIP. 19720918 199312 2 001</p>
                     </div>
                     <div style="text-align: center;">
                         <p>Sidawangi, <span id="tanggalCetakHariIni"></span></p>
@@ -1153,7 +1153,7 @@
                                 <label>Penanggung Jawab (Opsional)</label>
                                 <input type="text" id="pPenanggungJawab" list="listOpsiPJ" placeholder="Ketik atau pilih nama PJ...">
                                 <datalist id="listOpsiPJ">
-                                    <option value="Sinem, S.Kep.Ners">
+                                    <option value="Sinem, S.Kep.,Ners">
                                     <option value="Ida Yuyun Yuningsih, S.Kep.Ners">
                                     <option value="Ratnawati, S.Kep">
                                     <option value="Dwian Sidik Nugraha, A.Md.Kep">
@@ -1245,11 +1245,11 @@
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
-                    <div style="text-align: center; width: 220px;">
+                    <div style="text-align: center; width: 250px;">
                         <p>Kepala Ruangan</p>
                         <br><br><br>
-                        <p><b>( SINEM, S.Kep.Ners )</b></p>
-                        <p>NIP. ...................................</p>
+                        <p><b>( Sinem, S.Kep.,Ners )</b></p>
+                        <p>NIP. 19720918 199312 2 001</p>
                     </div>
                 </div>
             </div>
@@ -1257,19 +1257,19 @@
 
             <!-- ================= HALAMAN 4: AI RUANGAN (API CONNECTED & BEBAS) ================= -->
             <div id="pageAIRuangan" class="app-page">
-                <div class="section-title">🤖 Asisten AI Ruangan Edelweis (Hubungkan API Key Anda)</div>
+                <div class="section-title">🤖 Asisten AI Ruangan Edelweis - Rumah Sakit Daerah Sidawangi</div>
                 <div class="ai-container">
                     <div class="ai-settings-bar">
-                        <span>🔑 API Key (Groq / Gemini / OpenAI):</span>
-                        <input type="password" id="aiApiKeyInput" placeholder="Masukkan API Key Anda di sini..." oninput="simpanApiKey()">
+                        <span>🔑 API Key Aktif:</span>
+                        <input type="password" id="aiApiKeyInput" value="" oninput="simpanApiKey()">
                         <select id="aiModelSelect" class="filter-select" style="font-size: 12px; padding: 5px;" onchange="simpanApiKey()">
-                            <option value="groq-llama3">Groq (Llama 3.3 70B - Super Cepat & Bebas)</option>
+                            <option value="groq-llama3" selected>Groq (Llama 3.3 70B - Super Cepat & Bebas)</option>
                             <option value="gemini-flash">Google Gemini (Gemini 1.5 Flash)</option>
                         </select>
                     </div>
                     <div class="ai-chat-box" id="aiChatBox">
                         <div class="ai-message bot">
-                            Halo! Masukkan API Key Anda di kolom atas (misalnya Groq API Key gratis dari console.groq.com). Setelah itu, Anda bisa bertanya apa saja secara bebas mengenai data pasien, laporan BOR/ALOS, atau meminta AI membuat draf asuhan keperawatan tanpa batasan korporat!
+                            Halo! Asisten AI Ruang Edelweis Rumah Sakit Daerah Sidawangi siap digunakan. Anda bisa langsung bertanya apa saja secara bebas mengenai data pasien, analisis BOR/ALOS, atau meminta AI menyusun laporan administrasi ruangan!
                         </div>
                     </div>
                     <div class="ai-input-area">
@@ -1328,7 +1328,7 @@
                 document.getElementById('mainApp').style.display = 'none';
             }
 
-            // Muat API Key tersimpan jika ada
+            // Muat API Key tersimpan atau gunakan kunci default yang telah disediakan
             if (localStorage.getItem('savedAiApiKey')) {
                 document.getElementById('aiApiKeyInput').value = localStorage.getItem('savedAiApiKey');
             }
@@ -1416,7 +1416,7 @@
             const alosVal = document.getElementById('valALOS').textContent;
             const toiVal = document.getElementById('valTOI').textContent;
 
-            const systemPrompt = `Anda adalah Asisten AI medis dan administrasi profesional untuk Ruang Edelweis RS Daerah Sidawangi. Data saat ini: Total Pasien=${totalPasien}, BOR=${borVal}, ALOS=${alosVal}, TOI=${toiVal}. Jawablah dengan akurat, ramah, dan membantu.`;
+            const systemPrompt = `Anda adalah Asisten AI medis dan administrasi profesional untuk Ruang Edelweis Rumah Sakit Daerah Sidawangi (Kepala Ruangan: Sinem, S.Kep.,Ners, NIP: 19720918 199312 2 001). Data saat ini: Total Pasien=${totalPasien}, BOR=${borVal}, ALOS=${alosVal}, TOI=${toiVal}. Jawablah dengan akurat, ramah, dan membantu.`;
 
             try {
                 let url = '';
@@ -1424,7 +1424,7 @@
                 let bodyData = {};
 
                 if (modelType.includes('groq')) {
-                    // Menggunakan Groq API (Sangat cepat dan gratis)
+                    // Menggunakan Groq API
                     url = 'https://api.groq.com/openai/v1/chat/completions';
                     headers = {
                         'Content-Type': 'application/json',
