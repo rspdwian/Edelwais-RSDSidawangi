@@ -637,110 +637,6 @@
         .badge-warning { background-color: #fef3c7; color: #d97706; }
         .badge-danger { background-color: #fee2e2; color: #dc2626; }
 
-        /* --- STYLING HALAMAN AI RUANGAN --- */
-        .ai-container {
-            display: flex;
-            flex-direction: column;
-            height: 600px;
-            background: #ffffff;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            overflow: hidden;
-        }
-
-        .ai-settings-bar {
-            background: #f8fafc;
-            padding: 12px 18px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            font-size: 13px;
-        }
-
-        .ai-settings-bar input {
-            padding: 6px 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 12px;
-            flex: 1;
-            min-width: 220px;
-        }
-
-        .ai-chat-box {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            background-color: #f8fafc;
-        }
-
-        .ai-message {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-size: 13.5px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-        }
-
-        .ai-message.user {
-            background-color: #0d9488;
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
-
-        .ai-message.bot {
-            background-color: #ffffff;
-            color: #334155;
-            align-self: flex-start;
-            border: 1px solid #cbd5e1;
-            border-bottom-left-radius: 2px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-
-        .ai-input-area {
-            display: flex;
-            padding: 15px;
-            background: #ffffff;
-            border-top: 1px solid #e2e8f0;
-            gap: 10px;
-        }
-
-        .ai-input-area input {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            outline: none;
-            font-size: 13.5px;
-        }
-
-        .ai-input-area input:focus {
-            border-color: #0d9488;
-            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
-        }
-
-        .ai-input-area button {
-            padding: 10px 20px;
-            background-color: #0d9488;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .ai-input-area button:hover {
-            background-color: #0f766e;
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.98); }
             to { opacity: 1; transform: scale(1); }
@@ -851,7 +747,6 @@
                 <button class="nav-btn active" onclick="switchPage('pageDashboard', this)">🏠 Halaman Utama</button>
                 <button class="nav-btn" onclick="switchPage('pageDataPasien', this)">👥 Data Pasien</button>
                 <button class="nav-btn" onclick="switchPage('pageMutu', this)">🛡️ Mutu Ruangan</button>
-                <button class="nav-btn" onclick="switchPage('pageAIRuangan', this)">🤖 AI Ruangan</button>
             </div>
             <div class="user-info">
                 <span>Halo, <strong id="loggedInUser">Petugas</strong></span>
@@ -1254,31 +1149,6 @@
                 </div>
             </div>
 
-
-            <!-- ================= HALAMAN 4: AI RUANGAN (API CONNECTED & BEBAS) ================= -->
-            <div id="pageAIRuangan" class="app-page">
-                <div class="section-title">🤖 Asisten AI Ruangan Edelweis - Rumah Sakit Daerah Sidawangi</div>
-                <div class="ai-container">
-                    <div class="ai-settings-bar">
-                        <span>🔑 API Key Aktif:</span>
-                        <input type="password" id="aiApiKeyInput" value="" oninput="simpanApiKey()">
-                        <select id="aiModelSelect" class="filter-select" style="font-size: 12px; padding: 5px;" onchange="simpanApiKey()">
-                            <option value="groq-llama3" selected>Groq (Llama 3.3 70B - Super Cepat & Bebas)</option>
-                            <option value="gemini-flash">Google Gemini (Gemini 1.5 Flash)</option>
-                        </select>
-                    </div>
-                    <div class="ai-chat-box" id="aiChatBox">
-                        <div class="ai-message bot">
-                            Halo! Asisten AI Ruang Edelweis Rumah Sakit Daerah Sidawangi siap digunakan. Anda bisa langsung bertanya apa saja secara bebas mengenai data pasien, analisis BOR/ALOS, atau meminta AI menyusun laporan administrasi ruangan!
-                        </div>
-                    </div>
-                    <div class="ai-input-area">
-                        <input type="text" id="aiInputPrompt" placeholder="Ketik perintah atau pertanyaan untuk AI..." onkeypress="handleAIPressKey(event)">
-                        <button type="button" onclick="kirimPesanAIAPI()">Kirim ke AI</button>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 
@@ -1328,14 +1198,6 @@
                 document.getElementById('mainApp').style.display = 'none';
             }
 
-            // Muat API Key tersimpan atau gunakan kunci default yang telah disediakan
-            if (localStorage.getItem('savedAiApiKey')) {
-                document.getElementById('aiApiKeyInput').value = localStorage.getItem('savedAiApiKey');
-            }
-            if (localStorage.getItem('savedAiModel')) {
-                document.getElementById('aiModelSelect').value = localStorage.getItem('savedAiModel');
-            }
-
             const tanggalSekarang = new Date();
             const bulanRealtime = tanggalSekarang.getMonth() + 1;
             const tahunRealtime = tanggalSekarang.getFullYear();
@@ -1365,111 +1227,6 @@
             inisialisasiTabelMutuHarian();
             muatDataPasienDariFirebase();
         };
-
-        function simpanApiKey() {
-            const key = document.getElementById('aiApiKeyInput').value.trim();
-            const model = document.getElementById('aiModelSelect').value;
-            localStorage.setItem('savedAiApiKey', key);
-            localStorage.setItem('savedAiModel', model);
-        }
-
-        // --- FUNGSI PANGGIL API AI (BEBAS BATASAN) ---
-        function handleAIPressKey(e) {
-            if (e.key === 'Enter') {
-                kirimPesanAIAPI();
-            }
-        }
-
-        async function kirimPesanAIAPI() {
-            const inputField = document.getElementById('aiInputPrompt');
-            const chatBox = document.getElementById('aiChatBox');
-            const apiKey = document.getElementById('aiApiKeyInput').value.trim();
-            const modelType = document.getElementById('aiModelSelect').value;
-            const pesan = inputField.value.trim();
-
-            if (!pesan) return;
-
-            if (!apiKey) {
-                alert("Harap masukkan API Key Anda terlebih dahulu pada kolom di atas!");
-                return;
-            }
-
-            // Tampilkan pesan user
-            const userDiv = document.createElement('div');
-            userDiv.className = 'ai-message user';
-            userDiv.textContent = pesan;
-            chatBox.appendChild(userDiv);
-
-            inputField.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            // Indikator loading
-            const botDiv = document.createElement('div');
-            botDiv.className = 'ai-message bot';
-            botDiv.textContent = 'Sedang berpikir...';
-            chatBox.appendChild(botDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            // Ambil konteks data ringkasan aplikasi saat ini agar AI tahu kondisi ruangan
-            const totalPasien = document.getElementById('valTotal').textContent;
-            const borVal = document.getElementById('valBOR').textContent;
-            const alosVal = document.getElementById('valALOS').textContent;
-            const toiVal = document.getElementById('valTOI').textContent;
-
-            const systemPrompt = `Anda adalah Asisten AI medis dan administrasi profesional untuk Ruang Edelweis Rumah Sakit Daerah Sidawangi (Kepala Ruangan: Sinem, S.Kep.,Ners, NIP: 19720918 199312 2 001). Data saat ini: Total Pasien=${totalPasien}, BOR=${borVal}, ALOS=${alosVal}, TOI=${toiVal}. Jawablah dengan akurat, ramah, dan membantu.`;
-
-            try {
-                let url = '';
-                let headers = {};
-                let bodyData = {};
-
-                if (modelType.includes('groq')) {
-                    // Menggunakan Groq API
-                    url = 'https://api.groq.com/openai/v1/chat/completions';
-                    headers = {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + apiKey
-                    };
-                    bodyData = {
-                        model: 'llama-3.3-70b-versatile',
-                        messages: [
-                            { role: 'system', content: systemPrompt },
-                            { role: 'user', content: pesan }
-                        ]
-                    };
-                } else {
-                    // Menggunakan Google Gemini API
-                    url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                    headers = { 'Content-Type': 'application/json' };
-                    bodyData = {
-                        contents: [
-                            { parts: [{ text: `${systemPrompt}\n\nPertanyaan: ${pesan}` }] }
-                        ]
-                    };
-                }
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify(bodyData)
-                });
-
-                const data = await response.json();
-                let hasilAI = '';
-
-                if (modelType.includes('groq')) {
-                    hasilAI = data.choices && data.choices[0] ? data.choices[0].message.content : 'Gagal memproses respon Groq.';
-                } else {
-                    hasilAI = data.candidates && data.candidates[0] ? data.candidates[0].content.parts[0].text : 'Gagal memproses respon Gemini.';
-                }
-
-                botDiv.textContent = hasilAI;
-            } catch (err) {
-                botDiv.textContent = 'Terjadi kesalahan koneksi ke server API. Pastikan API Key yang Anda masukkan sudah benar.';
-            }
-
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
 
         function inisialisasiTabelMutuHarian() {
             const bulanVal = parseInt(document.getElementById('filterBulan').value) || 1;
@@ -2196,7 +1953,7 @@
                 const tbody = document.getElementById('tabelPasienBody');
                 const newRow = document.createElement('tr');
                 if (isLongStay) newRow.classList.add('row-long-stay');
-                newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
+                newRow.setAttribute('ondblclick', 'pilihPasienForEdit(this)');
                 newRow.setAttribute('data-dokter', dokter);
                 newRow.setAttribute('data-statuspasien', statusPasien);
 
