@@ -487,6 +487,14 @@
             margin-top: 10px;
         }
 
+        /* Ukuran khusus untuk grafik mutu agar besar seperti halaman utama */
+        .chart-container-large {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
         .card {
             background-color: white;
             padding: 20px;
@@ -1139,7 +1147,7 @@
                     </div>
                 </div>
 
-                <!-- Bagian Pengaturan & Grafik Indikator Mutu (NUM vs DENUM) -->
+                <!-- Bagian Pengaturan & Grafik Indikator Mutu (Ukuran Besar) -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
                     <div class="section-title" style="margin-bottom: 0; border-left: none; padding-left: 0;">📈 Grafik NUM & DENUM Harian Masing-Masing Indikator Mutu</div>
                     <div style="display: flex; align-items: center; gap: 8px;">
@@ -1152,43 +1160,30 @@
                     </div>
                 </div>
 
-                <div class="analytics-grid">
-                    <div class="stat-card blue">
-                        <h4>1. Kepatuhan Identifikasi Pasien</h4>
-                        <div class="chart-container">
-                            <canvas id="chartMutu1"></canvas>
-                        </div>
-                    </div>
-                    <div class="stat-card green">
-                        <h4>2. Kepatuhan Hand Higiene</h4>
-                        <div class="chart-container">
-                            <canvas id="chartMutu2"></canvas>
-                        </div>
-                    </div>
-                    <div class="stat-card amber">
-                        <h4>3. Teridentifikasinya Kejadian Dekubitus</h4>
-                        <div class="chart-container">
-                            <canvas id="chartMutu3"></canvas>
-                        </div>
-                    </div>
-                    <div class="stat-card red">
-                        <h4>4. Kesalahan Pemberian Obat</h4>
-                        <div class="chart-container">
-                            <canvas id="chartMutu4"></canvas>
-                        </div>
-                    </div>
-                    <div class="stat-card purple">
-                        <h4>5. Kepatuhan Pencegahan Risiko Pasien Jatuh</h4>
-                        <div class="chart-container">
-                            <canvas id="chartMutu5"></canvas>
-                        </div>
-                    </div>
-                    <div class="stat-card teal">
-                        <h4>6. Kepuasan Pasien</h4>
-                        <div class="chart-container">
-                            <canvas id="chartMutu6"></canvas>
-                        </div>
-                    </div>
+                <!-- Tampilan Card Grafik Berukuran Besar Menyesuaikan Halaman Utama -->
+                <div class="card">
+                    <h3 style="color: #0f172a; font-size: 15px; font-weight: 700; margin-bottom: 10px;">1. Kepatuhan Identifikasi Pasien</h3>
+                    <div class="chart-container-large"><canvas id="chartMutu1"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 style="color: #0f172a; font-size: 15px; font-weight: 700; margin-bottom: 10px;">2. Kepatuhan Hand Higiene</h3>
+                    <div class="chart-container-large"><canvas id="chartMutu2"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 style="color: #0f172a; font-size: 15px; font-weight: 700; margin-bottom: 10px;">3. Teridentifikasinya Kejadian Dekubitus</h3>
+                    <div class="chart-container-large"><canvas id="chartMutu3"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 style="color: #0f172a; font-size: 15px; font-weight: 700; margin-bottom: 10px;">4. Kesalahan Pemberian Obat</h3>
+                    <div class="chart-container-large"><canvas id="chartMutu4"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 style="color: #0f172a; font-size: 15px; font-weight: 700; margin-bottom: 10px;">5. Kepatuhan Pencegahan Risiko Pasien Jatuh</h3>
+                    <div class="chart-container-large"><canvas id="chartMutu5"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 style="color: #0f172a; font-size: 15px; font-weight: 700; margin-bottom: 10px;">6. Kepuasan Pasien</h3>
+                    <div class="chart-container-large"><canvas id="chartMutu6"></canvas></div>
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
@@ -1484,8 +1479,8 @@
                             backgroundColor: isFilled ? warnaPrimary + '30' : warnaPrimary,
                             fill: isFilled,
                             tension: 0.3,
-                            borderWidth: 2,
-                            pointRadius: 2
+                            borderWidth: 3,
+                            pointRadius: 3
                         },
                         {
                             label: 'DENUM',
@@ -1494,8 +1489,8 @@
                             backgroundColor: isFilled ? '#64748b20' : '#64748b',
                             fill: isFilled,
                             tension: 0.3,
-                            borderWidth: 2,
-                            pointRadius: 2,
+                            borderWidth: 3,
+                            pointRadius: 3,
                             borderDash: [4, 4]
                         }
                     ]
@@ -1506,14 +1501,14 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: { stepSize: 1, font: { size: 10 } }
+                            ticks: { stepSize: 1, font: { size: 11 } }
                         },
                         x: {
-                            ticks: { font: { size: 9 } }
+                            ticks: { font: { size: 11 } }
                         }
                     },
                     plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+                        legend: { position: 'bottom', labels: { boxWidth: 15, font: { size: 12 } } }
                     }
                 }
             });
