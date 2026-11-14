@@ -1139,6 +1139,47 @@
                     </div>
                 </div>
 
+                <!-- Bagian Grafik Indikator Mutu Masing-Masing -->
+                <div class="section-title">📈 Grafik Tren Harian Masing-Masing Indikator Mutu</div>
+                <div class="analytics-grid">
+                    <div class="stat-card blue">
+                        <h4>1. Kepatuhan Identifikasi Pasien (%)</h4>
+                        <div class="chart-container">
+                            <canvas id="chartMutu1"></canvas>
+                        </div>
+                    </div>
+                    <div class="stat-card green">
+                        <h4>2. Kepatuhan Hand Higiene (%)</h4>
+                        <div class="chart-container">
+                            <canvas id="chartMutu2"></canvas>
+                        </div>
+                    </div>
+                    <div class="stat-card amber">
+                        <h4>3. Teridentifikasinya Kejadian Dekubitus (%)</h4>
+                        <div class="chart-container">
+                            <canvas id="chartMutu3"></canvas>
+                        </div>
+                    </div>
+                    <div class="stat-card red">
+                        <h4>4. Kesalahan Pemberian Obat (%)</h4>
+                        <div class="chart-container">
+                            <canvas id="chartMutu4"></canvas>
+                        </div>
+                    </div>
+                    <div class="stat-card purple">
+                        <h4>5. Kepatuhan Pencegahan Risiko Pasien Jatuh (%)</h4>
+                        <div class="chart-container">
+                            <canvas id="chartMutu5"></canvas>
+                        </div>
+                    </div>
+                    <div class="stat-card teal">
+                        <h4>6. Kepuasan Pasien (%)</h4>
+                        <div class="chart-container">
+                            <canvas id="chartMutu6"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
                     <div style="text-align: center; width: 250px;">
                         <p>Kepala Ruangan</p>
@@ -1173,6 +1214,7 @@
         let chartBayarInstance = null;
         let chartDiagnosaInstance = null;
         let chartTrenInstance = null;
+        let chartMutuInstances = {};
 
         const daftarIndikatorMutu = [
             "1 Kepatuhan Identifikasi Pasien",
@@ -1340,8 +1382,11 @@
             for (let i = 1; i <= 6; i++) {
                 let sumNumTotal = 0;
                 let sumDenumTotal = 0;
+                let dataHarianPersen = [];
+                let labelHari = [];
 
                 for (let d = 1; d <= jmlHari; d++) {
+                    labelHari.push(d.toString());
                     const inputNum = document.getElementById(`mutu-${i}-${d}-NUM`);
                     const inputDenum = document.getElementById(`mutu-${i}-${d}-DENUM`);
                     const tdPersen = document.getElementById(`val-${i}-${d}`);
@@ -1364,6 +1409,7 @@
                         p = 100;
                     }
                     if (tdPersen) tdPersen.textContent = p + '%';
+                    dataHarianPersen.push(p);
                 }
 
                 document.getElementById(`total-num-${i}`).textContent = sumNumTotal;
@@ -1381,7 +1427,56 @@
                     totalP = 100;
                 }
                 document.getElementById(`total-persen-${i}`).textContent = totalP + '%';
+
+                renderGrafikMutuIndikator(i, labelHari, dataHarianPersen);
             }
+        }
+
+        function renderGrafikMutuIndikator(indeks, labels, dataNilai) {
+            const canvasId = `chartMutu${indeks}`;
+            const canvasEl = document.getElementById(canvasId);
+            if (!canvasEl) return;
+            const ctx = canvasEl.getContext('2d');
+
+            if (chartMutuInstances[indeks]) {
+                chartMutuInstances[indeks].destroy();
+            }
+
+            const warnaList = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#14b8a6'];
+
+            chartMutuInstances[indeks] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'CapAIan (%)',
+                        data: dataNilai,
+                        borderColor: warnaList[indeks - 1],
+                        backgroundColor: warnaList[indeks - 1] + '20',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { stepSize: 20 }
+                        },
+                        x: {
+                            ticks: { font: { size: 10 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
         }
 
         function simpanDataMutuBulanan() {
@@ -1953,7 +2048,7 @@
                 const tbody = document.getElementById('tabelPasienBody');
                 const newRow = document.createElement('tr');
                 if (isLongStay) newRow.classList.add('row-long-stay');
-                newRow.setAttribute('ondblclick', 'pilihPasienForEdit(this)');
+                newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
                 newRow.setAttribute('data-dokter', dokter);
                 newRow.setAttribute('data-statuspasien', statusPasien);
 
