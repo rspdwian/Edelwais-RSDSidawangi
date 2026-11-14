@@ -1139,41 +1139,52 @@
                     </div>
                 </div>
 
-                <!-- Bagian Grafik Indikator Mutu Masing-Masing -->
-                <div class="section-title">📈 Grafik Tren Harian Masing-Masing Indikator Mutu</div>
+                <!-- Bagian Pengaturan & Grafik Indikator Mutu (NUM vs DENUM) -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                    <div class="section-title" style="margin-bottom: 0; border-left: none; padding-left: 0;">📈 Grafik NUM & DENUM Harian Masing-Masing Indikator Mutu</div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label style="font-size: 13px; font-weight: 600;">Model Grafik:</label>
+                        <select id="pilihanModelGrafik" class="filter-select" onchange="hitungTotalMutuHarian()">
+                            <option value="line" selected>Garis (Line)</option>
+                            <option value="bar">Batang (Bar)</option>
+                            <option value="area">Area Berisi (Filled Area)</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="analytics-grid">
                     <div class="stat-card blue">
-                        <h4>1. Kepatuhan Identifikasi Pasien (%)</h4>
+                        <h4>1. Kepatuhan Identifikasi Pasien</h4>
                         <div class="chart-container">
                             <canvas id="chartMutu1"></canvas>
                         </div>
                     </div>
                     <div class="stat-card green">
-                        <h4>2. Kepatuhan Hand Higiene (%)</h4>
+                        <h4>2. Kepatuhan Hand Higiene</h4>
                         <div class="chart-container">
                             <canvas id="chartMutu2"></canvas>
                         </div>
                     </div>
                     <div class="stat-card amber">
-                        <h4>3. Teridentifikasinya Kejadian Dekubitus (%)</h4>
+                        <h4>3. Teridentifikasinya Kejadian Dekubitus</h4>
                         <div class="chart-container">
                             <canvas id="chartMutu3"></canvas>
                         </div>
                     </div>
                     <div class="stat-card red">
-                        <h4>4. Kesalahan Pemberian Obat (%)</h4>
+                        <h4>4. Kesalahan Pemberian Obat</h4>
                         <div class="chart-container">
                             <canvas id="chartMutu4"></canvas>
                         </div>
                     </div>
                     <div class="stat-card purple">
-                        <h4>5. Kepatuhan Pencegahan Risiko Pasien Jatuh (%)</h4>
+                        <h4>5. Kepatuhan Pencegahan Risiko Pasien Jatuh</h4>
                         <div class="chart-container">
                             <canvas id="chartMutu5"></canvas>
                         </div>
                     </div>
                     <div class="stat-card teal">
-                        <h4>6. Kepuasan Pasien (%)</h4>
+                        <h4>6. Kepuasan Pasien</h4>
                         <div class="chart-container">
                             <canvas id="chartMutu6"></canvas>
                         </div>
@@ -1382,7 +1393,8 @@
             for (let i = 1; i <= 6; i++) {
                 let sumNumTotal = 0;
                 let sumDenumTotal = 0;
-                let dataHarianPersen = [];
+                let dataNumHarian = [];
+                let dataDenumHarian = [];
                 let labelHari = [];
 
                 for (let d = 1; d <= jmlHari; d++) {
@@ -1397,6 +1409,9 @@
                     sumNumTotal += valNum;
                     sumDenumTotal += valDenum;
 
+                    dataNumHarian.push(valNum);
+                    dataDenumHarian.push(valDenum);
+
                     let p = 0;
                     if (valDenum > 0) {
                         if ((i === 3 || i === 4)) {
@@ -1409,7 +1424,6 @@
                         p = 100;
                     }
                     if (tdPersen) tdPersen.textContent = p + '%';
-                    dataHarianPersen.push(p);
                 }
 
                 document.getElementById(`total-num-${i}`).textContent = sumNumTotal;
@@ -1428,11 +1442,11 @@
                 }
                 document.getElementById(`total-persen-${i}`).textContent = totalP + '%';
 
-                renderGrafikMutuIndikator(i, labelHari, dataHarianPersen);
+                renderGrafikMutuIndikator(i, labelHari, dataNumHarian, dataDenumHarian);
             }
         }
 
-        function renderGrafikMutuIndikator(indeks, labels, dataNilai) {
+        function renderGrafikMutuIndikator(indeks, labels, dataNum, dataDenum) {
             const canvasId = `chartMutu${indeks}`;
             const canvasEl = document.getElementById(canvasId);
             if (!canvasEl) return;
@@ -1442,22 +1456,49 @@
                 chartMutuInstances[indeks].destroy();
             }
 
-            const warnaList = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#14b8a6'];
+            const modelPilihan = document.getElementById('pilihanModelGrafik').value;
+            let tipeChart = 'line';
+            let isFilled = false;
+
+            if (modelPilihan === 'bar') {
+                tipeChart = 'bar';
+            } else if (modelPilihan === 'area') {
+                tipeChart = 'line';
+                isFilled = true;
+            } else {
+                tipeChart = 'line';
+                isFilled = false;
+            }
+
+            const warnaPrimary = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#14b8a6'][indeks - 1];
 
             chartMutuInstances[indeks] = new Chart(ctx, {
-                type: 'line',
+                type: tipeChart,
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: 'CapAIan (%)',
-                        data: dataNilai,
-                        borderColor: warnaList[indeks - 1],
-                        backgroundColor: warnaList[indeks - 1] + '20',
-                        fill: true,
-                        tension: 0.3,
-                        borderWidth: 2,
-                        pointRadius: 3
-                    }]
+                    datasets: [
+                        {
+                            label: 'NUM',
+                            data: dataNum,
+                            borderColor: warnaPrimary,
+                            backgroundColor: isFilled ? warnaPrimary + '30' : warnaPrimary,
+                            fill: isFilled,
+                            tension: 0.3,
+                            borderWidth: 2,
+                            pointRadius: 2
+                        },
+                        {
+                            label: 'DENUM',
+                            data: dataDenum,
+                            borderColor: '#64748b',
+                            backgroundColor: isFilled ? '#64748b20' : '#64748b',
+                            fill: isFilled,
+                            tension: 0.3,
+                            borderWidth: 2,
+                            pointRadius: 2,
+                            borderDash: [4, 4]
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -1465,15 +1506,14 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 100,
-                            ticks: { stepSize: 20 }
+                            ticks: { stepSize: 1, font: { size: 10 } }
                         },
                         x: {
-                            ticks: { font: { size: 10 } }
+                            ticks: { font: { size: 9 } }
                         }
                     },
                     plugins: {
-                        legend: { display: false }
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
                     }
                 }
             });
