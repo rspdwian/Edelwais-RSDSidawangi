@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Ruang Edelweis - Rumah Sakit Daerah Sidawangi</title>
-    <!-- Library SheetJS untuk Export Excel -->
+    <!-- Library SheetJS untuk Export Excel Multi-Tab -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Library Chart.js untuk Grafik Visual -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -480,14 +480,6 @@
             font-weight: 500;
         }
 
-        .chart-container {
-            position: relative;
-            height: 220px;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        /* Ukuran khusus untuk grafik mutu agar besar seperti halaman utama */
         .chart-container-large {
             position: relative;
             height: 300px;
@@ -928,7 +920,7 @@
                         <p>Mengetahui,</p>
                         <p>Kepala Ruang Edelweis</p>
                         <br><br><br>
-                        <p><b>( Sinem, S.Kep.,Ners )</b></p>
+                        <p><b>( Sinem, S.Kep.Ners )</b></p>
                         <p>NIP. 19720918 199312 2 001</p>
                     </div>
                     <div style="text-align: center;">
@@ -1053,12 +1045,12 @@
                                 </datalist>
                             </div>
                             <div class="form-group">
-                                <label>Penanggung Jawab (Opsional)</label>
-                                <input type="text" id="pPenanggungJawab" list="listOpsiPJ" placeholder="Ketik atau pilih nama PJ...">
+                                <label>Penanggung Jawab (Perawat)</label>
+                                <input type="text" id="pPenanggungJawab" list="listOpsiPJ" placeholder="Ketik atau pilih nama perawat..." required>
                                 <datalist id="listOpsiPJ">
-                                    <option value="Sinem, S.Kep.,Ners">
+                                    <option value="Sinem, S.Kep.Ners">
                                     <option value="Ida Yuyun Yuningsih, S.Kep.Ners">
-                                    <option value="Ratnawati, S.Kep">
+                                    <option value="Ratna Wati, A.Md.Kep">
                                     <option value="Tuti Herlina, S.Kep">
                                     <option value="Turini, S.Kep.Ns">
                                     <option value="Nurwulan Ika, A.Md.Kep">
@@ -1091,7 +1083,7 @@
                             <input type="file" id="inputRestoreFile" style="display: none;" accept=".json" onchange="restoreDatabase(event)">
 
                             <button type="button" class="btn-excel" onclick="exportKeExcel()">
-                                📊 Export Excel
+                                📊 Export Excel Pasien
                             </button>
                             <div class="search-box">
                                 <span class="search-icon">🔍</span>
@@ -1136,7 +1128,7 @@
                         <h3>📊 Rekapitulasi Harian Mutu (Otomatis dari Data Pasien & Tersimpan Bulanan)</h3>
                         <div style="display: flex; gap: 10px;">
                             <button type="button" class="btn-backup" onclick="sinkronisasiMutuOtomatisDariPasien(); alert('Data mutu berhasil disinkronkan ulang dengan data pasien!');" style="background-color: #3b82f6;">🔄 Sinkronisasi Ulang Mutu</button>
-                            <button type="button" class="btn-excel" onclick="exportMutuKeExcel()">📊 Export Mutu ke Excel</button>
+                            <button type="button" class="btn-excel" onclick="exportMutuMultiTabExcel()">📊 Export Mutu ke Excel (Multi-Tab)</button>
                         </div>
                     </div>
                     <div class="table-responsive table-mutu">
@@ -1171,7 +1163,6 @@
                     </div>
                 </div>
 
-                <!-- Tampilan Card Grafik Berukuran Besar Menyesuaikan Halaman Utama -->
                 <div class="card">
                     <h3 style="color: #0f172a; font-size: 15px; font-weight: 700; margin-bottom: 10px;">1. Kepatuhan Identifikasi Pasien</h3>
                     <div class="chart-container-large"><canvas id="chartMutu1"></canvas></div>
@@ -1201,7 +1192,7 @@
                     <div style="text-align: center; width: 250px;">
                         <p>Kepala Ruangan</p>
                         <br><br><br>
-                        <p><b>( Sinem, S.Kep.,Ners )</b></p>
+                        <p><b>( Sinem, S.Kep.Ners )</b></p>
                         <p>NIP. 19720918 199312 2 001</p>
                     </div>
                 </div>
@@ -1240,6 +1231,16 @@
             "4 Kesalahan Pemberian Obat",
             "5 Kepatuhan Upaya Pencegahan Risiko Pasien Jatuh",
             "6 Kepuasan Pasien"
+        ];
+
+        // Daftar 15 Perawat untuk penugasan PIC per Indikator Mutu di Excel
+        const daftarPerawatPIC = [
+            ["Ida Yuyun Yuningsih, S.Kep.Ners", "Turini, S.Kep.Ns"],       // Indikator 1
+            ["Nurwulan Ika, A.Md.Kep", "Saeful Munawar, S.Kep.Ners"],       // Indikator 2
+            ["Ceceh Adam, A.Md.Kep", "Sri Widaningsih, A.Md.Kep"],         // Indikator 3
+            ["Fuji Firmansyah, A.Md.Kep", "Dwian Sidik Nugraha, A.Md.Kep"], // Indikator 4
+            ["Alkarim, A.Md.Kep", "Khabibatul Maula, A.Md.Kep"],            // Indikator 5
+            ["Wulan Sondari, A.Md.Kep", "Iis Aisyah, A.Md.Kep"]             // Indikator 6
         ];
 
         window.onload = function() {
@@ -1618,7 +1619,7 @@
                             statusKeluar: 'Pulang Izin Dokter',
                             lamaRawat: '10 Hari',
                             diagnosa: 'Morbili',
-                            penanggungJawab: 'Nurwulan Ika Rahayu, A.Md.Kep'
+                            penanggungJawab: 'Nurwulan Ika, A.Md.Kep'
                         }
                     ];
                     database.ref('pasienEdelweis').set(listPasien);
@@ -1827,27 +1828,96 @@
             URL.revokeObjectURL(url);
         }
 
-        function exportMutuKeExcel() {
-            const table = document.getElementById('tabelMutuHarian');
-            let html = table.outerHTML;
+        // Fungsi Export Excel Mutu dengan Multi-Tab (Sesuai Screenshot Anda)
+        function exportMutuMultiTabExcel() {
+            const bulanSelect = document.getElementById('filterBulan');
+            const namaBulan = bulanSelect.options[bulanSelect.selectedIndex].text.toUpperCase();
+            const tahunVal = document.getElementById('filterTahun').value;
+            const jmlHari = new Date(parseInt(tahunVal), parseInt(bulanSelect.value), 0).getDate();
 
-            const inputs = table.querySelectorAll('input');
-            inputs.forEach(inp => {
-                html = html.replace(inp.outerHTML, inp.value);
+            let wb = XLSX.utils.book_new();
+
+            // Helper untuk membuat struktur tabel per tab
+            function buatHtmlIndikator(indeksNum, namaIndikatorFull) {
+                const pic1 = daftarPerawatPIC[indeksNum - 1][0];
+                const pic2 = daftarPerawatPIC[indeksNum - 1][1];
+
+                let html = `<table>`;
+                html += `<tr><td colspan="36" style="text-align:center; font-weight:bold; font-size:14px;">INDIKATOR MUTU UNIT</td></tr>`;
+                html += `<tr><td colspan="36" style="text-align:center; font-weight:bold; font-size:14px;">R. EDELWEIS</td></tr>`;
+                html += `<tr><td colspan="36"></td></tr>`;
+                html += `<tr><td colspan="2" style="font-weight:bold;">RUANG</td><td colspan="34">EDELWEIS</td></tr>`;
+                html += `<tr><td colspan="2" style="font-weight:bold;">BULAN</td><td colspan="34">${namaBulan}</td></tr>`;
+                html += `<tr><td colspan="2" style="font-weight:bold;">TAHUN</td><td colspan="34">${tahunVal}</td></tr>`;
+                html += `<tr><td colspan="36"></td></tr>`;
+                
+                html += `<tr><th rowspan="2">NO</th><th rowspan="2">INDIKATOR</th><th rowspan="2">N/D</th>`;
+                for(let d=1; d<=31; d++) html += `<th ${d > jmlHari ? 'style="display:none;"' : ''}>${d}</th>`;
+                html += `<th>TOTAL</th></tr>`;
+                html += `<tr>`;
+                for(let d=1; d<=31; d++) html += `<th ${d > jmlHari ? 'style="display:none;"' : ''}></th>`;
+                html += `<th></th></tr>`;
+
+                // Baris NUM
+                const idIndReal = indeksNum;
+                let sumNum = 0, sumDenum = 0;
+                let rowNum = `<tr><td rowspan="3">1</td><td rowspan="3">${namaIndikatorFull}</td><td>NUM</td>`;
+                for(let d=1; d<=31; d++) {
+                    const inp = document.getElementById(`mutu-${idIndReal}-${d}-NUM`);
+                    const val = inp ? parseFloat(inp.value) || 0 : 0;
+                    sumNum += val;
+                    rowNum += `<td ${d > jmlHari ? 'style="display:none;"' : ''}>${val}</td>`;
+                }
+                rowNum += `<td><b>${sumNum}</b></td></tr>`;
+
+                // Baris DENUM
+                let rowDenum = `<tr><td>DENUM</td>`;
+                for(let d=1; d<=31; d++) {
+                    const inp = document.getElementById(`mutu-${idIndReal}-${d}-DENUM`);
+                    const val = inp ? parseFloat(inp.value) || 0 : 0;
+                    sumDenum += val;
+                    rowDenum += `<td ${d > jmlHari ? 'style="display:none;"' : ''}>${val}</td>`;
+                }
+                rowDenum += `<td><b>${sumDenum}</b></td></tr>`;
+
+                // Baris PERSEN
+                let rowPersen = `<tr><td>%</td>`;
+                for(let d=1; d<=31; d++) {
+                    const tdP = document.getElementById(`val-${idIndReal}-${d}`);
+                    const valP = tdP ? tdP.textContent : '0%';
+                    rowPersen += `<td ${d > jmlHari ? 'style="display:none;"' : ''}>${valP}</td>`;
+                }
+                let totalPStr = document.getElementById(`total-persen-${idIndReal}`).textContent;
+                rowPersen += `<td><b>${totalPStr}</b></td></tr>`;
+
+                html += rowNum + rowDenum + rowPersen;
+                html += `<tr><td colspan="36"></td></tr>`;
+                
+                // Tanda Tangan
+                html += `<tr><td colspan="5" style="text-align:center;">Kepala Ruangan</td><td colspan="25"></td><td colspan="6" style="text-align:center;">PIC</td></tr>`;
+                html += `<tr><td colspan="5"></td><td colspan="25"></td><td colspan="6"></td></tr>`;
+                html += `<tr><td colspan="5"></td><td colspan="25"></td><td colspan="6"></td></tr>`;
+                html += `<tr><td colspan="5" style="text-align:center; font-weight:bold;">( Sinem S.Kep Ners )</td><td colspan="20" style="text-align:center; font-weight:bold;">${pic1}</td><td colspan="11" style="text-align:center; font-weight:bold;">${pic2}</td></tr>`;
+                html += `</table>`;
+                return html;
+            }
+
+            // Tab 1: Indikator Mutu Keseluruhan (Tabel Utama)
+            const tableMaster = document.getElementById('tabelMutuHarian');
+            let wsMaster = XLSX.utils.table_to_sheet(tableMaster);
+            XLSX.utils.book_append_sheet(wb, wsMaster, "Indikator Mutu Keseluruhan");
+
+            // Tab 2 - 7: Per Indikator Mutu (Sesuai Screenshot)
+            const namaTabList = ["Identifikasi Pasien", "Hand Hygine", "Decubitus", "Kesalahan Obat", "Resiko pasien Jatuh", "Kepuasan Pasien"];
+            
+            daftarIndikatorMutu.forEach((indNama, idx) => {
+                let divTemp = document.createElement('div');
+                divTemp.innerHTML = buatHtmlIndikator(idx + 1, indNama.substring(2));
+                let wsSub = XLSX.utils.table_to_sheet(divTemp.querySelector('table'));
+                XLSX.utils.book_append_sheet(wb, wsSub, namaTabList[idx]);
             });
 
-            const blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel' });
-            const bulanSelect = document.getElementById('filterBulan');
-            const labelFile = `${bulanSelect.options[bulanSelect.selectedIndex].text}_${document.getElementById('filterTahun').value}`;
-            
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Indikator_Mutu_Ruang_Edelweis_${labelFile}.xls`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            XLSX.writeFile(wb, `Indikator_Mutu_Ruang_Edelweis_${namaBulan}_${tahunVal}.xlsx`);
         }
 
         function formatTglKetik(input) {
