@@ -1233,7 +1233,6 @@
             "6 Kepuasan Pasien"
         ];
 
-        // Daftar 15 Perawat untuk penugasan PIC per Indikator Mutu di Excel
         const daftarPerawatPIC = [
             ["Ida Yuyun Yuningsih, S.Kep.Ners", "Turini, S.Kep.Ns"],       // Indikator 1
             ["Nurwulan Ika, A.Md.Kep", "Saeful Munawar, S.Kep.Ners"],       // Indikator 2
@@ -1828,83 +1827,105 @@
             URL.revokeObjectURL(url);
         }
 
-        // Fungsi Export Excel Mutu dengan Multi-Tab (Sesuai Screenshot Anda)
-        function exportMutuMultiTabExcel() {
+        // Fungsi Generator HTML Tabel Mutu untuk Export Excel Multi-Tab
+        function buatHtmlTabelMutu(indeksFilter = null) {
             const bulanSelect = document.getElementById('filterBulan');
             const namaBulan = bulanSelect.options[bulanSelect.selectedIndex].text.toUpperCase();
             const tahunVal = document.getElementById('filterTahun').value;
             const jmlHari = new Date(parseInt(tahunVal), parseInt(bulanSelect.value), 0).getDate();
 
-            let wb = XLSX.utils.book_new();
+            let html = `<table>`;
+            html += `<tr><td colspan="35" style="text-align:center; font-weight:bold; font-size:14px;">INDIKATOR MUTU UNIT</td></tr>`;
+            html += `<tr><td colspan="35" style="text-align:center; font-weight:bold; font-size:14px;">R. EDELWEIS</td></tr>`;
+            html += `<tr><td colspan="35"></td></tr>`;
+            html += `<tr><td colspan="2" style="font-weight:bold;">RUANG</td><td colspan="33">EDELWEIS</td></tr>`;
+            html += `<tr><td colspan="2" style="font-weight:bold;">BULAN</td><td colspan="33">${namaBulan}</td></tr>`;
+            html += `<tr><td colspan="2" style="font-weight:bold;">TAHUN</td><td colspan="33">${tahunVal}</td></tr>`;
+            html += `<tr><td colspan="35"></td></tr>`;
 
-            // Helper untuk membuat struktur tabel per tab
-            function buatHtmlIndikator(indeksNum, namaIndikatorFull) {
-                const pic1 = daftarPerawatPIC[indeksNum - 1][0];
-                const pic2 = daftarPerawatPIC[indeksNum - 1][1];
+            html += `<tr>`;
+            html += `<th rowspan="2">NO</th>`;
+            html += `<th rowspan="2">INDIKATOR</th>`;
+            html += `<th rowspan="2">N/D</th>`;
+            for (let d = 1; d <= 31; d++) {
+                html += `<th ${d > jmlHari ? 'style="display:none;"' : ''}>${d}</th>`;
+            }
+            html += `<th rowspan="2">TOTAL</th>`;
+            html += `</tr>`;
 
-                let html = `<table>`;
-                html += `<tr><td colspan="36" style="text-align:center; font-weight:bold; font-size:14px;">INDIKATOR MUTU UNIT</td></tr>`;
-                html += `<tr><td colspan="36" style="text-align:center; font-weight:bold; font-size:14px;">R. EDELWEIS</td></tr>`;
-                html += `<tr><td colspan="36"></td></tr>`;
-                html += `<tr><td colspan="2" style="font-weight:bold;">RUANG</td><td colspan="34">EDELWEIS</td></tr>`;
-                html += `<tr><td colspan="2" style="font-weight:bold;">BULAN</td><td colspan="34">${namaBulan}</td></tr>`;
-                html += `<tr><td colspan="2" style="font-weight:bold;">TAHUN</td><td colspan="34">${tahunVal}</td></tr>`;
-                html += `<tr><td colspan="36"></td></tr>`;
-                
-                html += `<tr><th rowspan="2">NO</th><th rowspan="2">INDIKATOR</th><th rowspan="2">N/D</th>`;
-                for(let d=1; d<=31; d++) html += `<th ${d > jmlHari ? 'style="display:none;"' : ''}>${d}</th>`;
-                html += `<th>TOTAL</th></tr>`;
-                html += `<tr>`;
-                for(let d=1; d<=31; d++) html += `<th ${d > jmlHari ? 'style="display:none;"' : ''}></th>`;
-                html += `<th></th></tr>`;
+            html += `<tr>`;
+            for (let d = 1; d <= 31; d++) {
+                html += `<th ${d > jmlHari ? 'style="display:none;"' : ''}></th>`;
+            }
+            html += `</tr>`;
 
-                // Baris NUM
-                const idIndReal = indeksNum;
-                let sumNum = 0, sumDenum = 0;
-                let rowNum = `<tr><td rowspan="3">1</td><td rowspan="3">${namaIndikatorFull}</td><td>NUM</td>`;
-                for(let d=1; d<=31; d++) {
-                    const inp = document.getElementById(`mutu-${idIndReal}-${d}-NUM`);
+            let indikatorLoop = indeksFilter !== null ? [daftarIndikatorMutu[indeksFilter - 1]] : daftarIndikatorMutu;
+
+            indikatorLoop.forEach((ind, idx) => {
+                let realNo = indeksFilter !== null ? indeksFilter : (idx + 1);
+                let namaIndikatorText = ind.substring(2);
+
+                // NUM Row
+                let rowNum = `<tr><td rowspan="3">${realNo}</td><td rowspan="3" style="text-align: left;">${namaIndikatorText}</td><td>NUM</td>`;
+                let sumNum = 0;
+                for (let d = 1; d <= 31; d++) {
+                    const inp = document.getElementById(`mutu-${realNo}-${d}-NUM`);
                     const val = inp ? parseFloat(inp.value) || 0 : 0;
                     sumNum += val;
                     rowNum += `<td ${d > jmlHari ? 'style="display:none;"' : ''}>${val}</td>`;
                 }
                 rowNum += `<td><b>${sumNum}</b></td></tr>`;
 
-                // Baris DENUM
+                // DENUM Row
                 let rowDenum = `<tr><td>DENUM</td>`;
-                for(let d=1; d<=31; d++) {
-                    const inp = document.getElementById(`mutu-${idIndReal}-${d}-DENUM`);
+                let sumDenum = 0;
+                for (let d = 1; d <= 31; d++) {
+                    const inp = document.getElementById(`mutu-${realNo}-${d}-DENUM`);
                     const val = inp ? parseFloat(inp.value) || 0 : 0;
                     sumDenum += val;
                     rowDenum += `<td ${d > jmlHari ? 'style="display:none;"' : ''}>${val}</td>`;
                 }
                 rowDenum += `<td><b>${sumDenum}</b></td></tr>`;
 
-                // Baris PERSEN
+                // PERSEN Row
                 let rowPersen = `<tr><td>%</td>`;
-                for(let d=1; d<=31; d++) {
-                    const tdP = document.getElementById(`val-${idIndReal}-${d}`);
+                for (let d = 1; d <= 31; d++) {
+                    const tdP = document.getElementById(`val-${realNo}-${d}`);
                     const valP = tdP ? tdP.textContent : '0%';
                     rowPersen += `<td ${d > jmlHari ? 'style="display:none;"' : ''}>${valP}</td>`;
                 }
-                let totalPStr = document.getElementById(`total-persen-${idIndReal}`).textContent;
+                const totalPStr = document.getElementById(`total-persen-${realNo}`).textContent;
                 rowPersen += `<td><b>${totalPStr}</b></td></tr>`;
 
                 html += rowNum + rowDenum + rowPersen;
-                html += `<tr><td colspan="36"></td></tr>`;
-                
-                // Tanda Tangan
-                html += `<tr><td colspan="5" style="text-align:center;">Kepala Ruangan</td><td colspan="25"></td><td colspan="6" style="text-align:center;">PIC</td></tr>`;
-                html += `<tr><td colspan="5"></td><td colspan="25"></td><td colspan="6"></td></tr>`;
-                html += `<tr><td colspan="5"></td><td colspan="25"></td><td colspan="6"></td></tr>`;
-                html += `<tr><td colspan="5" style="text-align:center; font-weight:bold;">( Sinem S.Kep Ners )</td><td colspan="20" style="text-align:center; font-weight:bold;">${pic1}</td><td colspan="11" style="text-align:center; font-weight:bold;">${pic2}</td></tr>`;
-                html += `</table>`;
-                return html;
-            }
+            });
 
-            // Tab 1: Indikator Mutu Keseluruhan (Tabel Utama)
-            const tableMaster = document.getElementById('tabelMutuHarian');
-            let wsMaster = XLSX.utils.table_to_sheet(tableMaster);
+            html += `<tr><td colspan="35"></td></tr>`;
+
+            // Tanda Tangan
+            let pic1 = indeksFilter !== null ? daftarPerawatPIC[indeksFilter - 1][0] : "Ida Yuyun Yuningsih, S.Kep.Ners";
+            let pic2 = indeksFilter !== null ? daftarPerawatPIC[indeksFilter - 1][1] : "Turini, S.Kep.Ns";
+
+            html += `<tr><td colspan="5" style="text-align:center;">Kepala Ruangan</td><td colspan="22"></td><td colspan="8" style="text-align:center;">PIC</td></tr>`;
+            html += `<tr><td colspan="5"></td><td colspan="22"></td><td colspan="8"></td></tr>`;
+            html += `<tr><td colspan="5"></td><td colspan="22"></td><td colspan="8"></td></tr>`;
+            html += `<tr><td colspan="5" style="text-align:center; font-weight:bold;">( Sinem S.Kep Ners )</td><td colspan="15" style="text-align:center; font-weight:bold;">${pic1}</td><td colspan="15" style="text-align:center; font-weight:bold;">${pic2}</td></tr>`;
+            html += `</table>`;
+
+            return html;
+        }
+
+        function exportMutuMultiTabExcel() {
+            const bulanSelect = document.getElementById('filterBulan');
+            const namaBulan = bulanSelect.options[bulanSelect.selectedIndex].text.toUpperCase();
+            const tahunVal = document.getElementById('filterTahun').value;
+
+            let wb = XLSX.utils.book_new();
+
+            // Tab 1: Indikator Mutu Keseluruhan
+            let divMaster = document.createElement('div');
+            divMaster.innerHTML = buatHtmlTabelMutu(null);
+            let wsMaster = XLSX.utils.table_to_sheet(divMaster.querySelector('table'));
             XLSX.utils.book_append_sheet(wb, wsMaster, "Indikator Mutu Keseluruhan");
 
             // Tab 2 - 7: Per Indikator Mutu (Sesuai Screenshot)
@@ -1912,7 +1933,7 @@
             
             daftarIndikatorMutu.forEach((indNama, idx) => {
                 let divTemp = document.createElement('div');
-                divTemp.innerHTML = buatHtmlIndikator(idx + 1, indNama.substring(2));
+                divTemp.innerHTML = buatHtmlTabelMutu(idx + 1);
                 let wsSub = XLSX.utils.table_to_sheet(divTemp.querySelector('table'));
                 XLSX.utils.book_append_sheet(wb, wsSub, namaTabList[idx]);
             });
