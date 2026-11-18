@@ -1636,7 +1636,7 @@
 
                     const newRow = document.createElement('tr');
                     if (isLongStay) newRow.classList.add('row-long-stay');
-                    newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
+                    newRow.setAttribute('ondblclick', 'pilihPasienForEdit(this)');
                     newRow.setAttribute('data-dokter', p.dokter);
                     newRow.setAttribute('data-statuspasien', p.statusPasien);
 
@@ -1887,7 +1887,7 @@
                 }
                 rowDenum += `<td><b>${sumDenum}</b></td></tr>`;
 
-                // PERSEN Row
+                // PERSEN Row (Diperbaiki agar menampilkan teks persentase dengan benar, misal "100%")
                 let rowPersen = `<tr><td>%</td>`;
                 for (let d = 1; d <= 31; d++) {
                     const tdP = document.getElementById(`val-${realNo}-${d}`);
@@ -1902,16 +1902,23 @@
 
             html += `<tr><td colspan="35"></td></tr>`;
 
-            // Tanda Tangan
-            let pic1 = indeksFilter !== null ? daftarPerawatPIC[indeksFilter - 1][0] : "Ida Yuyun Yuningsih, S.Kep.Ners";
-            let pic2 = indeksFilter !== null ? daftarPerawatPIC[indeksFilter - 1][1] : "Turini, S.Kep.Ns";
+            // Tanda Tangan (Jika Keseluruhan / indeksFilter === null, hanya Kepala Ruangan saja)
+            if (indeksFilter === null) {
+                html += `<tr><td colspan="15"></td><td colspan="10" style="text-align:center;">Kepala Ruangan</td><td colspan="10"></td></tr>`;
+                html += `<tr><td colspan="35"></td></tr>`;
+                html += `<tr><td colspan="35"></td></tr>`;
+                html += `<tr><td colspan="12"></td><td colspan="15" style="text-align:center; font-weight:bold;">( Sinem S.Kep Ners )</td><td colspan="8"></td></tr>`;
+            } else {
+                let pic1 = daftarPerawatPIC[indeksFilter - 1][0];
+                let pic2 = daftarPerawatPIC[indeksFilter - 1][1];
 
-            html += `<tr><td colspan="5" style="text-align:center;">Kepala Ruangan</td><td colspan="22"></td><td colspan="8" style="text-align:center;">PIC</td></tr>`;
-            html += `<tr><td colspan="5"></td><td colspan="22"></td><td colspan="8"></td></tr>`;
-            html += `<tr><td colspan="5"></td><td colspan="22"></td><td colspan="8"></td></tr>`;
-            html += `<tr><td colspan="5" style="text-align:center; font-weight:bold;">( Sinem S.Kep Ners )</td><td colspan="15" style="text-align:center; font-weight:bold;">${pic1}</td><td colspan="15" style="text-align:center; font-weight:bold;">${pic2}</td></tr>`;
+                html += `<tr><td colspan="5" style="text-align:center;">Kepala Ruangan</td><td colspan="22"></td><td colspan="8" style="text-align:center;">PIC</td></tr>`;
+                html += `<tr><td colspan="35"></td></tr>`;
+                html += `<tr><td colspan="35"></td></tr>`;
+                html += `<tr><td colspan="5" style="text-align:center; font-weight:bold;">( Sinem S.Kep Ners )</td><td colspan="17" style="text-align:center; font-weight:bold;">${pic1}</td><td colspan="13" style="text-align:center; font-weight:bold;">${pic2}</td></tr>`;
+            }
+
             html += `</table>`;
-
             return html;
         }
 
@@ -2089,7 +2096,7 @@
             }
         }
 
-        function pilihPasienUntukEdit(tr) {
+        function pilihPasienForEdit(tr) {
             barisSedangDiedit = tr;
 
             document.getElementById('pNama').value = tr.cells[1].textContent.replace(/⚠️.*$/, '').trim();
@@ -2185,7 +2192,7 @@
                 const tbody = document.getElementById('tabelPasienBody');
                 const newRow = document.createElement('tr');
                 if (isLongStay) newRow.classList.add('row-long-stay');
-                newRow.setAttribute('ondblclick', 'pilihPasienUntukEdit(this)');
+                newRow.setAttribute('ondblclick', 'pilihPasienForEdit(this)');
                 newRow.setAttribute('data-dokter', dokter);
                 newRow.setAttribute('data-statuspasien', statusPasien);
 
